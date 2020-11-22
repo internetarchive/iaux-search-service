@@ -56,12 +56,28 @@ describe('DateParser', () => {
   it('can parse date-time strings', async () => {
     const parser = new DateParser();
     const response = parser.parseValue('2020-06-20 3:46:23');
+    const response2 = parser.parseValue('2020-06-20 03:46:23');
     const expected = new Date();
     expected.setUTCHours(3);
     expected.setUTCMinutes(46);
     expected.setUTCSeconds(23);
     expected.setUTCMilliseconds(0);
     expected.setUTCMonth(5);
+    expected.setUTCDate(20);
+    expected.setUTCFullYear(2020);
+    expect(response?.getTime()).to.equal(expected.getTime());
+    expect(response2?.getTime()).to.equal(expected.getTime());
+  });
+
+  it('can parse date-time strings different string test', async () => {
+    const parser = new DateParser();
+    const response = parser.parseValue('2020-09-20 05:12:38');
+    const expected = new Date();
+    expected.setUTCHours(5);
+    expected.setUTCMinutes(12);
+    expected.setUTCSeconds(38);
+    expected.setUTCMilliseconds(0);
+    expected.setUTCMonth(8);
     expected.setUTCDate(20);
     expected.setUTCFullYear(2020);
     expect(response?.getTime()).to.equal(expected.getTime());
@@ -72,6 +88,7 @@ describe('DateParser', () => {
     const response = parser.parseValue('2020-06-20T13:37:15');
     const response2 = parser.parseValue('2020-06-20T13:37:15Z');
     const response3 = parser.parseValue('2020-06-20T13:37:15-00:00');
+    const response4 = parser.parseValue('2020-06-20T13:37:15+00:00');
     const expected = new Date();
     expected.setUTCHours(13);
     expected.setUTCMinutes(37);
@@ -83,6 +100,7 @@ describe('DateParser', () => {
     expect(response?.getTime()).to.equal(expected.getTime());
     expect(response2?.getTime()).to.equal(expected.getTime());
     expect(response3?.getTime()).to.equal(expected.getTime());
+    expect(response4?.getTime()).to.equal(expected.getTime());
   });
 
   it('can parse "c.a. yyyy" formatted dates', async () => {

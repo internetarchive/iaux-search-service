@@ -47,6 +47,15 @@ export class DateParser implements FieldParserInterface<Date> {
 
   // uses javascript's `Date.parse()`, which handles many formats, including `c.a. 2020`
   private parseJSDate(rawValue: string): Date | undefined {
+    // fix for Safari not supporting `yyyy-mm-dd HH:MM:SS` format, insert a `T` into the space
+    if (
+      rawValue.match(
+        /^[0-9]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/
+      )
+    ) {
+      rawValue = rawValue.replace(' ', 'T');
+    }
+
     const parsed = Date.parse(rawValue);
     if (Number.isNaN(parsed)) {
       return undefined;
