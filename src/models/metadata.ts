@@ -57,13 +57,23 @@ export class Metadata {
 
   length?: DurationField;
 
+  lineage?: StringField;
+
   mediatype?: StringField;
 
   noindex?: BooleanField;
 
+  notes?: StringField;
+
   numReviews?: NumberField;
 
   publicdate: DateField;
+
+  runtime?: DurationField;
+
+  scanner?: StringField;
+
+  source?: StringField;
 
   startLocaltime?: DateField;
 
@@ -73,13 +83,21 @@ export class Metadata {
 
   subject?: StringField;
 
+  taper?: StringField;
+
   title?: StringField;
 
+  transferer?: StringField;
+
   track?: NumberField;
+
+  type?: StringField;
 
   uploader?: StringField;
 
   utcOffset?: NumberField;
+
+  venue?: StringField;
 
   year?: DateField;
 
@@ -115,13 +133,18 @@ export class Metadata {
       : undefined;
     this.language = json.language ? new StringField(json.language) : undefined;
     this.length = json.length ? new DurationField(json.length) : undefined;
+    this.lineage = json.lineage ? new StringField(json.lineage) : undefined;
     this.mediatype = json.mediatype
       ? new StringField(json.mediatype)
       : undefined;
     this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;
+    this.notes = json.notes ? new StringField(json.notes) : undefined;
     this.numReviews = json.num_reviews
       ? new NumberField(json.num_reviews)
       : undefined;
+    this.runtime = json.runtime ? new DurationField(json.runtime) : undefined;
+    this.scanner = json.scanner ? new StringField(json.scanner) : undefined;
+    this.source = json.source ? new StringField(json.source) : undefined;
     this.startLocaltime = json.start_localtime
       ? new DateField(json.start_localtime)
       : undefined;
@@ -130,12 +153,18 @@ export class Metadata {
       : undefined;
     this.stopTime = json.stop_time ? new DateField(json.stop_time) : undefined;
     this.subject = json.subject ? new StringField(json.subject) : undefined;
+    this.taper = json.taper ? new StringField(json.taper) : undefined;
     this.title = json.title ? new StringField(json.title) : undefined;
     this.track = json.track ? new NumberField(json.track) : undefined;
+    this.transferer = json.transferer
+      ? new StringField(json.transferer)
+      : undefined;
+    this.type = json.type ? new StringField(json.type) : undefined;
     this.uploader = json.uploader ? new StringField(json.uploader) : undefined;
     this.utcOffset = json.utc_offset
       ? new NumberField(json.utc_offset)
       : undefined;
+    this.venue = json.venue ? new StringField(json.venue) : undefined;
     this.year = json.year ? new DateField(json.year) : undefined;
   }
 }
