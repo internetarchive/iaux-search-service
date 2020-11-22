@@ -6,6 +6,9 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
     "tsc:watch": "tsc --watch",
