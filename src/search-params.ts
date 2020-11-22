@@ -22,7 +22,7 @@ export class SearchParams {
     sort: string[] = [],
     rows = 25,
     start = 0,
-    fields: string[] = ['identifier'],
+    fields: string[] = ['identifier']
   ) {
     this.query = query;
     this.sort = sort;

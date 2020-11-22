@@ -1,9 +1,7 @@
 import { expect } from '@open-wc/testing';
 import { FieldParserInterface } from '../../../src/models/metadata-fields/field-parsers';
 
-import {
-  MetadataField,
-} from '../../../src/models/metadata-fields/metadata-field';
+import { MetadataField } from '../../../src/models/metadata-fields/metadata-field';
 
 describe('Metadata Field', () => {
   it('can be properly instantiated with single value', () => {
@@ -89,7 +87,7 @@ describe('Metadata Field', () => {
   it('does not add value to values array if parsed value is undefined', () => {
     class MockFloatParser implements FieldParserInterface<number> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parseValue(rawValue: any): number|undefined {
+      parseValue(rawValue: any): number | undefined {
         return undefined;
       }
     }

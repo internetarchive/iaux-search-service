@@ -16,14 +16,16 @@ describe('SearchService', () => {
       }
 
       async performSearch(params: any): Promise<SearchResponse> {
-        const responseGenerator = new MockResponseGenerator()
-        const mockResponse = responseGenerator.generateMockSearchResponse(params);
+        const responseGenerator = new MockResponseGenerator();
+        const mockResponse = responseGenerator.generateMockSearchResponse(
+          params
+        );
         return new Promise(resolve => resolve(mockResponse));
       }
     }
 
-    const query = "title:foo AND collection:bar"
-    const params = new SearchParams(query)
+    const query = 'title:foo AND collection:bar';
+    const params = new SearchParams(query);
     const backend = new MockSearchBackend();
     const service = new SearchService(backend);
     const result = await service.search(params);
@@ -36,8 +38,10 @@ describe('SearchService', () => {
         throw new Error('Method not implemented.');
       }
       async fetchMetadata(identifier: string): Promise<MetadataResponse> {
-        const responseGenerator = new MockResponseGenerator()
-        const mockResponse = responseGenerator.generateMockMetadataResponse(identifier);
+        const responseGenerator = new MockResponseGenerator();
+        const mockResponse = responseGenerator.generateMockMetadataResponse(
+          identifier
+        );
         return new Promise(resolve => resolve(mockResponse));
       }
     }

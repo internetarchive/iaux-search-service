@@ -17,7 +17,7 @@ export interface SearchServiceInterface {
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService(
     new DefaultSearchBackend()
-  )
+  );
 
   private searchBackend: SearchBackendInterface;
 

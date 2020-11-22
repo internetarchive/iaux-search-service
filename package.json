@@ -16,7 +16,8 @@
     "format:prettier": "prettier \"**/*.js\" \"**/*.ts\" --write --ignore-path .gitignore",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "format": "npm run format:eslint && npm run format:prettier",
-    "test": "tsc && web-test-runner --coverage",
+    "circular": "madge --circular --extensions ts .",
+    "test": "tsc && npm run lint && npm run circular && web-test-runner --coverage",
     "test:watch": "web-test-runner --watch"
   },
   "dependencies": {},
@@ -34,6 +35,7 @@
     "husky": "^1.0.0",
     "lint-staged": "^10.0.0",
     "lit-html": "^1.3.0",
+    "madge": "^3.12.0",
     "prettier": "^2.0.4",
     "tslib": "^1.11.0",
     "typescript": "~4.0.3"

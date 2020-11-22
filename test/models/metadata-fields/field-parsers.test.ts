@@ -5,7 +5,7 @@ import {
   DateParser,
   DurationParser,
   StringParser,
-  BooleanParser
+  BooleanParser,
 } from '../../../src/models/metadata-fields/field-parsers';
 
 describe('NumberParser', () => {
@@ -138,14 +138,14 @@ describe('DurationParser', () => {
   it('can parse mm:ss format', async () => {
     const parser = new DurationParser();
     const response = parser.parseValue('45:23');
-    const expected = 23 + (45 * 60);
+    const expected = 23 + 45 * 60;
     expect(response).to.equal(expected);
   });
 
   it('can parse hh:mm:ss format', async () => {
     const parser = new DurationParser();
     const response = parser.parseValue('3:45:23');
-    const expected = 23 + (45 * 60) + (3 * 60 * 60);
+    const expected = 23 + 45 * 60 + 3 * 60 * 60;
     expect(response).to.equal(expected);
   });
 

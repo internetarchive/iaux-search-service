@@ -13,7 +13,7 @@ export {
   NumberParser,
   StringParser,
   DateParser,
-  DurationParser
+  DurationParser,
 } from './src/models/metadata-fields/field-parsers';
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';
@@ -23,5 +23,6 @@ export { SearchResponse } from './src/responses/search/search-response';
 export { SearchResponseHeader } from './src/responses/search/search-response-header';
 export { SearchResponseParams } from './src/responses/search/search-response-params';
 
+export { DefaultSearchBackend } from './src/default-search-backend';
 export { SearchService } from './src/search-service';
 export { SearchParams } from './src/search-params';

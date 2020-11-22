@@ -24,7 +24,10 @@ import { FieldParserInterface } from './field-parsers';
  * @template Type The type of metadata this is (string, number, Date, etc)
  * @template FieldParserInterfaceType The parser for that type (StringParser, NumberParser, etc)
  */
-export class MetadataField<Type, FieldParserInterfaceType extends FieldParserInterface<Type>> {
+export class MetadataField<
+  Type,
+  FieldParserInterfaceType extends FieldParserInterface<Type>
+> {
   rawValue?: any;
 
   values: Type[] = [];

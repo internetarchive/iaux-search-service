@@ -5,7 +5,7 @@ import { Metadata } from '../../src/models/metadata';
 
 describe('Item', () => {
   it('can be instantiated with metadata', async () => {
-    const metadata = new Metadata({ identifier: 'foo' })
+    const metadata = new Metadata({ identifier: 'foo' });
     const item = new Item(metadata);
     expect(item.metadata.identifier).to.equal('foo');
   });
