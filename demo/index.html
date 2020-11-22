@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo"></div>
+
+  <script type="module">
+    import { html, render } from 'lit-html';
+    import '../dist/search-service.js';
+
+    const title = 'Hello owc World!';
+    render(
+      html`
+        <search-service .title=${title}>
+          some more light-dom
+        </search-service>
+      `,
+      document.querySelector('#demo')
+    );
+  </script>
+</body>
+</html>
