@@ -45,7 +45,6 @@ export class DateParser implements FieldParserInterface<Date> {
     return this.parseJSDate(yearMatch[1]);
   }
 
-  // uses javascript's `Date.parse()`, which handles many formats, including `c.a. 2020`
   private parseJSDate(rawValue: string): Date | undefined {
     // fix for Safari not supporting `yyyy-mm-dd HH:MM:SS` format, insert a `T` into the space
     if (
@@ -62,18 +61,16 @@ export class DateParser implements FieldParserInterface<Date> {
     }
     let date = new Date(rawValue);
     // the `Date(string)` constructor parses some strings as GMT and some in the local timezone
-    // this attempts to detect cases that get parsed as GMT and adjust others accordingly
+    // this attempts to detect cases that get parsed as GMT and adjusts accordingly
     const dateWithTimeZone =
       rawValue.indexOf('Z') > -1 || // ISO8601 with GMT timezone
       rawValue.indexOf('+') > -1 || // ISO8601 with positive timezone offset
-      rawValue.indexOf('c.a.') > -1 || // c.a. 2020
-      rawValue.indexOf('ca') > -1 || // ca 2020
       rawValue.match(/^[0-9]{4}$/) || // just the year, ie `2020`
       rawValue.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) || // YYYY-MM-DD format
       rawValue.match(/^.*?-[0-9]{2}:[0-9]{2}$/) || // `YYYY-MM-DDTHH:mm:ss-00:00` format
       rawValue.match(/^.*?-[0-9]{4}$/); // `YYYY-MM-DDTHH:mm:ss-0000` format
-    if (!dateWithTimeZone) {
-      date = new Date(date.getTime() - date.getTimezoneOffset() * 1000 * 60);
+    if (dateWithTimeZone) {
+      date = new Date(date.getTime() + date.getTimezoneOffset() * 1000 * 60);
     }
     return date;
   }
