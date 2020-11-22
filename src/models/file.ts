@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { DurationField, NumberField } from './metadata-fields/field-types';
+
 /**
  * This represents an Internet Archive File
  *
@@ -23,9 +25,25 @@ export class File {
 
   sha1: string;
 
-  original: string;
+  original?: string;
 
-  size: string;
+  size?: NumberField;
+
+  title?: string;
+
+  length?: DurationField;
+
+  height?: NumberField;
+
+  width?: NumberField;
+
+  track?: NumberField;
+
+  externalIdentifier?: string;
+
+  creator?: string;
+
+  album?: string;
 
   constructor(json: any) {
     this.name = json.name;
@@ -37,6 +55,14 @@ export class File {
     this.crc32 = json.crc32;
     this.sha1 = json.sha1;
     this.original = json.original;
-    this.size = json.size;
+    this.size = json.size ? new NumberField(json.size) : undefined;
+    this.title = json.title;
+    this.length = json.length ? new DurationField(json.length) : undefined;
+    this.height = json.height ? new NumberField(json.height) : undefined;
+    this.width = json.width ? new NumberField(json.width) : undefined;
+    this.track = json.track ? new NumberField(json.track) : undefined;
+    this.externalIdentifier = json['external-identifier'];
+    this.creator = json.creator;
+    this.album = json.album;
   }
 }
