@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable camelcase */
 import {
   DateField,
@@ -32,9 +31,9 @@ export class Metadata {
 
   addeddate: DateField;
 
-  audio_codec?: StringField;
+  audioCodec?: StringField;
 
-  audio_sample_rate?: NumberField;
+  audioSampleRate?: NumberField;
 
   collection?: StringField;
 
@@ -48,7 +47,7 @@ export class Metadata {
 
   description?: StringField;
 
-  downloads: number;
+  downloads: NumberField;
 
   duration?: DurationField;
 
@@ -60,17 +59,17 @@ export class Metadata {
 
   mediatype?: StringField;
 
-  noindex?: boolean;
+  noindex?: BooleanField;
 
-  num_reviews?: number;
+  numReviews?: NumberField;
 
   publicdate: DateField;
 
-  start_localtime?: DateField;
+  startLocaltime?: DateField;
 
-  start_time?: DateField;
+  startTime?: DateField;
 
-  stop_time?: DateField;
+  stopTime?: DateField;
 
   subject?: StringField;
 
@@ -80,9 +79,9 @@ export class Metadata {
 
   uploader?: StringField;
 
-  utc_offset?: NumberField;
+  utcOffset?: NumberField;
 
-  year?: NumberField;
+  year?: DateField;
 
   constructor(json: any) {
     this.rawMetadata = json;
@@ -92,10 +91,10 @@ export class Metadata {
     this.publicdate = new DateField(json.publicdate);
     this.indexdate = new DateField(json.indexdate);
 
-    this.audio_codec = json.audio_codec
+    this.audioCodec = json.audio_codec
       ? new StringField(json.audio_codec)
       : undefined;
-    this.audio_sample_rate = json.audio_codec
+    this.audioSampleRate = json.audio_codec
       ? new NumberField(json.audio_sample_rate)
       : undefined;
     this.collection = json.collection
@@ -110,7 +109,7 @@ export class Metadata {
     this.description = json.description
       ? new StringField(json.description)
       : undefined;
-    this.downloads = json.downloads;
+    this.downloads = new NumberField(json.downloads);
     this.duration = json.duration
       ? new DurationField(json.duration)
       : undefined;
@@ -119,21 +118,24 @@ export class Metadata {
     this.mediatype = json.mediatype
       ? new StringField(json.mediatype)
       : undefined;
-    this.noindex = json.noindex;
-    this.start_localtime = json.start_localtime
+    this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;
+    this.numReviews = json.num_reviews
+      ? new NumberField(json.num_reviews)
+      : undefined;
+    this.startLocaltime = json.start_localtime
       ? new DateField(json.start_localtime)
       : undefined;
-    this.start_time = json.start_time
+    this.startTime = json.start_time
       ? new DateField(json.start_time)
       : undefined;
-    this.stop_time = json.stop_time ? new DateField(json.stop_time) : undefined;
+    this.stopTime = json.stop_time ? new DateField(json.stop_time) : undefined;
     this.subject = json.subject ? new StringField(json.subject) : undefined;
     this.title = json.title ? new StringField(json.title) : undefined;
     this.track = json.track ? new NumberField(json.track) : undefined;
     this.uploader = json.uploader ? new StringField(json.uploader) : undefined;
-    this.utc_offset = json.utc_offset
+    this.utcOffset = json.utc_offset
       ? new NumberField(json.utc_offset)
       : undefined;
-    this.year = json.year ? new NumberField(json.year) : undefined;
+    this.year = json.year ? new DateField(json.year) : undefined;
   }
 }
