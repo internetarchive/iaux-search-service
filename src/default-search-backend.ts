@@ -1,8 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchResponse } from './responses/search/search-response';
-import { MetadataResponse } from './responses/metadata/metadata-response';
 import { SearchParams } from './search-params';
+import { Result } from './responses/result';
+import {
+  SearchServiceError,
+  SearchServiceErrorType,
+} from './search-service-error';
 
+/**
+ * The DefaultSearchBackend performs `fetch` requests to archive.org
+ */
 export class DefaultSearchBackend implements SearchBackendInterface {
   private baseUrl: string;
 
@@ -10,19 +17,52 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     this.baseUrl = baseUrl;
   }
 
-  async performSearch(params: SearchParams): Promise<SearchResponse> {
+  async performSearch(
+    params: SearchParams
+  ): Promise<Result<any, SearchServiceError>> {
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    return new Promise(resolve => resolve(json));
+    return this.fetchUrl(url);
   }
 
-  async fetchMetadata(identifier: string): Promise<MetadataResponse> {
+  async fetchMetadata(
+    identifier: string
+  ): Promise<Result<any, SearchServiceError>> {
     const url = `https://${this.baseUrl}/metadata/${identifier}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    return new Promise(resolve => resolve(json));
+    return this.fetchUrl(url);
+  }
+
+  private async fetchUrl(
+    url: string
+  ): Promise<Result<any, SearchServiceError>> {
+    let response: Response;
+    // first try the fetch and return a networkError if it fails
+    try {
+      response = await fetch(url);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : err;
+      const error = new SearchServiceError(
+        SearchServiceErrorType.networkError,
+        message
+      );
+      const result = new Result<any, SearchServiceError>(undefined, error);
+      return result;
+    }
+
+    // then try json decoding and return a decodingError if it fails
+    try {
+      const json = await response.json();
+      const result = new Result<any, SearchServiceError>(json);
+      return result;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : err;
+      const error = new SearchServiceError(
+        SearchServiceErrorType.decodingError,
+        message
+      );
+      const result = new Result<any, SearchServiceError>(undefined, error);
+      return result;
+    }
   }
 }

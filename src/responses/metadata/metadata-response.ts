@@ -43,7 +43,7 @@ export class MetadataResponse {
     this.d1 = json.d1;
     this.d2 = json.d2;
     this.dir = json.dir;
-    this.files = json.files.map((file: any) => new File(file));
+    this.files = json.files?.map((file: any) => new File(file));
     this.files_count = json.files_count;
     this.item_last_updated = json.item_last_updated;
     this.item_size = json.item_size;

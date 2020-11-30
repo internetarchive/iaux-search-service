@@ -8,7 +8,7 @@ import { Metadata } from '../../models/metadata';
  * @export
  * @class Response
  */
-export class Response {
+export class SearchResponseDetails {
   /**
    * Total number of results found
    *

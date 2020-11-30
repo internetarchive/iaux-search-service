@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MetadataResponse } from './responses/metadata/metadata-response';
-import { SearchResponse } from './responses/search/search-response';
+import { Result } from './responses/result';
 import { SearchParams } from './search-params';
+import { SearchServiceError } from './search-service-error';
 
 /**
  * An interface to provide the network layer to the `SearchService`.
@@ -14,6 +14,6 @@ import { SearchParams } from './search-params';
  * @interface SearchBackendInterface
  */
 export interface SearchBackendInterface {
-  performSearch(params: SearchParams): Promise<SearchResponse>;
-  fetchMetadata(identifier: string): Promise<MetadataResponse>;
+  performSearch(params: SearchParams): Promise<Result<any, SearchServiceError>>;
+  fetchMetadata(identifier: string): Promise<Result<any, SearchServiceError>>;
 }

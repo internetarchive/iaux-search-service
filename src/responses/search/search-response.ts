@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchResponseHeader } from './search-response-header';
-import { Response } from './response';
+import { SearchResponseDetails } from './search-response-details';
 
 /**
  * The top-level response model when retrieving a response from the advanced search endpoint.
@@ -28,14 +28,14 @@ export class SearchResponse {
   /**
    * The response containing the search results
    *
-   * @type {Response}
+   * @type {SearchResponseDetails}
    * @memberof SearchResponse
    */
-  response: Response;
+  response: SearchResponseDetails;
 
   constructor(json: any) {
     this.rawResponse = json;
     this.responseHeader = new SearchResponseHeader(json.responseHeader);
-    this.response = new Response(json.response);
+    this.response = new SearchResponseDetails(json.response);
   }
 }

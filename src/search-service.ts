@@ -3,11 +3,12 @@ import { SearchBackendInterface } from './search-backend-interface';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
 import { DefaultSearchBackend } from './default-search-backend';
-
-export interface SearchServiceInterface {
-  search(params: SearchParams): Promise<SearchResponse>;
-  fetchMetadata(identifier: string): Promise<MetadataResponse>;
-}
+import { Result } from './responses/result';
+import {
+  SearchServiceError,
+  SearchServiceErrorType,
+} from './search-service-error';
+import { SearchServiceInterface } from './search-service-interface';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -30,10 +31,16 @@ export class SearchService implements SearchServiceInterface {
    *
    * @param params SearchParams
    */
-  async search(params: SearchParams): Promise<SearchResponse> {
+  async search(
+    params: SearchParams
+  ): Promise<Result<SearchResponse, SearchServiceError>> {
     const rawResponse = await this.searchBackend.performSearch(params);
-    const modeledResponse = new SearchResponse(rawResponse);
-    return new Promise(resolve => resolve(modeledResponse));
+    if (rawResponse.error) {
+      return rawResponse;
+    }
+
+    const modeledResponse = new SearchResponse(rawResponse.success);
+    return new Result<SearchResponse, SearchServiceError>(modeledResponse);
   }
 
   /**
@@ -41,9 +48,22 @@ export class SearchService implements SearchServiceInterface {
    *
    * @param identifier string
    */
-  async fetchMetadata(identifier: string): Promise<MetadataResponse> {
+  async fetchMetadata(
+    identifier: string
+  ): Promise<Result<MetadataResponse, SearchServiceError>> {
     const rawResponse = await this.searchBackend.fetchMetadata(identifier);
-    const modeledResponse = new MetadataResponse(rawResponse);
-    return new Promise(resolve => resolve(modeledResponse));
+    if (rawResponse.error) {
+      return rawResponse;
+    }
+
+    if (rawResponse.success?.metadata === undefined) {
+      return new Result<MetadataResponse, SearchServiceError>(
+        undefined,
+        new SearchServiceError(SearchServiceErrorType.itemNotFound)
+      );
+    }
+
+    const modeledResponse = new MetadataResponse(rawResponse.success);
+    return new Result<MetadataResponse, SearchServiceError>(modeledResponse);
   }
 }
