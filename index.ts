@@ -24,5 +24,6 @@ export { SearchResponseHeader } from './src/responses/search/search-response-hea
 export { SearchResponseParams } from './src/responses/search/search-response-params';
 
 export { DefaultSearchBackend } from './src/default-search-backend';
+export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
 export { SearchParams } from './src/search-params';
