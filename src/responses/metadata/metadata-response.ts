@@ -3,6 +3,7 @@
 /* eslint-disable camelcase */
 import { File } from '../../models/file';
 import { Metadata } from '../../models/metadata';
+import { SpeechMusicASREntry } from '../../models/speech-music-asr-entry';
 
 /**
  * The main top-level reponse when fetching Metadata
@@ -37,6 +38,8 @@ export class MetadataResponse {
 
   workable_servers: string[];
 
+  speech_vs_music_asr?: SpeechMusicASREntry[];
+
   constructor(json: any) {
     this.rawResponse = json;
     this.created = json.created;
@@ -51,5 +54,8 @@ export class MetadataResponse {
     this.server = json.server;
     this.uniq = json.uniq;
     this.workable_servers = json.workable_servers;
+    this.speech_vs_music_asr = json.speech_vs_music_asr?.map(
+      (entry: any) => new SpeechMusicASREntry(entry)
+    );
   }
 }

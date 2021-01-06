@@ -18,6 +18,8 @@ export {
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';
 
+export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
+
 export { MetadataResponse } from './src/responses/metadata/metadata-response';
 export { SearchResponse } from './src/responses/search/search-response';
 export { SearchResponseHeader } from './src/responses/search/search-response-header';
