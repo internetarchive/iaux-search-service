@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { DurationField, NumberField } from './metadata-fields/field-types';
@@ -39,7 +40,7 @@ export class File {
 
   track?: NumberField;
 
-  externalIdentifier?: string;
+  external_identifier?: string;
 
   creator?: string;
 
@@ -61,7 +62,7 @@ export class File {
     this.height = json.height ? new NumberField(json.height) : undefined;
     this.width = json.width ? new NumberField(json.width) : undefined;
     this.track = json.track ? new NumberField(json.track) : undefined;
-    this.externalIdentifier = json['external-identifier'];
+    this.external_identifier = json['external-identifier'];
     this.creator = json.creator;
     this.album = json.album;
   }
