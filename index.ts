@@ -7,7 +7,7 @@ export {
   NumberField,
   DurationField,
   StringField,
-  BooleanField
+  BooleanField,
 } from './src/models/metadata-fields/field-types';
 
 export {
@@ -15,7 +15,7 @@ export {
   StringParser,
   DateParser,
   DurationParser,
-  BooleanParser
+  BooleanParser,
 } from './src/models/metadata-fields/field-parsers';
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';

@@ -1,4 +1,8 @@
 /* eslint-disable class-methods-use-this */
+
+/**
+ * Duration is a number in seconds
+ */
 export type Duration = number;
 
 export interface FieldParserInterface<T> {
@@ -11,7 +15,7 @@ export class NumberParser implements FieldParserInterface<number> {
     if (Number.isNaN(value)) {
       return undefined;
     }
-    return parseFloat(rawValue);
+    return value;
   }
 }
 
@@ -76,6 +80,11 @@ export class DateParser implements FieldParserInterface<Date> {
   }
 }
 
+/**
+ * Parsed duration format to a Duration (number of seconds with decimal)
+ *
+ * Can parse hh:mm:ss.ms, hh:mm:ss, mm:ss, mmLss.ms, and s.ms formats
+ */
 export class DurationParser implements FieldParserInterface<Duration> {
   parseValue(rawValue: string): Duration {
     const componentArray: string[] = rawValue.split(':');

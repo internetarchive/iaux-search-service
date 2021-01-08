@@ -28,10 +28,32 @@ export class MetadataField<
   Type,
   FieldParserInterfaceType extends FieldParserInterface<Type>
 > {
+  /**
+   * The raw value received from the API response
+   *
+   * @type {*}
+   * @memberof MetadataField
+   */
   rawValue?: any;
 
+  /**
+   * The array of all values for the field.
+   *
+   * Many fields only contain a single value and
+   * can be accessed via the `.value` getter
+   *
+   * @type {Type[]}
+   * @memberof MetadataField
+   */
   values: Type[] = [];
 
+  /**
+   * The first value if there are multiple or the only value if there is one
+   *
+   * @readonly
+   * @type {(Type | undefined)}
+   * @memberof MetadataField
+   */
   get value(): Type | undefined {
     return this.values.length > 0 ? this.values[0] : undefined;
   }
