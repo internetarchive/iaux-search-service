@@ -1,5 +1,5 @@
 import { expect } from '@open-wc/testing';
-import { FieldParserInterface } from '../../../src/models/metadata-fields/field-parsers';
+import { FieldParserInterface } from '../../../src/models/metadata-fields/field-parser-interface';
 
 import { MetadataField } from '../../../src/models/metadata-fields/metadata-field';
 

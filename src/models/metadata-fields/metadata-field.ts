@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FieldParserInterface } from './field-parsers';
+import { FieldParserInterface } from './field-parser-interface';
 
 /**
  * The MetadataField is responsible for three things:
@@ -34,7 +34,7 @@ export class MetadataField<
    * @type {*}
    * @memberof MetadataField
    */
-  rawValue?: any;
+  rawValue?: string[] | string;
 
   /**
    * The array of all values for the field.

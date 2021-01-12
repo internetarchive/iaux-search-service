@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { DurationField, NumberField } from './metadata-fields/field-types';
+import { DurationField } from './metadata-fields/field-types/duration';
+import { NumberField } from './metadata-fields/field-types/number';
 
 /**
  * This represents an Internet Archive File

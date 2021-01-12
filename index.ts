@@ -4,19 +4,34 @@ export { Item } from './src/models/item';
 
 export {
   DateField,
-  NumberField,
-  DurationField,
-  StringField,
-  BooleanField,
-} from './src/models/metadata-fields/field-types';
+  DateParser,
+} from './src/models/metadata-fields/field-types/date';
 
 export {
+  NumberField,
   NumberParser,
+} from './src/models/metadata-fields/field-types/number';
+
+export {
+  StringField,
   StringParser,
-  DateParser,
-  DurationParser,
+} from './src/models/metadata-fields/field-types/string';
+
+export {
+  BooleanField,
   BooleanParser,
-} from './src/models/metadata-fields/field-parsers';
+} from './src/models/metadata-fields/field-types/boolean';
+
+export {
+  DurationField,
+  DurationParser,
+} from './src/models/metadata-fields/field-types/duration';
+
+export {
+  PageProgressionField,
+  PageProgressionParser,
+  PageProgression,
+} from './src/models/metadata-fields/field-types/page-progression';
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';
 

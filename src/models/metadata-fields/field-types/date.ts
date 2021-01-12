@@ -1,38 +1,5 @@
-/* eslint-disable class-methods-use-this */
-
-/**
- * Duration is a number in seconds
- */
-export type Duration = number;
-
-export interface FieldParserInterface<T> {
-  parseValue(rawValue: string): T | undefined;
-}
-
-export class NumberParser implements FieldParserInterface<number> {
-  parseValue(rawValue: string): number | undefined {
-    const value = parseFloat(rawValue);
-    if (Number.isNaN(value)) {
-      return undefined;
-    }
-    return value;
-  }
-}
-
-export class StringParser implements FieldParserInterface<string> {
-  parseValue(rawValue: string): string {
-    return String(rawValue);
-  }
-}
-
-export class BooleanParser implements FieldParserInterface<boolean> {
-  parseValue(rawValue: string): boolean {
-    if (rawValue === 'false' || rawValue === '0') {
-      return false;
-    }
-    return Boolean(rawValue);
-  }
-}
+import { FieldParserInterface } from '../field-parser-interface';
+import { MetadataField } from '../metadata-field';
 
 export class DateParser implements FieldParserInterface<Date> {
   parseValue(rawValue: string): Date | undefined {
@@ -80,24 +47,10 @@ export class DateParser implements FieldParserInterface<Date> {
   }
 }
 
-/**
- * Parsed duration format to a Duration (number of seconds with decimal)
- *
- * Can parse hh:mm:ss.ms, hh:mm:ss, mm:ss, mmLss.ms, and s.ms formats
- */
-export class DurationParser implements FieldParserInterface<Duration> {
-  parseValue(rawValue: string): Duration {
-    const componentArray: string[] = rawValue.split(':');
-    const componentCount: number = componentArray.length;
-    const seconds: number = componentArray
-      .map((element: string, index: number) => {
-        const componentValue: number = parseFloat(element);
-        const exponent: number = componentCount - 1 - index;
-        const multiplier: number = 60 ** exponent;
-        return componentValue * Math.floor(multiplier);
-      })
-      .reduce((a, b) => a + b, 0);
-
-    return seconds;
+export class DateField extends MetadataField<Date, DateParser> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(rawValue: any) {
+    const parser = new DateParser();
+    super(parser, rawValue);
   }
 }

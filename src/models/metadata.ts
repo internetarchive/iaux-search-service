@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
-import {
-  DateField,
-  StringField,
-  NumberField,
-  DurationField,
-  BooleanField,
-} from './metadata-fields/field-types';
+
+import { BooleanField } from './metadata-fields/field-types/boolean';
+import { DateField } from './metadata-fields/field-types/date';
+import { DurationField } from './metadata-fields/field-types/duration';
+import { NumberField } from './metadata-fields/field-types/number';
+import { StringField } from './metadata-fields/field-types/string';
+import { PageProgressionField } from './metadata-fields/field-types/page-progression';
 
 /**
  * Metadata is an expansive model that describes an Item.
@@ -67,6 +67,8 @@ export class Metadata {
   notes?: StringField;
 
   num_reviews?: NumberField;
+
+  page_progression?: PageProgressionField;
 
   publicdate: DateField;
 
