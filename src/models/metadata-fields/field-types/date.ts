@@ -2,6 +2,10 @@ import { FieldParserInterface } from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export class DateParser implements FieldParserInterface<Date> {
+  // use a shared static instance for performance instead of
+  // instantiating a new instance for every use
+  static shared = new DateParser();
+
   parseValue(rawValue: string): Date | undefined {
     // try different date parsing
     return this.parseJSDate(rawValue) || this.parseBracketDate(rawValue);
@@ -50,7 +54,6 @@ export class DateParser implements FieldParserInterface<Date> {
 export class DateField extends MetadataField<Date, DateParser> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rawValue: any) {
-    const parser = new DateParser();
-    super(parser, rawValue);
+    super(DateParser.shared, rawValue);
   }
 }

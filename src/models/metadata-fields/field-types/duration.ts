@@ -12,6 +12,10 @@ export type Duration = number;
  * Can parse hh:mm:ss.ms, hh:mm:ss, mm:ss, mmLss.ms, and s.ms formats
  */
 export class DurationParser implements FieldParserInterface<Duration> {
+  // use a shared static instance for performance instead of
+  // instantiating a new instance for every use
+  static shared = new DurationParser();
+
   parseValue(rawValue: string): Duration {
     const componentArray: string[] = rawValue.split(':');
     const componentCount: number = componentArray.length;
@@ -31,7 +35,6 @@ export class DurationParser implements FieldParserInterface<Duration> {
 export class DurationField extends MetadataField<Duration, DurationParser> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rawValue: any) {
-    const parser = new DurationParser();
-    super(parser, rawValue);
+    super(DurationParser.shared, rawValue);
   }
 }

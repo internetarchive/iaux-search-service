@@ -8,6 +8,10 @@ export enum PageProgression {
 
 export class PageProgressionParser
   implements FieldParserInterface<PageProgression> {
+  // use a shared static instance for performance instead of
+  // instantiating a new instance for every use
+  static shared = new PageProgressionParser();
+
   parseValue(rawValue: string): PageProgression | undefined {
     switch (rawValue) {
       case 'rl':
@@ -26,7 +30,6 @@ export class PageProgressionField extends MetadataField<
 > {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rawValue: any) {
-    const parser = new PageProgressionParser();
-    super(parser, rawValue);
+    super(PageProgressionParser.shared, rawValue);
   }
 }
