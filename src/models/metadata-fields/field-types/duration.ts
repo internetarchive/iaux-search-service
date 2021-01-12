@@ -7,9 +7,9 @@ import { MetadataField } from '../metadata-field';
 export type Duration = number;
 
 /**
- * Parsed duration format to a Duration (number of seconds with decimal)
+ * Parses duration format to a `Duration` (number of seconds with decimal)
  *
- * Can parse hh:mm:ss.ms, hh:mm:ss, mm:ss, mmLss.ms, and s.ms formats
+ * Can parse hh:mm:ss.ms, hh:mm:ss, mm:ss, mm:ss.ms, and s.ms formats
  */
 export class DurationParser implements FieldParserInterface<Duration> {
   // use a shared static instance for performance instead of
