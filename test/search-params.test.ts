@@ -5,20 +5,17 @@ import { SearchParams } from '../src/search-params';
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = new SearchParams(query);
+    const params = new SearchParams({ query });
     expect(params.query).to.equal(query);
   });
 
   it('can be instantiated with query params and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const params = new SearchParams(
+    const params = new SearchParams({
       query,
-      undefined,
-      undefined,
-      undefined,
-      fields
-    );
+      fields,
+    });
     expect(params.fields).to.deep.equal(fields);
   });
 
@@ -30,7 +27,7 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = new SearchParams(query);
+    const params = new SearchParams({ query });
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -41,13 +38,10 @@ describe('SearchParams', () => {
   it('properly generates a URLSearchParam with a query and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const params = new SearchParams(
+    const params = new SearchParams({
       query,
-      undefined,
-      undefined,
-      undefined,
-      fields
-    );
+      fields,
+    });
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -59,7 +53,13 @@ describe('SearchParams', () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
     const sort = ['downloads desc'];
-    const params = new SearchParams(query, sort, 53, 27, fields);
+    const params = new SearchParams({
+      query,
+      sort,
+      rows: 53,
+      page: 27,
+      fields,
+    });
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const expected =

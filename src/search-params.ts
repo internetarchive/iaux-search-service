@@ -9,26 +9,26 @@
 export class SearchParams {
   query: string;
 
-  sort: string[];
+  sort?: string[];
 
-  rows: number;
+  rows?: number;
 
-  start: number;
+  page?: number;
 
-  fields: string[];
+  fields?: string[];
 
-  constructor(
-    query: string,
-    sort: string[] = [],
-    rows = 25,
-    start = 0,
-    fields: string[] = ['identifier']
-  ) {
-    this.query = query;
-    this.sort = sort;
-    this.rows = rows;
-    this.start = start;
-    this.fields = fields;
+  constructor(options: {
+    query: string;
+    sort?: string[];
+    rows?: number;
+    page?: number;
+    fields?: string[];
+  }) {
+    this.query = options.query;
+    this.sort = options.sort;
+    this.rows = options.rows;
+    this.page = options.page;
+    this.fields = options.fields;
   }
 
   /**
@@ -41,15 +41,18 @@ export class SearchParams {
   get asUrlSearchParams(): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
     params.append('q', this.query);
-    params.append('rows', String(this.rows));
-    params.append('page', String(this.start));
     params.append('output', 'json');
 
-    this.fields.forEach(field => {
+    if (this.rows) {
+      params.append('rows', String(this.rows));
+    }
+    if (this.page) {
+      params.append('page', String(this.page));
+    }
+    this.fields?.forEach(field => {
       params.append('fl[]', field);
     });
-
-    this.sort.forEach(sort => {
+    this.sort?.forEach(sort => {
       params.append('sort[]', sort);
     });
 

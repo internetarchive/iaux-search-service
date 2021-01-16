@@ -26,7 +26,7 @@ export class Metadata {
    * @type {*}
    * @memberof Metadata
    */
-  rawMetadata?: any;
+  rawMetadata?: { [key: string]: any };
 
   identifier: string;
 

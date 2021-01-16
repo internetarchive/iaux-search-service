@@ -42,7 +42,7 @@ describe('DefaultSearchBackend', () => {
     };
 
     const backend = new DefaultSearchBackend();
-    const params = new SearchParams('foo');
+    const params = new SearchParams({ query: 'foo' });
     const result = await backend.performSearch(params);
     expect(result.success?.foo).to.equal('bar');
     window.fetch = fetchBackup;
