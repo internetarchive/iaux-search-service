@@ -51,7 +51,7 @@ metadataResponse.metadata.collection.values // => ['some-collection', 'another-c
 
 Internet Archive Metadata is expansive and nearly all metadata fields can be returned as either an array, string, or number.
 
-The Search Service handles all of the possible variations in data formats and converts them to native types. For instance on date fields, like `date`, it takes the string returned and converts it into a native javascript `Date` value. Similarly for duration-type fields, like `length`, it takes the duration, which can be seconds `324.34` or `hh:mm:ss.ms` and converts them to a `number` in seconds.
+The Search Service handles all of the possible variations in data formats and converts them to their appropriate types. For instance on date fields, like `date`, it takes the string returned and converts it into a native javascript `Date` value. Similarly for duration-type fields, like `length`, it takes the duration, which can be seconds `324.34` or `hh:mm:ss.ms` and converts them to a `number` in seconds.
 
 There are parsers for several different field types, like `Number`, `String`, `Date`, and `Duration` and others can be added for other field types.
 
