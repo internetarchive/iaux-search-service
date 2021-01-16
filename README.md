@@ -12,12 +12,17 @@ npm install @internetarchive/search-service
 
 ### Searching
 ```ts
-import { SearchService } from '@internetarchive/search-service';
+import {
+  SearchService,
+  SortParam,
+  SortDirection
+} from '@internetarchive/search-service';
 
 const searchService = SearchService.default;
+const sortParam = new SortParam('date', SortDirection.Desc)
 const params = new SearchParams({
-  query: 'collection:books AND title:(little bunny foo foo)',
-  sort: 'downloads desc',
+  query: 'collection:books AND title:(goody)',
+  sort: sortParam,
   rows: 25,
   start: 0,
   fields: ['identifier', 'collection', 'title', 'creator']
@@ -78,5 +83,5 @@ npm run test
 
 ## Linting
 ```bash
-npm run formatting
+npm run format
 ```
