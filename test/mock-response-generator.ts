@@ -1,27 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { SearchResponse } from '../src/responses/search/search-response';
+import { SearchParams } from '../src/search-params';
+
 /* eslint-disable @typescript-eslint/camelcase */
 export class MockResponseGenerator {
-  generateMockSearchResponse(params: any): any {
-    const fieldsAsString = params.fields.join(',');
+  generateMockSearchResponse(params: SearchParams): SearchResponse {
+    const fieldsAsString = params.fields?.join(',');
 
     return {
+      rawResponse: {
+        foo: 'bar',
+      },
       responseHeader: {
         status: 0,
         QTime: 1459,
         params: {
           query: params.query,
           qin: params.query,
-          fields: fieldsAsString,
+          fields: fieldsAsString ?? '',
           wt: 'json',
-          sort: params.sort,
-          rows: params.rows,
-          start: params.start,
+          sort: params.sort?.reduce((prev, current, index) => {
+            const isFirst = index === 0;
+            const commaPrefix = isFirst ? '' : ', ';
+            return `${prev}${commaPrefix}${current.field} ${current.direction}`;
+          }, ''),
+          rows: params.rows ? `${params.rows}` : '',
+          start: params.page ?? 0,
         },
       },
       response: {
         numFound: 12345,
         start: 0,
-        docs: [{ identifier: 'foo' }, { identifier: 'bar' }],
+        docs: [
+          {
+            identifier: 'foo',
+          },
+          { identifier: 'bar' },
+        ],
       },
     };
   }

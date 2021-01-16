@@ -8,9 +8,9 @@ export class SearchResponseParams {
 
   wt: string;
 
-  sort: string;
+  sort?: string;
 
-  rows: string;
+  rows?: string;
 
   start: number;
 

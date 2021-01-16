@@ -4,7 +4,8 @@ import { FieldParserInterface } from './field-parser-interface';
 /**
  * The MetadataField is responsible for three things:
  * 1. Take in some raw data (strings, arrays, numbers, etc)
- * 2. Normalize the input to an array of the input, ([string, string], [number, number], etc)
+ * 2. Normalize the input to an array of the input,
+ *    ie. [string, string], [number, number], [Date, Date], etc
  * 3. Cast the values to their expected `Type`
  *
  * This class gets instiated with a `Type` and a parser of that type. For instance, the

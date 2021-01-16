@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { DurationField } from './metadata-fields/field-types/duration';
-import { NumberField } from './metadata-fields/field-types/number';
+import {
+  Duration,
+  DurationParser,
+} from './metadata-fields/field-types/duration';
+import { NumberParser } from './metadata-fields/field-types/number';
 
 /**
  * This represents an Internet Archive File
@@ -29,17 +32,17 @@ export class File {
 
   original?: string;
 
-  size?: NumberField;
+  size?: number;
 
   title?: string;
 
-  length?: DurationField;
+  length?: Duration;
 
-  height?: NumberField;
+  height?: number;
 
-  width?: NumberField;
+  width?: number;
 
-  track?: NumberField;
+  track?: number;
 
   external_identifier?: string;
 
@@ -57,12 +60,22 @@ export class File {
     this.crc32 = json.crc32;
     this.sha1 = json.sha1;
     this.original = json.original;
-    this.size = json.size ? new NumberField(json.size) : undefined;
     this.title = json.title;
-    this.length = json.length ? new DurationField(json.length) : undefined;
-    this.height = json.height ? new NumberField(json.height) : undefined;
-    this.width = json.width ? new NumberField(json.width) : undefined;
-    this.track = json.track ? new NumberField(json.track) : undefined;
+    this.length = json.length
+      ? DurationParser.shared.parseValue(json.length)
+      : undefined;
+    this.size = json.size
+      ? NumberParser.shared.parseValue(json.size)
+      : undefined;
+    this.height = json.height
+      ? NumberParser.shared.parseValue(json.height)
+      : undefined;
+    this.width = json.width
+      ? NumberParser.shared.parseValue(json.width)
+      : undefined;
+    this.track = json.track
+      ? NumberParser.shared.parseValue(json.track)
+      : undefined;
     this.external_identifier = json['external-identifier'];
     this.creator = json.creator;
     this.album = json.album;

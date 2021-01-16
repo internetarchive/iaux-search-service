@@ -42,7 +42,7 @@ export { SearchResponse } from './src/responses/search/search-response';
 export { SearchResponseHeader } from './src/responses/search/search-response-header';
 export { SearchResponseParams } from './src/responses/search/search-response-params';
 
-export { DefaultSearchBackend } from './src/default-search-backend';
+export { DefaultSearchBackend } from './src/search-backend/default-search-backend';
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
 export { SearchParams } from './src/search-params';

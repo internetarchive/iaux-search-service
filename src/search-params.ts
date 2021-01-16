@@ -1,15 +1,34 @@
+export enum SortDirection {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+export class SortParam {
+  field: string;
+  direction: SortDirection;
+
+  constructor(field: string, direction: SortDirection) {
+    this.field = field;
+    this.direction = direction;
+  }
+
+  get asString(): string {
+    return `${this.field} ${this.direction}`;
+  }
+}
+
 /**
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
  *
- * It also provides an `asUrlSearchParams` helper method for converting the
+ * It also provides an `asUrlSearchParams` method for converting the
  * parameters to an IA-style query string. ie. it converts the `fields` array
  * to `fl[]=identifier&fl[]=collection` and `sort` to `sort[]=date+desc&sort[]=downloads+asc`
  */
 export class SearchParams {
   query: string;
 
-  sort?: string[];
+  sort?: SortParam[];
 
   rows?: number;
 
@@ -19,7 +38,7 @@ export class SearchParams {
 
   constructor(options: {
     query: string;
-    sort?: string[];
+    sort?: SortParam[];
     rows?: number;
     page?: number;
     fields?: string[];
@@ -53,7 +72,7 @@ export class SearchParams {
       params.append('fl[]', field);
     });
     this.sort?.forEach(sort => {
-      params.append('sort[]', sort);
+      params.append('sort[]', `${sort.asString}`);
     });
 
     return params;

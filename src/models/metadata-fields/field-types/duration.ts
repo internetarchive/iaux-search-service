@@ -16,12 +16,13 @@ export class DurationParser implements FieldParserInterface<Duration> {
   // instantiating a new instance for every use
   static shared = new DurationParser();
 
-  parseValue(rawValue: string): Duration {
+  parseValue(rawValue: string): Duration | undefined {
     const componentArray: string[] = rawValue.split(':');
     const componentCount: number = componentArray.length;
-    const seconds: number = componentArray
+    const seconds: number | undefined = componentArray
       .map((element: string, index: number) => {
         const componentValue: number = parseFloat(element);
+        if (Number.isNaN(componentValue)) return 0;
         const exponent: number = componentCount - 1 - index;
         const multiplier: number = 60 ** exponent;
         return componentValue * Math.floor(multiplier);

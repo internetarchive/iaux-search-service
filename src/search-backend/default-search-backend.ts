@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams } from './search-params';
-import { Result } from './responses/result';
+import { SearchParams } from '../search-params';
+import { Result } from '../responses/result';
 import {
   SearchServiceError,
   SearchServiceErrorType,
-} from './search-service-error';
+} from '../search-service-error';
 
 /**
- * The DefaultSearchBackend performs `fetch` requests to archive.org
+ * The DefaultSearchBackend performs a `window.fetch` request to archive.org
  */
 export class DefaultSearchBackend implements SearchBackendInterface {
   private baseUrl: string;

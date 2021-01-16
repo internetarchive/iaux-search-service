@@ -15,7 +15,7 @@ export class SearchResponse {
    * @type {*}
    * @memberof SearchResponse
    */
-  rawResponse: any;
+  rawResponse: { [key: string]: any };
 
   /**
    * The resonse header

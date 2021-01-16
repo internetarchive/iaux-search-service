@@ -10,16 +10,16 @@ import {
 } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { nothing } from 'lit-html';
-import { DefaultSearchBackend } from '../src/default-search-backend';
 import { Metadata } from '../src/models/metadata';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchParams } from '../src/search-params';
 import { SearchService } from '../src/search-service';
+import { SearchServiceInterface } from '../src/search-service-interface';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
-  private searchService?: SearchService;
+  private searchService: SearchServiceInterface = SearchService.default;
 
   @query('#search-input')
   private searchInput!: HTMLInputElement;
@@ -106,15 +106,10 @@ export class AppRoot extends LitElement {
     `;
   }
 
-  firstUpdated(): void {
-    const searchBackend = new DefaultSearchBackend();
-    this.searchService = new SearchService(searchBackend);
-  }
-
   async getMetadata(e: Event): Promise<void> {
     e.preventDefault();
     const identifier = this.metadataInput.value;
-    const result = await this.searchService?.fetchMetadata(identifier);
+    const result = await this.searchService.fetchMetadata(identifier);
     this.metadataResponse = result?.success;
   }
 
@@ -126,7 +121,7 @@ export class AppRoot extends LitElement {
       rows: 10,
       fields: ['identifier', 'title'],
     });
-    const result = await this.searchService?.search(searchParams);
+    const result = await this.searchService.search(searchParams);
     if (result?.success) {
       this.searchResponse = result?.success;
     } else {

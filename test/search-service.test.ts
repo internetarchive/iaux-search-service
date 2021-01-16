@@ -6,7 +6,6 @@ import { SearchService } from '../src/search-service';
 import { SearchParams } from '../src/search-params';
 
 import { MockResponseGenerator } from './mock-response-generator';
-import { SearchBackendInterface } from '../src/search-backend-interface';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { Result } from '../src/responses/result';
@@ -14,6 +13,7 @@ import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../src/search-service-error';
+import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {

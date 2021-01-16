@@ -28,9 +28,9 @@ export class Metadata {
    */
   rawMetadata?: { [key: string]: any };
 
-  identifier: string;
+  identifier?: string;
 
-  addeddate: DateField;
+  addeddate?: DateField;
 
   audio_codec?: StringField;
 
@@ -48,11 +48,11 @@ export class Metadata {
 
   description?: StringField;
 
-  downloads: NumberField;
+  downloads?: NumberField;
 
   duration?: DurationField;
 
-  indexdate: DateField;
+  indexdate?: DateField;
 
   language?: StringField;
 
@@ -70,7 +70,7 @@ export class Metadata {
 
   page_progression?: PageProgressionField;
 
-  publicdate: DateField;
+  publicdate?: DateField;
 
   runtime?: DurationField;
 
@@ -108,9 +108,11 @@ export class Metadata {
     this.rawMetadata = json;
     this.identifier = json.identifier;
 
-    this.addeddate = new DateField(json.addeddate);
-    this.publicdate = new DateField(json.publicdate);
-    this.indexdate = new DateField(json.indexdate);
+    this.addeddate = json.addeddate ? new DateField(json.addeddate) : undefined;
+    this.publicdate = json.publicdate
+      ? new DateField(json.publicdate)
+      : undefined;
+    this.indexdate = json.indexdate ? new DateField(json.indexdate) : undefined;
 
     this.audio_codec = json.audio_codec
       ? new StringField(json.audio_codec)
@@ -130,7 +132,9 @@ export class Metadata {
     this.description = json.description
       ? new StringField(json.description)
       : undefined;
-    this.downloads = new NumberField(json.downloads);
+    this.downloads = json.downloads
+      ? new NumberField(json.downloads)
+      : undefined;
     this.duration = json.duration
       ? new DurationField(json.duration)
       : undefined;

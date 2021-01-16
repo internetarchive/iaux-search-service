@@ -1,14 +1,14 @@
 import { SearchResponse } from './responses/search/search-response';
-import { SearchBackendInterface } from './search-backend-interface';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
-import { DefaultSearchBackend } from './default-search-backend';
+import { DefaultSearchBackend } from './search-backend/default-search-backend';
 import { Result } from './responses/result';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
+import { SearchBackendInterface } from './search-backend/search-backend-interface';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
