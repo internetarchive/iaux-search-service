@@ -23,6 +23,13 @@ export {
 } from './src/models/metadata-fields/field-types/boolean';
 
 export {
+  Byte,
+  ByteField,
+  ByteParser,
+} from './src/models/metadata-fields/field-types/byte';
+
+export {
+  Duration,
   DurationField,
   DurationParser,
 } from './src/models/metadata-fields/field-types/duration';
@@ -32,6 +39,12 @@ export {
   PageProgressionParser,
   PageProgression,
 } from './src/models/metadata-fields/field-types/page-progression';
+
+export {
+  MediaTypeField,
+  MediaTypeParser,
+  MediaType,
+} from './src/models/metadata-fields/field-types/mediatype';
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';
 
