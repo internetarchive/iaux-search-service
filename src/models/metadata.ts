@@ -38,6 +38,14 @@ export class Metadata {
 
   collection?: StringField;
 
+  /**
+   * The size of a collection in bytes
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  collection_size?: NumberField;
+
   contributor?: StringField;
 
   coverage?: StringField;
@@ -48,17 +56,55 @@ export class Metadata {
 
   description?: StringField;
 
+  /**
+   * All time download count
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
   downloads?: NumberField;
 
   duration?: DurationField;
 
+  /**
+   * The number of files in an item
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  files_count?: NumberField;
+
   indexdate?: DateField;
+
+  /**
+   * For collections, the number of items in the collection
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  item_count?: NumberField;
+
+  /**
+   * The size of the item in bytes
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  item_size?: NumberField;
 
   language?: StringField;
 
   length?: DurationField;
 
   lineage?: StringField;
+
+  /**
+   * The number of downloads in the last month
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  month?: NumberField;
 
   mediatype?: StringField;
 
@@ -102,6 +148,14 @@ export class Metadata {
 
   venue?: StringField;
 
+  /**
+   * The number of downloads in the last week
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  week?: NumberField;
+
   year?: DateField;
 
   constructor(json: any) {
@@ -123,6 +177,9 @@ export class Metadata {
     this.collection = json.collection
       ? new StringField(json.collection)
       : undefined;
+    this.collection_size = json.collection_size
+      ? new NumberField(json.collection_size)
+      : undefined;
     this.contributor = json.contributor
       ? new StringField(json.contributor)
       : undefined;
@@ -138,12 +195,22 @@ export class Metadata {
     this.duration = json.duration
       ? new DurationField(json.duration)
       : undefined;
+    this.files_count = json.files_count
+      ? new NumberField(json.files_count)
+      : undefined;
+    this.item_count = json.item_count
+      ? new NumberField(json.item_count)
+      : undefined;
+    this.item_size = json.item_size
+      ? new NumberField(json.item_size)
+      : undefined;
     this.language = json.language ? new StringField(json.language) : undefined;
     this.length = json.length ? new DurationField(json.length) : undefined;
     this.lineage = json.lineage ? new StringField(json.lineage) : undefined;
     this.mediatype = json.mediatype
       ? new StringField(json.mediatype)
       : undefined;
+    this.month = json.month ? new NumberField(json.month) : undefined;
     this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;
     this.notes = json.notes ? new StringField(json.notes) : undefined;
     this.num_reviews = json.num_reviews
@@ -172,6 +239,7 @@ export class Metadata {
       ? new NumberField(json.utc_offset)
       : undefined;
     this.venue = json.venue ? new StringField(json.venue) : undefined;
+    this.week = json.week ? new NumberField(json.week) : undefined;
     this.year = json.year ? new DateField(json.year) : undefined;
   }
 }
