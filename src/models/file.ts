@@ -64,9 +64,7 @@ export class File {
     this.length = json.length
       ? DurationParser.shared.parseValue(json.length)
       : undefined;
-    this.size = json.size
-      ? ByteParser.shared.parseValue(json.size)
-      : undefined;
+    this.size = json.size ? ByteParser.shared.parseValue(json.size) : undefined;
     this.height = json.height
       ? NumberParser.shared.parseValue(json.height)
       : undefined;
