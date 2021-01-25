@@ -9,10 +9,7 @@ import { NumberField } from './metadata-fields/field-types/number';
 import { StringField } from './metadata-fields/field-types/string';
 import { PageProgressionField } from './metadata-fields/field-types/page-progression';
 import { ByteField } from './metadata-fields/field-types/byte';
-import {
-  MediaType,
-  MediaTypeField,
-} from './metadata-fields/field-types/mediatype';
+import { MediaTypeField } from './metadata-fields/field-types/mediatype';
 
 /**
  * Metadata is an expansive model that describes an Item.
