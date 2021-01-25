@@ -1,4 +1,7 @@
-import { FieldParserInterface, FieldParserRawValue } from './field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from './field-parser-interface';
 
 export type MetadataRawValue = string | string[] | number | boolean;
 
