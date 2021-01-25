@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FieldParserInterface } from './field-parser-interface';
+import { FieldParserInterface, FieldParserRawValue } from './field-parser-interface';
+
+export type MetadataRawValue = string | string[] | number | boolean;
 
 /**
  * The MetadataField is responsible for three things:
@@ -32,10 +33,10 @@ export class MetadataField<
   /**
    * The raw value received from the API response
    *
-   * @type {*}
+   * @type {MetadataRawValue}
    * @memberof MetadataField
    */
-  rawValue?: any;
+  rawValue?: MetadataRawValue;
 
   /**
    * The array of all values for the field.
@@ -59,7 +60,7 @@ export class MetadataField<
     return this.values.length > 0 ? this.values[0] : undefined;
   }
 
-  constructor(parser: FieldParserInterfaceType, rawValue?: any) {
+  constructor(parser: FieldParserInterfaceType, rawValue?: MetadataRawValue) {
     this.parser = parser;
     this.rawValue = rawValue;
 
@@ -82,7 +83,7 @@ export class MetadataField<
     }
   }
 
-  private parseAndPersistValue(value: any): void {
+  private parseAndPersistValue(value: FieldParserRawValue): void {
     const parsedValue = this.parser.parseValue(value);
     if (parsedValue !== undefined) {
       this.values.push(parsedValue);
