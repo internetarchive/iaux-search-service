@@ -33,6 +33,15 @@ export class DurationParser implements FieldParserInterface<Duration> {
   }
 }
 
+/**
+ * The DurationField parses different duration formats
+ * and returns a `Duration`, which is a number in seconds
+ * with decimals.
+ *
+ * @export
+ * @class DurationField
+ * @extends {MetadataField<Duration, DurationParser>}
+ */
 export class DurationField extends MetadataField<Duration, DurationParser> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rawValue: any) {

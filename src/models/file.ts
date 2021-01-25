@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {
-  Duration,
-  DurationParser,
-} from './metadata-fields/field-types/duration';
+import type { Byte } from './metadata-fields/field-types/byte';
+import type { Duration } from './metadata-fields/field-types/duration';
+import { ByteParser } from './metadata-fields/field-types/byte';
+import { DurationParser } from './metadata-fields/field-types/duration';
 import { NumberParser } from './metadata-fields/field-types/number';
 
 /**
@@ -32,7 +32,7 @@ export class File {
 
   original?: string;
 
-  size?: number;
+  size?: Byte;
 
   title?: string;
 
@@ -65,7 +65,7 @@ export class File {
       ? DurationParser.shared.parseValue(json.length)
       : undefined;
     this.size = json.size
-      ? NumberParser.shared.parseValue(json.size)
+      ? ByteParser.shared.parseValue(json.size)
       : undefined;
     this.height = json.height
       ? NumberParser.shared.parseValue(json.height)

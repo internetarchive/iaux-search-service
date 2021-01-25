@@ -8,6 +8,7 @@ import { DurationField } from './metadata-fields/field-types/duration';
 import { NumberField } from './metadata-fields/field-types/number';
 import { StringField } from './metadata-fields/field-types/string';
 import { PageProgressionField } from './metadata-fields/field-types/page-progression';
+import { ByteField } from './metadata-fields/field-types/byte';
 
 /**
  * Metadata is an expansive model that describes an Item.
@@ -23,11 +24,20 @@ export class Metadata {
   /**
    * This is the raw metadata reponse; useful for inspecting the raw data returned from the server.
    *
-   * @type {*}
+   * @type { string: any }
    * @memberof Metadata
    */
   rawMetadata?: { [key: string]: any };
 
+  /**
+   * The item identifier.
+   *
+   * _Note_ This is a plain string instead of a `MetadataField` since it's
+   * the primary key of the item.
+   *
+   * @type {string}
+   * @memberof Metadata
+   */
   identifier?: string;
 
   addeddate?: DateField;
@@ -41,10 +51,10 @@ export class Metadata {
   /**
    * The size of a collection in bytes
    *
-   * @type {NumberField}
+   * @type {ByteField}
    * @memberof Metadata
    */
-  collection_size?: NumberField;
+  collection_size?: ByteField;
 
   contributor?: StringField;
 
@@ -64,6 +74,12 @@ export class Metadata {
    */
   downloads?: NumberField;
 
+  /**
+   * The item duration in seconds
+   *
+   * @type {DurationField}
+   * @memberof Metadata
+   */
   duration?: DurationField;
 
   /**
@@ -90,7 +106,7 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  item_size?: NumberField;
+  item_size?: ByteField;
 
   language?: StringField;
 
@@ -178,7 +194,7 @@ export class Metadata {
       ? new StringField(json.collection)
       : undefined;
     this.collection_size = json.collection_size
-      ? new NumberField(json.collection_size)
+      ? new ByteField(json.collection_size)
       : undefined;
     this.contributor = json.contributor
       ? new StringField(json.contributor)
@@ -201,9 +217,7 @@ export class Metadata {
     this.item_count = json.item_count
       ? new NumberField(json.item_count)
       : undefined;
-    this.item_size = json.item_size
-      ? new NumberField(json.item_size)
-      : undefined;
+    this.item_size = json.item_size ? new ByteField(json.item_size) : undefined;
     this.language = json.language ? new StringField(json.language) : undefined;
     this.length = json.length ? new DurationField(json.length) : undefined;
     this.lineage = json.lineage ? new StringField(json.lineage) : undefined;
