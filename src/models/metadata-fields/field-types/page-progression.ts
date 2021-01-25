@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export enum PageProgression {
@@ -12,7 +15,9 @@ export class PageProgressionParser
   // instantiating a new instance for every use
   static shared = new PageProgressionParser();
 
-  parseValue(rawValue: string): PageProgression | undefined {
+  parseValue(rawValue: FieldParserRawValue): PageProgression | undefined {
+    if (typeof rawValue !== 'string') return undefined;
+
     switch (rawValue) {
       case 'rl':
         return PageProgression.RightToLeft;

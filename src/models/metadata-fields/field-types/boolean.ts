@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export class BooleanParser implements FieldParserInterface<boolean> {
@@ -6,8 +9,11 @@ export class BooleanParser implements FieldParserInterface<boolean> {
   // instantiating a new instance for every use
   static shared = new BooleanParser();
 
-  parseValue(rawValue: string): boolean {
-    if (rawValue === 'false' || rawValue === '0') {
+  parseValue(rawValue: FieldParserRawValue): boolean {
+    if (
+      typeof rawValue === 'string' &&
+      (rawValue === 'false' || rawValue === '0')
+    ) {
       return false;
     }
     return Boolean(rawValue);

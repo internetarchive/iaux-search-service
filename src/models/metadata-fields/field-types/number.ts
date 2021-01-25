@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export class NumberParser implements FieldParserInterface<number> {
@@ -6,7 +9,10 @@ export class NumberParser implements FieldParserInterface<number> {
   // instantiating a new instance for every use
   static shared = new NumberParser();
 
-  parseValue(rawValue: string): number | undefined {
+  parseValue(rawValue: FieldParserRawValue): number | undefined {
+    if (typeof rawValue === 'number') return rawValue;
+    if (typeof rawValue === 'boolean') return undefined;
+
     const value = parseFloat(rawValue);
     if (Number.isNaN(value)) {
       return undefined;

@@ -1,3 +1,5 @@
+export type FieldParserRawValue = string | number | boolean;
+
 export interface FieldParserInterface<T> {
-  parseValue(rawValue: string): T | undefined;
+  parseValue(rawValue: FieldParserRawValue): T | undefined;
 }

@@ -9,6 +9,10 @@ import { NumberField } from './metadata-fields/field-types/number';
 import { StringField } from './metadata-fields/field-types/string';
 import { PageProgressionField } from './metadata-fields/field-types/page-progression';
 import { ByteField } from './metadata-fields/field-types/byte';
+import {
+  MediaType,
+  MediaTypeField,
+} from './metadata-fields/field-types/mediatype';
 
 /**
  * Metadata is an expansive model that describes an Item.
@@ -122,7 +126,7 @@ export class Metadata {
    */
   month?: NumberField;
 
-  mediatype?: StringField;
+  mediatype?: MediaTypeField;
 
   noindex?: BooleanField;
 
@@ -222,7 +226,7 @@ export class Metadata {
     this.length = json.length ? new DurationField(json.length) : undefined;
     this.lineage = json.lineage ? new StringField(json.lineage) : undefined;
     this.mediatype = json.mediatype
-      ? new StringField(json.mediatype)
+      ? new MediaTypeField(json.mediatype)
       : undefined;
     this.month = json.month ? new NumberField(json.month) : undefined;
     this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;

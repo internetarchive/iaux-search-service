@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 /**
@@ -16,7 +19,10 @@ export class DurationParser implements FieldParserInterface<Duration> {
   // instantiating a new instance for every use
   static shared = new DurationParser();
 
-  parseValue(rawValue: string): Duration | undefined {
+  parseValue(rawValue: FieldParserRawValue): Duration | undefined {
+    if (typeof rawValue === 'number') return rawValue;
+    if (typeof rawValue === 'boolean') return undefined;
+
     const componentArray: string[] = rawValue.split(':');
     const componentCount: number = componentArray.length;
     const seconds: number | undefined = componentArray

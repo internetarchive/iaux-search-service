@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export class DateParser implements FieldParserInterface<Date> {
@@ -20,7 +23,9 @@ export class DateParser implements FieldParserInterface<Date> {
     return this.parseJSDate(yearMatch[1]);
   }
 
-  private parseJSDate(rawValue: string): Date | undefined {
+  private parseJSDate(rawValue: FieldParserRawValue): Date | undefined {
+    if (typeof rawValue !== 'string') return undefined;
+
     // fix for Safari not supporting `yyyy-mm-dd HH:MM:SS` format, insert a `T` into the space
     if (
       rawValue.match(

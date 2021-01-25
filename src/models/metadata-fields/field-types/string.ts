@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 
 export class StringParser implements FieldParserInterface<string> {
@@ -6,7 +9,7 @@ export class StringParser implements FieldParserInterface<string> {
   // instantiating a new instance for every use
   static shared = new StringParser();
 
-  parseValue(rawValue: string): string {
+  parseValue(rawValue: FieldParserRawValue): string {
     return String(rawValue);
   }
 }

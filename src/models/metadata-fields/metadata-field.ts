@@ -35,7 +35,7 @@ export class MetadataField<
    * @type {*}
    * @memberof MetadataField
    */
-  rawValue?: string[] | string;
+  rawValue?: any;
 
   /**
    * The array of all values for the field.

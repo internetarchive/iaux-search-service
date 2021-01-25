@@ -1,4 +1,7 @@
-import { FieldParserInterface } from '../field-parser-interface';
+import {
+  FieldParserInterface,
+  FieldParserRawValue,
+} from '../field-parser-interface';
 import { MetadataField } from '../metadata-field';
 import { NumberParser } from './number';
 
@@ -17,7 +20,7 @@ export class ByteParser implements FieldParserInterface<Byte> {
   // instantiating a new instance for every use
   static shared = new ByteParser();
 
-  parseValue(rawValue: string): Byte | undefined {
+  parseValue(rawValue: FieldParserRawValue): Byte | undefined {
     const parser = NumberParser.shared;
     return parser.parseValue(rawValue);
   }
