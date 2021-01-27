@@ -5,6 +5,9 @@ import {
 import { MetadataField } from '../metadata-field';
 import { NumberParser } from './number';
 
+/**
+ * A Byte is a unit-specific `number`, in bytes.
+ */
 export type Byte = number;
 
 /**
