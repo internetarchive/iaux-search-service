@@ -42,27 +42,39 @@ export class DefaultSearchBackend implements SearchBackendInterface {
       response = await fetch(url);
     } catch (err) {
       const message = err instanceof Error ? err.message : err;
-      const error = new SearchServiceError(
-        SearchServiceErrorType.networkError,
-        message
-      );
-      const result = new Result<any, SearchServiceError>(undefined, error);
-      return result;
+      return this.getErrorResult(SearchServiceErrorType.networkError, message);
     }
 
     // then try json decoding and return a decodingError if it fails
     try {
       const json = await response.json();
-      const result = new Result<any, SearchServiceError>(json);
-      return result;
+      // the advanced search endpoint doesn't return an HTTP Error 400
+      // and instead returns an HTTP 200 with an `error` key in the payload
+      const error = json['error'];
+      if (error) {
+        const forensics = json['forensics'];
+        return this.getErrorResult(
+          SearchServiceErrorType.searchEngineError,
+          error,
+          forensics
+        );
+      } else {
+        // success
+        return new Result<any, SearchServiceError>(json, undefined);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : err;
-      const error = new SearchServiceError(
-        SearchServiceErrorType.decodingError,
-        message
-      );
-      const result = new Result<any, SearchServiceError>(undefined, error);
-      return result;
+      return this.getErrorResult(SearchServiceErrorType.decodingError, message);
     }
+  }
+
+  private getErrorResult(
+    errorType: SearchServiceErrorType,
+    message?: string,
+    details?: any
+  ): Result<any, SearchServiceError> {
+    const error = new SearchServiceError(errorType, message, details);
+    const result = new Result<any, SearchServiceError>(undefined, error);
+    return result;
   }
 }
