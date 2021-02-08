@@ -23,7 +23,7 @@ export class SortParam {
  *
  * It also provides an `asUrlSearchParams` method for converting the
  * parameters to an IA-style query string. ie. it converts the `fields` array
- * to `fl[]=identifier&fl[]=collection` and `sort` to `sort[]=date+desc&sort[]=downloads+asc`
+ * to `fl=identifier,collection` and `sort` to `sort=date+desc,downloads+asc`
  */
 export class SearchParams {
   query: string;
@@ -65,15 +65,19 @@ export class SearchParams {
     if (this.rows) {
       params.append('rows', String(this.rows));
     }
+
     if (this.page) {
       params.append('page', String(this.page));
     }
-    this.fields?.forEach(field => {
-      params.append('fl[]', field);
-    });
-    this.sort?.forEach(sort => {
-      params.append('sort[]', `${sort.asString}`);
-    });
+
+    if (this.fields) {
+      params.append('fl', this.fields.join(','));
+    }
+
+    if (this.sort) {
+      const sortStrings = this.sort.map(sort => sort.asString);
+      params.append('sort', sortStrings.join(','));
+    }
 
     return params;
   }

@@ -44,7 +44,7 @@ describe('SearchParams', () => {
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&fl%5B%5D=identifier&fl%5B%5D=foo&fl%5B%5D=bar';
+      'q=title%3Afoo+AND+collection%3Abar&output=json&fl=identifier%2Cfoo%2Cbar';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -62,7 +62,26 @@ describe('SearchParams', () => {
     const urlSearchParam = params.asUrlSearchParams;
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fl%5B%5D=identifier&fl%5B%5D=foo&fl%5B%5D=bar&sort%5B%5D=downloads+desc';
+      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fl=identifier%2Cfoo%2Cbar&sort=downloads+desc';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam multiple sort params', async () => {
+    const query = 'title:foo AND collection:bar';
+    const sort = [
+      new SortParam('downloads', SortDirection.Desc),
+      new SortParam('foo', SortDirection.Asc),
+    ];
+    const params = new SearchParams({
+      query,
+      sort,
+      rows: 53,
+      page: 27,
+    });
+    const urlSearchParam = params.asUrlSearchParams;
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads+desc%2Cfoo+asc';
     expect(queryAsString).to.equal(expected);
   });
 });
