@@ -92,9 +92,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     return cache.match(url);
   }
 
-  private getSuccessResult(
-    json: any
-  ): Result<any, SearchServiceError> {
+  private getSuccessResult(json: any): Result<any, SearchServiceError> {
     return new Result<any, SearchServiceError>(json, undefined);
   }
 
