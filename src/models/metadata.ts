@@ -47,7 +47,28 @@ export class Metadata {
 
   audio_sample_rate?: NumberField;
 
+  /**
+   * All of the collections that an Item is in, including
+   * all of the side-loaded collections from the ListAPI
+   * and SimpleListsAPI like `fav-*`
+   *
+   * @type {StringField}
+   * @memberof Metadata
+   */
   collection?: StringField;
+
+  /**
+   * The "natural" collections for an item before augmentation
+   * by side-loaded collections like ListsAPI and SimpleLists
+   *
+   * The `collection` field above includes things like all of
+   * the `fav-*` collections, whereas this is only the collections
+   * that have been directly added in the hierarchy.
+   *
+   * @type {StringField}
+   * @memberof Metadata
+   */
+  collections_raw?: StringField;
 
   /**
    * The size of a collection in bytes
@@ -193,6 +214,9 @@ export class Metadata {
       : undefined;
     this.collection = json.collection
       ? new StringField(json.collection)
+      : undefined;
+    this.collections_raw = json.collections_raw
+      ? new StringField(json.collections_raw)
       : undefined;
     this.collection_size = json.collection_size
       ? new ByteField(json.collection_size)
