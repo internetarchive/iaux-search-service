@@ -150,6 +150,14 @@ export class Metadata {
 
   notes?: StringField;
 
+  /**
+   * The number of users that have favorited the item
+   *
+   * @type {NumberField}
+   * @memberof Metadata
+   */
+  num_favorites?: NumberField;
+
   num_reviews?: NumberField;
 
   page_progression?: PageProgressionField;
@@ -252,6 +260,9 @@ export class Metadata {
     this.month = json.month ? new NumberField(json.month) : undefined;
     this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;
     this.notes = json.notes ? new StringField(json.notes) : undefined;
+    this.num_favorites = json.num_favorites
+      ? new NumberField(json.num_favorites)
+      : undefined;
     this.num_reviews = json.num_reviews
       ? new NumberField(json.num_reviews)
       : undefined;
