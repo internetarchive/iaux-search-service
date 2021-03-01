@@ -13,14 +13,8 @@ import {
 export class DefaultSearchBackend implements SearchBackendInterface {
   private baseUrl: string;
 
-  private cacheHandler: CacheStorage;
-
-  constructor(
-    baseUrl = 'archive.org',
-    cacheHandler: CacheStorage = window.caches
-  ) {
+  constructor(baseUrl = 'archive.org') {
     this.baseUrl = baseUrl;
-    this.cacheHandler = cacheHandler;
   }
 
   async performSearch(
@@ -42,17 +36,10 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   private async fetchUrl(
     url: string
   ): Promise<Result<any, SearchServiceError>> {
-    const cachedResponse = await this.getCachedResponse(url);
-    if (cachedResponse) {
-      const json = await cachedResponse.json();
-      return this.getSuccessResult(json);
-    }
-
-    let response: Response | undefined;
+    let response: Response;
     // first try the fetch and return a networkError if it fails
     try {
-      await this.cacheResponse(url);
-      response = await this.getCachedResponse(url);
+      response = await fetch(url);
     } catch (err) {
       const message = err instanceof Error ? err.message : err;
       return this.getErrorResult(SearchServiceErrorType.networkError, message);
@@ -60,7 +47,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
 
     // then try json decoding and return a decodingError if it fails
     try {
-      const json = await response?.json();
+      const json = await response.json();
       // the advanced search endpoint doesn't return an HTTP Error 400
       // and instead returns an HTTP 200 with an `error` key in the payload
       const error = json['error'];
@@ -72,28 +59,13 @@ export class DefaultSearchBackend implements SearchBackendInterface {
           forensics
         );
       } else {
-        return this.getSuccessResult(json);
+        // success
+        return new Result<any, SearchServiceError>(json, undefined);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : err;
       return this.getErrorResult(SearchServiceErrorType.decodingError, message);
     }
-  }
-
-  private readonly CACHE_NAME = 'default-search-backend-cache';
-
-  private async cacheResponse(url: string): Promise<void> {
-    const cache = await this.cacheHandler.open(this.CACHE_NAME);
-    await cache.add(url);
-  }
-
-  private async getCachedResponse(url: string): Promise<Response | undefined> {
-    const cache = await this.cacheHandler.open(this.CACHE_NAME);
-    return cache.match(url);
-  }
-
-  private getSuccessResult(json: any): Result<any, SearchServiceError> {
-    return new Result<any, SearchServiceError>(json, undefined);
   }
 
   private getErrorResult(
