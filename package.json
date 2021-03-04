@@ -12,7 +12,7 @@
   "scripts": {
     "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
     "tsc:watch": "tsc --watch",
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "lint:eslint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" \"**/*.ts\" --check --ignore-path .gitignore",
@@ -23,17 +23,16 @@
     "test": "tsc && npm run lint && npm run circular && web-test-runner --coverage",
     "test:watch": "web-test-runner --watch"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@open-wc/eslint-config": "^4.0.0",
+    "@open-wc/eslint-config": "^4.2.0",
     "@open-wc/testing": "^2.0.0",
     "@types/node": "13.11.1",
-    "@typescript-eslint/eslint-plugin": "^2.20.0",
-    "@typescript-eslint/parser": "^2.20.0",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
     "@web/dev-server": "^0.0.12",
     "@web/test-runner": "^0.7.41",
     "concurrently": "^5.1.0",
-    "eslint": "^6.1.0",
+    "eslint": "^7.21.0",
     "eslint-config-prettier": "^6.11.0",
     "husky": "^1.0.0",
     "lint-staged": "^10.0.0",
@@ -41,8 +40,8 @@
     "lit-html": "^1.3.0",
     "madge": "^3.12.0",
     "prettier": "^2.0.4",
-    "tslib": "^1.11.0",
-    "typescript": "~4.0.3"
+    "tslib": "^1.14.1",
+    "typescript": "^4.2.2"
   },
   "eslintConfig": {
     "extends": [
