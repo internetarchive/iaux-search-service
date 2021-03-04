@@ -1,6 +1,11 @@
 import { expect } from '@open-wc/testing';
 
-import { SearchParams, SortDirection, SortParam } from '../src/search-params';
+import {
+  AggregateSearchParams,
+  SearchParams,
+  SortDirection,
+  SortParam,
+} from '../src/search-params';
 
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
@@ -82,6 +87,29 @@ describe('SearchParams', () => {
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads+desc%2Cfoo+asc';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with aggregations', async () => {
+    const query = 'title:foo AND collection:bar';
+    const aggregations = new AggregateSearchParams([
+      {
+        field: 'foo',
+        size: 10,
+      },
+      {
+        field: 'bar',
+        size: 7,
+      },
+    ]);
+    const params = new SearchParams({
+      query,
+      aggregations,
+    });
+    const urlSearchParam = params.asUrlSearchParams;
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
 });

@@ -4,13 +4,36 @@ export interface AggregateSearchParam {
 }
 
 export class AggregateSearchParams {
-  searchParams: [AggregateSearchParam];
+  searchParams: AggregateSearchParam[];
 
-  constructor(searchParams: [AggregateSearchParam]) {
+  constructor(searchParams: AggregateSearchParam[]) {
     this.searchParams = searchParams;
   }
 
-  asSearchParams(): Record<string, AggregateSearchParam>[] {
+  /**
+   * Generates a query parameter from the given aggregate search params
+   *
+   * Example:
+   *
+   * [
+   *  {
+   *    "terms": {
+   *      "field": "collection",
+   *      "size":10
+   *    }
+   *  },
+   *  {
+   *    "terms": {
+   *      "field": "subjectSorter",
+   *      "size": 10
+   *    }
+   *  }
+   * ]
+   *
+   * @returns {Record<string, AggregateSearchParam>[]}
+   * @memberof AggregateSearchParams
+   */
+  get asSearchParams(): Record<string, AggregateSearchParam>[] {
     return this.searchParams.map(param => {
       return {
         terms: param,
@@ -57,18 +80,22 @@ export class SearchParams {
 
   fields?: string[];
 
+  aggregations?: AggregateSearchParams;
+
   constructor(options: {
     query: string;
     sort?: SortParam[];
     rows?: number;
     page?: number;
     fields?: string[];
+    aggregations?: AggregateSearchParams;
   }) {
     this.query = options.query;
     this.sort = options.sort;
     this.rows = options.rows;
     this.page = options.page;
     this.fields = options.fields;
+    this.aggregations = options.aggregations;
   }
 
   /**
@@ -98,6 +125,12 @@ export class SearchParams {
     if (this.sort) {
       const sortStrings = this.sort.map(sort => sort.asString);
       params.append('sort', sortStrings.join(','));
+    }
+
+    if (this.aggregations) {
+      const searchParams = this.aggregations.asSearchParams;
+      const stringified = JSON.stringify(searchParams);
+      params.append('user_aggs', stringified);
     }
 
     return params;
