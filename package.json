@@ -12,6 +12,7 @@
   "scripts": {
     "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
     "tsc:watch": "tsc --watch",
+    "docs": "typedoc ./index.ts",
     "prepare": "tsc",
     "lint:eslint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore",
@@ -41,6 +42,7 @@
     "madge": "^3.12.0",
     "prettier": "^2.0.4",
     "tslib": "^1.14.1",
+    "typedoc": "^0.20.29",
     "typescript": "^4.2.2"
   },
   "eslintConfig": {
