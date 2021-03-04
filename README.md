@@ -81,6 +81,11 @@ npm install
 npm run test
 ```
 
+## Demo
+```bash
+npm run start
+```
+
 ## Linting
 ```bash
 npm run format
