@@ -12,10 +12,10 @@ export class SearchResponse {
   /**
    * The raw JSON received from the endpoint. This is useful for inspecting if needed.
    *
-   * @type {*}
+   * @type {Record<string, any>}
    * @memberof SearchResponse
    */
-  rawResponse: { [key: string]: any };
+  rawResponse: Record<string, any>;
 
   /**
    * The resonse header
