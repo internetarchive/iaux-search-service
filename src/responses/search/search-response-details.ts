@@ -34,6 +34,14 @@ export class SearchResponseDetails {
    */
   docs: Metadata[];
 
+  /**
+   * Requested aggregations such as facets or histogram data
+   *
+   * @type {Record<string, Aggregation>}
+   * @memberof SearchResponseDetails
+   */
+  aggregations?: Record<string, Aggregation>;
+
   constructor(json: SearchResponseDetails) {
     this.numFound = json.numFound;
     this.start = json.start;
