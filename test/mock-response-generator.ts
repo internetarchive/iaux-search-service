@@ -3,7 +3,6 @@
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchParams } from '../src/search-params';
 
-/* eslint-disable @typescript-eslint/camelcase */
 export class MockResponseGenerator {
   generateMockSearchResponse(params: SearchParams): SearchResponse {
     const fieldsAsString = params.fields?.join(',');
@@ -42,7 +41,7 @@ export class MockResponseGenerator {
     };
   }
 
-  generateMockMetadataResponse(identifier: any): any {
+  generateMockMetadataResponse(identifier: string): any {
     return {
       created: 1586477049,
       d1: 'ia600201.us.archive.org',

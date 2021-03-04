@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export enum SearchServiceErrorType {
   networkError,
   itemNotFound,
@@ -8,10 +10,8 @@ export enum SearchServiceErrorType {
 export class SearchServiceError extends Error {
   type: SearchServiceErrorType;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   details?: any;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(type: SearchServiceErrorType, message?: string, details?: any) {
     super(message);
     this.type = type;

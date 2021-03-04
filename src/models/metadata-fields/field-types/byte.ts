@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 import { NumberParser } from './number';
 
 /**
@@ -38,8 +38,7 @@ export class ByteParser implements FieldParserInterface<Byte> {
  * @extends {MetadataField<Byte, ByteParser>}
  */
 export class ByteField extends MetadataField<Byte, ByteParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(ByteParser.shared, rawValue);
   }
 }

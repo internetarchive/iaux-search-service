@@ -26,11 +26,7 @@ export class SearchService implements SearchServiceInterface {
     this.searchBackend = searchBackend;
   }
 
-  /**
-   * Perform a search with the given parameters.
-   *
-   * @param params SearchParams
-   */
+  /** @inheritdoc */
   async search(
     params: SearchParams
   ): Promise<Result<SearchResponse, SearchServiceError>> {
@@ -43,11 +39,7 @@ export class SearchService implements SearchServiceInterface {
     return new Result<SearchResponse, SearchServiceError>(modeledResponse);
   }
 
-  /**
-   * Fetch the item's metadata.
-   *
-   * @param identifier string
-   */
+  /** @inheritdoc */
   async fetchMetadata(
     identifier: string
   ): Promise<Result<MetadataResponse, SearchServiceError>> {

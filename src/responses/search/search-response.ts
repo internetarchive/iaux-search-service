@@ -33,9 +33,9 @@ export class SearchResponse {
    */
   response: SearchResponseDetails;
 
-  constructor(json: any) {
+  constructor(json: Record<string, any>) {
     this.rawResponse = json;
-    this.responseHeader = new SearchResponseHeader(json.responseHeader);
+    this.responseHeader = json.responseHeader;
     this.response = new SearchResponseDetails(json.response);
   }
 }

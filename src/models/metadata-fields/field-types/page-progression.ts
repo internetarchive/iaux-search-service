@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export enum PageProgression {
   RightToLeft = 'rl',
@@ -33,8 +33,7 @@ export class PageProgressionField extends MetadataField<
   PageProgression,
   PageProgressionParser
 > {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(PageProgressionParser.shared, rawValue);
   }
 }

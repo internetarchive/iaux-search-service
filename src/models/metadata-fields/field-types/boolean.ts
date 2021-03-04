@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export class BooleanParser implements FieldParserInterface<boolean> {
   // use a shared static instance for performance instead of
@@ -21,8 +21,7 @@ export class BooleanParser implements FieldParserInterface<boolean> {
 }
 
 export class BooleanField extends MetadataField<boolean, BooleanParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(BooleanParser.shared, rawValue);
   }
 }

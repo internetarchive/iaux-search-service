@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export class StringParser implements FieldParserInterface<string> {
   // use a shared static instance for performance instead of
@@ -15,8 +15,7 @@ export class StringParser implements FieldParserInterface<string> {
 }
 
 export class StringField extends MetadataField<string, StringParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(StringParser.shared, rawValue);
   }
 }

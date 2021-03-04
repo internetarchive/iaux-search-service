@@ -1,3 +1,24 @@
+export interface AggregateSearchParam {
+  field: string;
+  size: number;
+}
+
+export class AggregateSearchParams {
+  searchParams: [AggregateSearchParam];
+
+  constructor(searchParams: [AggregateSearchParam]) {
+    this.searchParams = searchParams;
+  }
+
+  asSearchParams(): Record<string, AggregateSearchParam>[] {
+    return this.searchParams.map(param => {
+      return {
+        terms: param,
+      };
+    });
+  }
+}
+
 export enum SortDirection {
   Asc = 'asc',
   Desc = 'desc',

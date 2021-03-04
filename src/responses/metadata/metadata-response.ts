@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable camelcase */
 import { File } from '../../models/file';
 import { Metadata } from '../../models/metadata';
 import { Review } from '../../models/review';
@@ -43,7 +41,7 @@ export class MetadataResponse {
 
   reviews?: Review[];
 
-  constructor(json: any) {
+  constructor(json: Record<string, any>) {
     this.rawResponse = json;
     this.created = json.created;
     this.d1 = json.d1;
@@ -57,9 +55,7 @@ export class MetadataResponse {
     this.server = json.server;
     this.uniq = json.uniq;
     this.workable_servers = json.workable_servers;
-    this.speech_vs_music_asr = json.speech_vs_music_asr?.map(
-      (entry: any) => new SpeechMusicASREntry(entry)
-    );
+    this.speech_vs_music_asr = json.speech_vs_music_asr;
     this.reviews = json.reviews?.map((entry: any) => new Review(entry));
   }
 }

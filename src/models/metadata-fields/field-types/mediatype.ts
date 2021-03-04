@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export enum MediaType {
   Audio = 'audio',
@@ -48,8 +48,7 @@ export class MediaTypeParser implements FieldParserInterface<MediaType> {
 }
 
 export class MediaTypeField extends MetadataField<MediaType, MediaTypeParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(MediaTypeParser.shared, rawValue);
   }
 }

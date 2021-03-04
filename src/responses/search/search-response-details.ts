@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Aggregation } from '../../models/aggregation';
 import { Metadata } from '../../models/metadata';
 
 /**
@@ -33,9 +34,10 @@ export class SearchResponseDetails {
    */
   docs: Metadata[];
 
-  constructor(json: any) {
+  constructor(json: SearchResponseDetails) {
     this.numFound = json.numFound;
     this.start = json.start;
     this.docs = json.docs.map((doc: any) => new Metadata(doc));
+    this.aggregations = json.aggregations;
   }
 }

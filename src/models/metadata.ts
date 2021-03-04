@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable camelcase */
-
 import { BooleanField } from './metadata-fields/field-types/boolean';
 import { DateField } from './metadata-fields/field-types/date';
 import { DurationField } from './metadata-fields/field-types/duration';
@@ -28,7 +25,7 @@ export class Metadata {
    * @type { string: any }
    * @memberof Metadata
    */
-  rawMetadata?: { [key: string]: any };
+  rawMetadata?: Record<string, any>;
 
   /**
    * The item identifier.
@@ -204,7 +201,7 @@ export class Metadata {
 
   year?: DateField;
 
-  constructor(json: any) {
+  constructor(json: Record<string, any>) {
     this.rawMetadata = json;
     this.identifier = json.identifier;
 

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { Byte } from './metadata-fields/field-types/byte';
 import type { Duration } from './metadata-fields/field-types/duration';
 import { ByteParser } from './metadata-fields/field-types/byte';
@@ -50,7 +47,8 @@ export class File {
 
   album?: string;
 
-  constructor(json: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(json: Record<string, any>) {
     this.name = json.name;
     this.source = json.source;
     this.btih = json.btih;

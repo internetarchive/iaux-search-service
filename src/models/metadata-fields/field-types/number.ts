@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export class NumberParser implements FieldParserInterface<number> {
   // use a shared static instance for performance instead of
@@ -22,8 +22,7 @@ export class NumberParser implements FieldParserInterface<number> {
 }
 
 export class NumberField extends MetadataField<number, NumberParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(NumberParser.shared, rawValue);
   }
 }

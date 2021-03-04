@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 /**
  * Duration is a number in seconds
@@ -49,8 +49,7 @@ export class DurationParser implements FieldParserInterface<Duration> {
  * @extends {MetadataField<Duration, DurationParser>}
  */
 export class DurationField extends MetadataField<Duration, DurationParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(DurationParser.shared, rawValue);
   }
 }

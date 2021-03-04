@@ -2,7 +2,7 @@ import {
   FieldParserInterface,
   FieldParserRawValue,
 } from '../field-parser-interface';
-import { MetadataField } from '../metadata-field';
+import { MetadataField, MetadataRawValue } from '../metadata-field';
 
 export class DateParser implements FieldParserInterface<Date> {
   // use a shared static instance for performance instead of
@@ -57,8 +57,7 @@ export class DateParser implements FieldParserInterface<Date> {
 }
 
 export class DateField extends MetadataField<Date, DateParser> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(rawValue: any) {
+  constructor(rawValue: MetadataRawValue) {
     super(DateParser.shared, rawValue);
   }
 }
