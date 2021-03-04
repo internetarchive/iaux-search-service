@@ -1,6 +1,9 @@
 export { Metadata } from './src/models/metadata';
 export { File } from './src/models/file';
 export { Item } from './src/models/item';
+export { Aggregation } from './src/models/aggregation';
+export { Review } from './src/models/review';
+export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
 
 export {
   DateField,
@@ -47,8 +50,6 @@ export {
 } from './src/models/metadata-fields/field-types/mediatype';
 
 export { MetadataField } from './src/models/metadata-fields/metadata-field';
-
-export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
 
 export { MetadataResponse } from './src/responses/metadata/metadata-response';
 export { SearchResponse } from './src/responses/search/search-response';
