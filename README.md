@@ -19,10 +19,10 @@ import {
 } from '@internetarchive/search-service';
 
 const searchService = SearchService.default;
-const sortParam = new SortParam('date', SortDirection.Desc)
+const dateSort = new SortParam('date', SortDirection.Desc)
 const params = new SearchParams({
   query: 'collection:books AND title:(goody)',
-  sort: sortParam,
+  sort: [dateSort],
   rows: 25,
   start: 0,
   fields: ['identifier', 'collection', 'title', 'creator']
