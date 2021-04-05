@@ -24,12 +24,6 @@ describe('SearchParams', () => {
     expect(params.fields).to.deep.equal(fields);
   });
 
-  it('can return the fields as a string', async () => {
-    const fields = ['identifier', 'foo', 'bar'];
-    const fieldsAsString = fields.join(',');
-    expect(fieldsAsString).to.equal('identifier,foo,bar');
-  });
-
   it('properly generates a URLSearchParam with just a query', async () => {
     const query = 'title:foo AND collection:bar';
     const params = new SearchParams({ query });
