@@ -1,4 +1,3 @@
-@@ -1,117 +0,0 @@
 # Internet Archive Search Service
 
 A service for searching and retrieving metadata from the Internet Archive.
