@@ -1,1 +1,61 @@
-export { SearchService } from './src/SearchService.js';
+export { Metadata } from './src/models/metadata';
+export { File } from './src/models/file';
+export { Aggregation } from './src/models/aggregation';
+export { Review } from './src/models/review';
+export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
+
+export {
+  DateField,
+  DateParser,
+} from './src/models/metadata-fields/field-types/date';
+
+export {
+  NumberField,
+  NumberParser,
+} from './src/models/metadata-fields/field-types/number';
+
+export {
+  StringField,
+  StringParser,
+} from './src/models/metadata-fields/field-types/string';
+
+export {
+  BooleanField,
+  BooleanParser,
+} from './src/models/metadata-fields/field-types/boolean';
+
+export {
+  Byte,
+  ByteField,
+  ByteParser,
+} from './src/models/metadata-fields/field-types/byte';
+
+export {
+  Duration,
+  DurationField,
+  DurationParser,
+} from './src/models/metadata-fields/field-types/duration';
+
+export {
+  PageProgressionField,
+  PageProgressionParser,
+  PageProgression,
+} from './src/models/metadata-fields/field-types/page-progression';
+
+export {
+  MediaTypeField,
+  MediaTypeParser,
+  MediaType,
+} from './src/models/metadata-fields/field-types/mediatype';
+
+export { MetadataField } from './src/models/metadata-fields/metadata-field';
+
+export { MetadataResponse } from './src/responses/metadata/metadata-response';
+export { SearchResponse } from './src/responses/search/search-response';
+export { SearchResponseHeader } from './src/responses/search/search-response-header';
+export { SearchResponseParams } from './src/responses/search/search-response-params';
+
+export { DefaultSearchBackend } from './src/search-backend/default-search-backend';
+export { SearchServiceInterface } from './src/search-service-interface';
+export { SearchService } from './src/search-service';
+export { SearchParams } from './src/search-params';
