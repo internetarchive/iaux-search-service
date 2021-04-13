@@ -22,7 +22,8 @@
     "format": "npm run format:eslint && npm run format:prettier",
     "circular": "madge --circular --extensions ts .",
     "test": "tsc && npm run lint && npm run circular && web-test-runner --coverage",
-    "test:watch": "web-test-runner --watch"
+    "test:watch": "web-test-runner --watch",
+    "codecov": "npx codecov"
   },
   "devDependencies": {
     "@open-wc/eslint-config": "^4.2.0",
