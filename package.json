@@ -67,5 +67,8 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "@internetarchive/core": "^0.0.1-alpha.1"
   }
 }
