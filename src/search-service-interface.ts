@@ -1,5 +1,5 @@
 import { MetadataResponse } from './responses/metadata/metadata-response';
-import { Result } from '@internetarchive/core';
+import { Result } from '@internetarchive/result-type';
 import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { SearchServiceError } from './search-service-error';

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
 import { SearchParams } from '../search-params';
-import { Result } from '@internetarchive/core';
+import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,

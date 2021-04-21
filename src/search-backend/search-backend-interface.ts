@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Result } from '@internetarchive/core';
+import { Result } from '@internetarchive/result-type';
 import { SearchParams } from '../search-params';
 import { SearchServiceError } from '../search-service-error';
 

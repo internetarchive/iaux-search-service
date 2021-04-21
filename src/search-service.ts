@@ -8,7 +8,7 @@ import {
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
 import { SearchBackendInterface } from './search-backend/search-backend-interface';
-import { Result } from '@internetarchive/core';
+import { Result } from '@internetarchive/result-type';
 
 /**
  * The Search Service is responsible for taking the raw response provided by

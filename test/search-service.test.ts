@@ -8,7 +8,7 @@ import { SearchParams } from '../src/search-params';
 import { MockResponseGenerator } from './mock-response-generator';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
-import { Result } from '@internetarchive/core';
+import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
