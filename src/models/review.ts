@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { DateParser } from './metadata-fields/field-types/date';
+import { DateParser } from '@internetarchive/field-parsers';
 
 export class Review {
   reviewbody?: string;
