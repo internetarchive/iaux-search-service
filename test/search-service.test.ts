@@ -8,7 +8,7 @@ import { SearchParams } from '../src/search-params';
 import { MockResponseGenerator } from './mock-response-generator';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
-import { Result } from '../src/responses/result';
+import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
@@ -31,7 +31,7 @@ describe('SearchService', () => {
         const mockResponse = responseGenerator.generateMockSearchResponse(
           params
         );
-        return new Result<SearchResponse, SearchServiceError>(mockResponse);
+        return { success: mockResponse };
       }
     }
 
@@ -57,7 +57,7 @@ describe('SearchService', () => {
         const mockResponse = responseGenerator.generateMockMetadataResponse(
           identifier
         );
-        return new Result<MetadataResponse, SearchServiceError>(mockResponse);
+        return { success: mockResponse };
       }
     }
 
@@ -79,7 +79,7 @@ describe('SearchService', () => {
       ): Promise<Result<MetadataResponse, SearchServiceError>> {
         // this is unfortunate.. instead of getting an http 404 error,
         // we get an empty JSON object when an item is not found
-        return new Result<MetadataResponse, SearchServiceError>({} as any);
+        return { success: {} as any };
       }
     }
 
@@ -99,7 +99,7 @@ describe('SearchService', () => {
           SearchServiceErrorType.networkError,
           'network error'
         );
-        return new Result<SearchResponse, SearchServiceError>(undefined, error);
+        return { error };
       }
       async fetchMetadata(
         identifier: string
@@ -108,10 +108,7 @@ describe('SearchService', () => {
           SearchServiceErrorType.networkError,
           'network error'
         );
-        return new Result<MetadataResponse, SearchServiceError>(
-          undefined,
-          error
-        );
+        return { error };
       }
     }
 
@@ -142,7 +139,7 @@ describe('SearchService', () => {
           SearchServiceErrorType.decodingError,
           'decoding error'
         );
-        return new Result<SearchResponse, SearchServiceError>(undefined, error);
+        return { error };
       }
       async fetchMetadata(
         identifier: string
@@ -151,10 +148,7 @@ describe('SearchService', () => {
           SearchServiceErrorType.decodingError,
           'decoding error'
         );
-        return new Result<MetadataResponse, SearchServiceError>(
-          undefined,
-          error
-        );
+        return { error };
       }
     }
 

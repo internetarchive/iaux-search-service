@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
 import { SearchParams } from '../search-params';
-import { Result } from '../responses/result';
+import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
@@ -60,7 +60,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
         );
       } else {
         // success
-        return new Result<any, SearchServiceError>(json, undefined);
+        return { success: json };
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : err;
@@ -74,7 +74,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     details?: any
   ): Result<any, SearchServiceError> {
     const error = new SearchServiceError(errorType, message, details);
-    const result = new Result<any, SearchServiceError>(undefined, error);
+    const result = { error };
     return result;
   }
 }

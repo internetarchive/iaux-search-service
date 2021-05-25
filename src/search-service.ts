@@ -2,13 +2,13 @@ import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
 import { DefaultSearchBackend } from './search-backend/default-search-backend';
-import { Result } from './responses/result';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
 import { SearchBackendInterface } from './search-backend/search-backend-interface';
+import { Result } from '@internetarchive/result-type';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -36,7 +36,7 @@ export class SearchService implements SearchServiceInterface {
     }
 
     const modeledResponse = new SearchResponse(rawResponse.success);
-    return new Result<SearchResponse, SearchServiceError>(modeledResponse);
+    return { success: modeledResponse };
   }
 
   /** @inheritdoc */
@@ -49,13 +49,12 @@ export class SearchService implements SearchServiceInterface {
     }
 
     if (rawResponse.success?.metadata === undefined) {
-      return new Result<MetadataResponse, SearchServiceError>(
-        undefined,
-        new SearchServiceError(SearchServiceErrorType.itemNotFound)
-      );
+      return {
+        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
+      };
     }
 
     const modeledResponse = new MetadataResponse(rawResponse.success);
-    return new Result<MetadataResponse, SearchServiceError>(modeledResponse);
+    return { success: modeledResponse };
   }
 }
