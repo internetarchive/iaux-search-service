@@ -1,8 +1,10 @@
-import type { Byte } from './metadata-fields/field-types/byte';
-import type { Duration } from './metadata-fields/field-types/duration';
-import { ByteParser } from './metadata-fields/field-types/byte';
-import { DurationParser } from './metadata-fields/field-types/duration';
-import { NumberParser } from './metadata-fields/field-types/number';
+import {
+  Byte,
+  ByteParser,
+  Duration,
+  DurationParser,
+  NumberParser,
+} from '@internetarchive/field-parsers';
 
 /**
  * This represents an Internet Archive File

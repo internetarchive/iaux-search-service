@@ -1,7 +1,7 @@
 import {
   FieldParserInterface,
   FieldParserRawValue,
-} from './field-parser-interface';
+} from '@internetarchive/field-parsers';
 
 export type MetadataRawValue = string | string[] | number | boolean;
 

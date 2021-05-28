@@ -1,9 +1,8 @@
-import { expect } from '@open-wc/testing';
 import {
   FieldParserInterface,
   FieldParserRawValue,
-} from '../../../src/models/metadata-fields/field-parser-interface';
-
+} from '@internetarchive/field-parsers/dist/src/field-parser-interface';
+import { expect } from '@open-wc/testing';
 import { MetadataField } from '../../../src/models/metadata-fields/metadata-field';
 
 describe('Metadata Field', () => {

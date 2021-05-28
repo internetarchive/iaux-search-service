@@ -69,6 +69,7 @@
     ]
   },
   "dependencies": {
+    "@internetarchive/field-parsers": "^0.1.0",
     "@internetarchive/result-type": "^0.0.1"
   }
 }
