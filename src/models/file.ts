@@ -5,6 +5,8 @@ import {
   DurationParser,
   NumberParser,
 } from '@internetarchive/field-parsers';
+import { MetadataEntry } from './metadata-entry';
+import { MetadataRawValue } from './metadata-fields/metadata-field';
 
 /**
  * This represents an Internet Archive File
@@ -12,7 +14,7 @@ import {
  * @export
  * @class File
  */
-export class File {
+export class File extends MetadataEntry {
   name: string;
 
   source: string;
@@ -50,7 +52,16 @@ export class File {
   album?: string;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static fromRaw(rawValue: MetadataRawValue | Record<string, any>): File | null {
+    if (rawValue instanceof Object) {
+      return new File(rawValue);
+    }
+    return null;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(json: Record<string, any>) {
+    super();
     this.name = json.name;
     this.source = json.source;
     this.btih = json.btih;

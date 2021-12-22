@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { MetadataEntry } from './metadata-entry';
+import { MetadataRawValue } from './metadata-fields/metadata-field';
 import { BooleanField } from './metadata-fields/field-types/boolean';
 import { DateField } from './metadata-fields/field-types/date';
 import { DurationField } from './metadata-fields/field-types/duration';
@@ -18,7 +20,7 @@ import { MediaTypeField } from './metadata-fields/field-types/mediatype';
  * @export
  * @class Metadata
  */
-export class Metadata {
+export class Metadata extends MetadataEntry {
   /**
    * This is the raw metadata reponse; useful for inspecting the raw data returned from the server.
    *
@@ -201,7 +203,15 @@ export class Metadata {
 
   year?: DateField;
 
+  static fromRaw(rawValue: MetadataRawValue | Record<string, any>): Metadata | null {
+    if (rawValue instanceof Object) {
+      return new Metadata(rawValue);
+    }
+    return null;
+  }
+
   constructor(json: Record<string, any>) {
+    super();
     this.rawMetadata = json;
     this.identifier = json.identifier;
 

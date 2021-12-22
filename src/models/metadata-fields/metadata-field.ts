@@ -1,9 +1,20 @@
 import {
   FieldParserInterface,
   FieldParserRawValue,
+  StringParser
 } from '@internetarchive/field-parsers';
+import { MetadataEntry } from '../metadata-entry';
 
 export type MetadataRawValue = string | string[] | number | boolean;
+
+export function isMetadataRawValue(value: any): boolean {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    Array.isArray(value)
+  );
+}
 
 /**
  * The MetadataField is responsible for three things:
@@ -32,7 +43,7 @@ export type MetadataRawValue = string | string[] | number | boolean;
 export class MetadataField<
   Type,
   FieldParserInterfaceType extends FieldParserInterface<Type>
-> {
+  > extends MetadataEntry {
   /**
    * The raw value received from the API response
    *
@@ -64,6 +75,7 @@ export class MetadataField<
   }
 
   constructor(parser: FieldParserInterfaceType, rawValue?: MetadataRawValue) {
+    super();
     this.parser = parser;
     this.rawValue = rawValue;
 
