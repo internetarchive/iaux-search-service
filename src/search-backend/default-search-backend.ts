@@ -27,9 +27,11 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   }
 
   async fetchMetadata(
-    identifier: string
+    identifier: string,
+    keypath?: string
   ): Promise<Result<any, SearchServiceError>> {
-    const url = `https://${this.baseUrl}/metadata/${identifier}`;
+    const path = keypath ? `/${keypath}` : '';
+    const url = `https://${this.baseUrl}/metadata/${identifier}${path}`;
     return this.fetchUrl(url);
   }
 
@@ -41,7 +43,12 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     try {
       response = await fetch(url);
     } catch (err) {
-      const message = err instanceof Error ? err.message : err;
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+          ? err
+          : 'Unknown error';
       return this.getErrorResult(SearchServiceErrorType.networkError, message);
     }
 
@@ -63,7 +70,12 @@ export class DefaultSearchBackend implements SearchBackendInterface {
         return { success: json };
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : err;
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+          ? err
+          : 'Unknown error';
       return this.getErrorResult(SearchServiceErrorType.decodingError, message);
     }
   }

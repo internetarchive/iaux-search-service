@@ -67,6 +67,49 @@ describe('SearchService', () => {
     expect(result.success?.metadata.identifier).to.equal('foo');
   });
 
+  describe('requestMetadataValue', async () => {
+    class MockSearchBackend implements SearchBackendInterface {
+      response: any;
+      performSearch(
+        params: SearchParams
+      ): Promise<Result<SearchResponse, SearchServiceError>> {
+        throw new Error('Method not implemented.');
+      }
+      async fetchMetadata(
+        identifier: string,
+        keypath?: string
+      ): Promise<Result<any, SearchServiceError>> {
+        console.debug('fetchMetadata', identifier, keypath, this.response);
+        return { success: this.response };
+      }
+    }
+
+    it('can request a metadata value', async () => {
+      const backend = new MockSearchBackend();
+      const service = new SearchService(backend);
+
+      let expectedResult: any = 'foo';
+      backend.response = expectedResult;
+
+      let result = await service.fetchMetadataValue<typeof expectedResult>(
+        'foo',
+        'metadata'
+      );
+      console.debug('result', result);
+      expect(result.success).to.equal(expectedResult);
+
+      expectedResult = { foo: 'bar' };
+      backend.response = expectedResult;
+
+      result = await service.fetchMetadataValue<typeof expectedResult>(
+        'foo',
+        'metadata'
+      );
+      expect(result.success).to.equal(expectedResult);
+      expect(result.success.foo).to.equal('bar');
+    });
+  });
+
   it('returns an error result if the item is not found', async () => {
     class MockSearchBackend implements SearchBackendInterface {
       performSearch(

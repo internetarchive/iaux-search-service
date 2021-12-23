@@ -18,5 +18,8 @@ import { SearchServiceError } from '../search-service-error';
  */
 export interface SearchBackendInterface {
   performSearch(params: SearchParams): Promise<Result<any, SearchServiceError>>;
-  fetchMetadata(identifier: string): Promise<Result<any, SearchServiceError>>;
+  fetchMetadata(
+    identifier: string,
+    keypath?: string
+  ): Promise<Result<any, SearchServiceError>>;
 }
