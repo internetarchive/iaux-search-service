@@ -79,8 +79,11 @@ describe('SearchService', () => {
         identifier: string,
         keypath?: string
       ): Promise<Result<any, SearchServiceError>> {
-        console.debug('fetchMetadata', identifier, keypath, this.response);
-        return { success: this.response };
+        return {
+          success: {
+            result: this.response,
+          },
+        };
       }
     }
 
@@ -95,7 +98,6 @@ describe('SearchService', () => {
         'foo',
         'metadata'
       );
-      console.debug('result', result);
       expect(result.success).to.equal(expectedResult);
 
       expectedResult = { foo: 'bar' };
