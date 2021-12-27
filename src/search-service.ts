@@ -58,6 +58,7 @@ export class SearchService implements SearchServiceInterface {
     return { success: modeledResponse };
   }
 
+  /** @inheritdoc */
   async fetchMetadataValue<T>(
     identifier: string,
     keypath: string
