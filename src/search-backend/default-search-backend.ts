@@ -17,6 +17,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     this.baseUrl = baseUrl;
   }
 
+  /** @inheritdoc */
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
@@ -26,6 +27,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     return this.fetchUrl(url);
   }
 
+  /** @inheritdoc */
   async fetchMetadata(
     identifier: string,
     keypath?: string
