@@ -133,6 +133,12 @@ describe('SearchService', () => {
     const result = await service.fetchMetadata('foo');
     expect(result.error).to.not.equal(undefined);
     expect(result.error?.type).to.equal(SearchServiceErrorType.itemNotFound);
+
+    const valueResult = await service.fetchMetadataValue('foo', 'metadata');
+    expect(valueResult.error).to.not.equal(undefined);
+    expect(valueResult.error?.type).to.equal(
+      SearchServiceErrorType.itemNotFound
+    );
   });
 
   it('returns the search backend network error if one occurs', async () => {
@@ -165,6 +171,13 @@ describe('SearchService', () => {
       SearchServiceErrorType.networkError
     );
     expect(metadataResult.error?.message).to.equal('network error');
+
+    const metadataValueResult = await service.fetchMetadataValue('foo', 'bar');
+    expect(metadataValueResult.error).to.not.equal(undefined);
+    expect(metadataValueResult.error?.type).to.equal(
+      SearchServiceErrorType.networkError
+    );
+    expect(metadataValueResult.error?.message).to.equal('network error');
 
     const params = new SearchParams({ query: 'boop' });
     const searchResult = await service.search(params);
