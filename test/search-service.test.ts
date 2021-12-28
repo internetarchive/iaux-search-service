@@ -67,6 +67,51 @@ describe('SearchService', () => {
     expect(result.success?.metadata.identifier).to.equal('foo');
   });
 
+  describe('requestMetadataValue', async () => {
+    class MockSearchBackend implements SearchBackendInterface {
+      response: any;
+      performSearch(
+        params: SearchParams
+      ): Promise<Result<SearchResponse, SearchServiceError>> {
+        throw new Error('Method not implemented.');
+      }
+      async fetchMetadata(
+        identifier: string,
+        keypath?: string
+      ): Promise<Result<any, SearchServiceError>> {
+        return {
+          success: {
+            result: this.response,
+          },
+        };
+      }
+    }
+
+    it('can request a metadata value', async () => {
+      const backend = new MockSearchBackend();
+      const service = new SearchService(backend);
+
+      let expectedResult: any = 'foo';
+      backend.response = expectedResult;
+
+      let result = await service.fetchMetadataValue<typeof expectedResult>(
+        'foo',
+        'metadata'
+      );
+      expect(result.success).to.equal(expectedResult);
+
+      expectedResult = { foo: 'bar' };
+      backend.response = expectedResult;
+
+      result = await service.fetchMetadataValue<typeof expectedResult>(
+        'foo',
+        'metadata'
+      );
+      expect(result.success).to.equal(expectedResult);
+      expect(result.success.foo).to.equal('bar');
+    });
+  });
+
   it('returns an error result if the item is not found', async () => {
     class MockSearchBackend implements SearchBackendInterface {
       performSearch(
@@ -88,6 +133,12 @@ describe('SearchService', () => {
     const result = await service.fetchMetadata('foo');
     expect(result.error).to.not.equal(undefined);
     expect(result.error?.type).to.equal(SearchServiceErrorType.itemNotFound);
+
+    const valueResult = await service.fetchMetadataValue('foo', 'metadata');
+    expect(valueResult.error).to.not.equal(undefined);
+    expect(valueResult.error?.type).to.equal(
+      SearchServiceErrorType.itemNotFound
+    );
   });
 
   it('returns the search backend network error if one occurs', async () => {
@@ -120,6 +171,13 @@ describe('SearchService', () => {
       SearchServiceErrorType.networkError
     );
     expect(metadataResult.error?.message).to.equal('network error');
+
+    const metadataValueResult = await service.fetchMetadataValue('foo', 'bar');
+    expect(metadataValueResult.error).to.not.equal(undefined);
+    expect(metadataValueResult.error?.type).to.equal(
+      SearchServiceErrorType.networkError
+    );
+    expect(metadataValueResult.error?.message).to.equal('network error');
 
     const params = new SearchParams({ query: 'boop' });
     const searchResult = await service.search(params);

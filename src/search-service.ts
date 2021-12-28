@@ -57,4 +57,23 @@ export class SearchService implements SearchServiceInterface {
     const modeledResponse = new MetadataResponse(rawResponse.success);
     return { success: modeledResponse };
   }
+
+  /** @inheritdoc */
+  async fetchMetadataValue<T>(
+    identifier: string,
+    keypath: string
+  ): Promise<Result<T, SearchServiceError>> {
+    const result = await this.searchBackend.fetchMetadata(identifier, keypath);
+    if (result.error) {
+      return result;
+    }
+
+    if (result.success?.result === undefined) {
+      return {
+        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
+      };
+    }
+
+    return { success: result.success.result };
+  }
 }
