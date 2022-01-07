@@ -18,7 +18,7 @@ import {
 } from '@internetarchive/search-service';
 
 const searchService = SearchService.default;
-const dateSort = new SortParam('date', SortDirection.Desc)
+const dateSort = new SortParam('date', 'desc')
 const params = new SearchParams({
   query: 'collection:books AND title:(goody)',
   sort: [dateSort],
