@@ -101,6 +101,8 @@ export class Metadata {
    */
   duration?: DurationField;
 
+  'external-identifier'?: StringField;
+
   /**
    * The number of files in an item
    *
@@ -110,6 +112,8 @@ export class Metadata {
   files_count?: NumberField;
 
   indexdate?: DateField;
+
+  isbn?: StringField;
 
   /**
    * For collections, the number of items in the collection
@@ -157,9 +161,19 @@ export class Metadata {
 
   num_reviews?: NumberField;
 
+  openlibrary_edition?: StringField;
+
+  openlibrary_work?: StringField;
+
   page_progression?: PageProgressionField;
 
+  partner?: StringField;
+
+  ppi?: NumberField;
+
   publicdate?: DateField;
+
+  publisher?: StringField;
 
   runtime?: DurationField;
 
@@ -241,9 +255,13 @@ export class Metadata {
     this.duration = json.duration
       ? new DurationField(json.duration)
       : undefined;
+    this['external-identifier'] = json['external-identifier']
+      ? new StringField(json['external-identifier'])
+      : undefined;
     this.files_count = json.files_count
       ? new NumberField(json.files_count)
       : undefined;
+    this.isbn = json.isbn ? new StringField(json.isbn) : undefined;
     this.item_count = json.item_count
       ? new NumberField(json.item_count)
       : undefined;
@@ -262,6 +280,17 @@ export class Metadata {
       : undefined;
     this.num_reviews = json.num_reviews
       ? new NumberField(json.num_reviews)
+      : undefined;
+    this.openlibrary_edition = json.openlibrary_edition
+      ? new StringField(json.openlibrary_edition)
+      : undefined;
+    this.openlibrary_work = json.openlibrary_work
+      ? new StringField(json.openlibrary_work)
+      : undefined;
+    this.partner = json.partner ? new StringField(json.partner) : undefined;
+    this.ppi = json.ppi ? new NumberField(json.ppi) : undefined;
+    this.publisher = json.publisher
+      ? new StringField(json.publisher)
       : undefined;
     this.runtime = json.runtime ? new DurationField(json.runtime) : undefined;
     this.scanner = json.scanner ? new StringField(json.scanner) : undefined;
