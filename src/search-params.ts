@@ -42,10 +42,7 @@ export class AggregateSearchParams {
   }
 }
 
-export enum SortDirection {
-  Asc = 'asc',
-  Desc = 'desc',
-}
+export type SortDirection = 'asc' | 'desc';
 
 export class SortParam {
   field: string;

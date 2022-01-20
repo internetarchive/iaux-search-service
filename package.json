@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/search-service",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A search service for the Internet Archive",
   "license": "AGPL-3.0-only",
   "main": "dist/index.js",
@@ -69,7 +69,7 @@
     ]
   },
   "dependencies": {
-    "@internetarchive/field-parsers": "^0.1.0",
+    "@internetarchive/field-parsers": "^0.1.1",
     "@internetarchive/result-type": "^0.0.1"
   }
 }

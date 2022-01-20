@@ -3,7 +3,6 @@ import { expect } from '@open-wc/testing';
 import {
   AggregateSearchParams,
   SearchParams,
-  SortDirection,
   SortParam,
 } from '../src/search-params';
 
@@ -50,7 +49,7 @@ describe('SearchParams', () => {
   it('properly generates a URLSearchParam with a query, sort, row, start, and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const sort = [new SortParam('downloads', SortDirection.Desc)];
+    const sort = [new SortParam('downloads', 'desc')];
     const params = new SearchParams({
       query,
       sort,
@@ -68,8 +67,8 @@ describe('SearchParams', () => {
   it('properly generates a URLSearchParam multiple sort params', async () => {
     const query = 'title:foo AND collection:bar';
     const sort = [
-      new SortParam('downloads', SortDirection.Desc),
-      new SortParam('foo', SortDirection.Asc),
+      new SortParam('downloads', 'desc'),
+      new SortParam('foo', 'asc'),
     ];
     const params = new SearchParams({
       query,
