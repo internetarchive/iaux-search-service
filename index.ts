@@ -20,7 +20,10 @@ export { PageProgressionField } from './src/models/metadata-fields/field-types/p
 
 export { MediaTypeField } from './src/models/metadata-fields/field-types/mediatype';
 
-export { MetadataField } from './src/models/metadata-fields/metadata-field';
+export {
+  MetadataFieldInterface,
+  MetadataField,
+} from './src/models/metadata-fields/metadata-field';
 
 export { MetadataResponse } from './src/responses/metadata/metadata-response';
 export { SearchResponse } from './src/responses/search/search-response';

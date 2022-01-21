@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Memoize } from 'typescript-memoize';
 import { BooleanField } from './metadata-fields/field-types/boolean';
 import { DateField } from './metadata-fields/field-types/date';
 import { DurationField } from './metadata-fields/field-types/duration';
@@ -36,13 +37,27 @@ export class Metadata {
    * @type {string}
    * @memberof Metadata
    */
-  identifier?: string;
+  get identifier(): string | undefined {
+    return this.rawMetadata?.identifier;
+  }
 
-  addeddate?: DateField;
+  @Memoize() get addeddate(): DateField | undefined {
+    return this.rawMetadata?.addeddate
+      ? new DateField(this.rawMetadata.addeddate)
+      : undefined;
+  }
 
-  audio_codec?: StringField;
+  @Memoize() get audio_codec(): StringField | undefined {
+    return this.rawMetadata?.audio_codec
+      ? new StringField(this.rawMetadata.audio_codec)
+      : undefined;
+  }
 
-  audio_sample_rate?: NumberField;
+  @Memoize() get audio_sample_rate(): NumberField | undefined {
+    return this.rawMetadata?.audio_sample_rate
+      ? new NumberField(this.rawMetadata.audio_sample_rate)
+      : undefined;
+  }
 
   /**
    * All of the collections that an Item is in, including
@@ -52,7 +67,11 @@ export class Metadata {
    * @type {StringField}
    * @memberof Metadata
    */
-  collection?: StringField;
+  @Memoize() get collection(): StringField | undefined {
+    return this.rawMetadata?.collection
+      ? new StringField(this.rawMetadata.collection)
+      : undefined;
+  }
 
   /**
    * The "natural" collections for an item before augmentation
@@ -65,7 +84,11 @@ export class Metadata {
    * @type {StringField}
    * @memberof Metadata
    */
-  collections_raw?: StringField;
+  @Memoize() get collections_raw(): StringField | undefined {
+    return this.rawMetadata?.collections_raw
+      ? new StringField(this.rawMetadata.collections_raw)
+      : undefined;
+  }
 
   /**
    * The size of a collection in bytes
@@ -73,17 +96,41 @@ export class Metadata {
    * @type {ByteField}
    * @memberof Metadata
    */
-  collection_size?: ByteField;
+  @Memoize() get collection_size(): ByteField | undefined {
+    return this.rawMetadata?.collection_size
+      ? new ByteField(this.rawMetadata.collection_size)
+      : undefined;
+  }
 
-  contributor?: StringField;
+  @Memoize() get contributor(): StringField | undefined {
+    return this.rawMetadata?.contributor
+      ? new StringField(this.rawMetadata.contributor)
+      : undefined;
+  }
 
-  coverage?: StringField;
+  @Memoize() get coverage(): StringField | undefined {
+    return this.rawMetadata?.coverage
+      ? new StringField(this.rawMetadata.coverage)
+      : undefined;
+  }
 
-  creator?: StringField;
+  @Memoize() get creator(): StringField | undefined {
+    return this.rawMetadata?.creator
+      ? new StringField(this.rawMetadata.creator)
+      : undefined;
+  }
 
-  date?: DateField;
+  @Memoize() get date(): DateField | undefined {
+    return this.rawMetadata?.date
+      ? new DateField(this.rawMetadata.date)
+      : undefined;
+  }
 
-  description?: StringField;
+  @Memoize() get description(): StringField | undefined {
+    return this.rawMetadata?.description
+      ? new StringField(this.rawMetadata.description)
+      : undefined;
+  }
 
   /**
    * All time download count
@@ -91,7 +138,11 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  downloads?: NumberField;
+  @Memoize() get downloads(): NumberField | undefined {
+    return this.rawMetadata?.downloads
+      ? new NumberField(this.rawMetadata.downloads)
+      : undefined;
+  }
 
   /**
    * The item duration in seconds
@@ -99,9 +150,17 @@ export class Metadata {
    * @type {DurationField}
    * @memberof Metadata
    */
-  duration?: DurationField;
+  @Memoize() get duration(): DurationField | undefined {
+    return this.rawMetadata?.duration
+      ? new DurationField(this.rawMetadata.duration)
+      : undefined;
+  }
 
-  'external-identifier'?: StringField;
+  @Memoize() get 'external-identifier'(): StringField | undefined {
+    return this.rawMetadata?.['external-identifier']
+      ? new StringField(this.rawMetadata?.['external-identifier'])
+      : undefined;
+  }
 
   /**
    * The number of files in an item
@@ -109,11 +168,23 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  files_count?: NumberField;
+  @Memoize() get files_count(): NumberField | undefined {
+    return this.rawMetadata?.files_count
+      ? new NumberField(this.rawMetadata.files_count)
+      : undefined;
+  }
 
-  indexdate?: DateField;
+  @Memoize() get indexdate(): DateField | undefined {
+    return this.rawMetadata?.indexdate
+      ? new DateField(this.rawMetadata.indexdate)
+      : undefined;
+  }
 
-  isbn?: StringField;
+  @Memoize() get isbn(): StringField | undefined {
+    return this.rawMetadata?.isbn
+      ? new StringField(this.rawMetadata.isbn)
+      : undefined;
+  }
 
   /**
    * For collections, the number of items in the collection
@@ -121,7 +192,11 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  item_count?: NumberField;
+  @Memoize() get item_count(): NumberField | undefined {
+    return this.rawMetadata?.item_count
+      ? new NumberField(this.rawMetadata.item_count)
+      : undefined;
+  }
 
   /**
    * The size of the item in bytes
@@ -129,13 +204,29 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  item_size?: ByteField;
+  @Memoize() get item_size(): ByteField | undefined {
+    return this.rawMetadata?.item_size
+      ? new ByteField(this.rawMetadata.item_size)
+      : undefined;
+  }
 
-  language?: StringField;
+  @Memoize() get language(): StringField | undefined {
+    return this.rawMetadata?.language
+      ? new StringField(this.rawMetadata.language)
+      : undefined;
+  }
 
-  length?: DurationField;
+  @Memoize() get length(): DurationField | undefined {
+    return this.rawMetadata?.length
+      ? new DurationField(this.rawMetadata.length)
+      : undefined;
+  }
 
-  lineage?: StringField;
+  @Memoize() get lineage(): StringField | undefined {
+    return this.rawMetadata?.lineage
+      ? new StringField(this.rawMetadata.lineage)
+      : undefined;
+  }
 
   /**
    * The number of downloads in the last month
@@ -143,13 +234,29 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  month?: NumberField;
+  @Memoize() get month(): NumberField | undefined {
+    return this.rawMetadata?.month
+      ? new NumberField(this.rawMetadata.month)
+      : undefined;
+  }
 
-  mediatype?: MediaTypeField;
+  @Memoize() get mediatype(): MediaTypeField | undefined {
+    return this.rawMetadata?.mediatype
+      ? new MediaTypeField(this.rawMetadata.mediatype)
+      : undefined;
+  }
 
-  noindex?: BooleanField;
+  @Memoize() get noindex(): BooleanField | undefined {
+    return this.rawMetadata?.noindex
+      ? new BooleanField(this.rawMetadata.noindex)
+      : undefined;
+  }
 
-  notes?: StringField;
+  @Memoize() get notes(): StringField | undefined {
+    return this.rawMetadata?.notes
+      ? new StringField(this.rawMetadata.notes)
+      : undefined;
+  }
 
   /**
    * The number of users that have favorited the item
@@ -157,53 +264,149 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  num_favorites?: NumberField;
+  @Memoize() get num_favorites(): NumberField | undefined {
+    return this.rawMetadata?.num_favorites
+      ? new NumberField(this.rawMetadata.num_favorites)
+      : undefined;
+  }
 
-  num_reviews?: NumberField;
+  @Memoize() get num_reviews(): NumberField | undefined {
+    return this.rawMetadata?.num_reviews
+      ? new NumberField(this.rawMetadata.num_reviews)
+      : undefined;
+  }
 
-  openlibrary_edition?: StringField;
+  @Memoize() get openlibrary_edition(): StringField | undefined {
+    return this.rawMetadata?.openlibrary_edition
+      ? new StringField(this.rawMetadata.openlibrary_edition)
+      : undefined;
+  }
 
-  openlibrary_work?: StringField;
+  @Memoize() get openlibrary_work(): StringField | undefined {
+    return this.rawMetadata?.openlibrary_work
+      ? new StringField(this.rawMetadata.openlibrary_work)
+      : undefined;
+  }
 
-  page_progression?: PageProgressionField;
+  @Memoize() get page_progression(): PageProgressionField | undefined {
+    return this.rawMetadata?.page_progression
+      ? new PageProgressionField(this.rawMetadata.page_progression)
+      : undefined;
+  }
 
-  partner?: StringField;
+  @Memoize() get partner(): StringField | undefined {
+    return this.rawMetadata?.partner
+      ? new StringField(this.rawMetadata.partner)
+      : undefined;
+  }
 
-  ppi?: NumberField;
+  @Memoize() get ppi(): NumberField | undefined {
+    return this.rawMetadata?.ppi
+      ? new NumberField(this.rawMetadata.ppi)
+      : undefined;
+  }
 
-  publicdate?: DateField;
+  @Memoize() get publicdate(): DateField | undefined {
+    return this.rawMetadata?.publicdate
+      ? new DateField(this.rawMetadata.publicdate)
+      : undefined;
+  }
 
-  publisher?: StringField;
+  @Memoize() get publisher(): StringField | undefined {
+    return this.rawMetadata?.publisher
+      ? new StringField(this.rawMetadata.publisher)
+      : undefined;
+  }
 
-  runtime?: DurationField;
+  @Memoize() get runtime(): DurationField | undefined {
+    return this.rawMetadata?.runtime
+      ? new DurationField(this.rawMetadata.runtime)
+      : undefined;
+  }
 
-  scanner?: StringField;
+  @Memoize() get scanner(): StringField | undefined {
+    return this.rawMetadata?.scanner
+      ? new StringField(this.rawMetadata.scanner)
+      : undefined;
+  }
 
-  source?: StringField;
+  @Memoize() get source(): StringField | undefined {
+    return this.rawMetadata?.source
+      ? new StringField(this.rawMetadata.source)
+      : undefined;
+  }
 
-  start_localtime?: DateField;
+  @Memoize() get start_localtime(): DateField | undefined {
+    return this.rawMetadata?.start_localtime
+      ? new DateField(this.rawMetadata.start_localtime)
+      : undefined;
+  }
 
-  start_time?: DateField;
+  @Memoize() get start_time(): DateField | undefined {
+    return this.rawMetadata?.start_time
+      ? new DateField(this.rawMetadata.start_time)
+      : undefined;
+  }
 
-  stop_time?: DateField;
+  @Memoize() get stop_time(): DateField | undefined {
+    return this.rawMetadata?.stop_time
+      ? new DateField(this.rawMetadata.stop_time)
+      : undefined;
+  }
 
-  subject?: StringField;
+  @Memoize() get subject(): StringField | undefined {
+    return this.rawMetadata?.subject
+      ? new StringField(this.rawMetadata.subject)
+      : undefined;
+  }
 
-  taper?: StringField;
+  @Memoize() get taper(): StringField | undefined {
+    return this.rawMetadata?.taper
+      ? new StringField(this.rawMetadata.taper)
+      : undefined;
+  }
 
-  title?: StringField;
+  @Memoize() get title(): StringField | undefined {
+    return this.rawMetadata?.title
+      ? new StringField(this.rawMetadata.title)
+      : undefined;
+  }
 
-  transferer?: StringField;
+  @Memoize() get transferer(): StringField | undefined {
+    return this.rawMetadata?.transferer
+      ? new StringField(this.rawMetadata.transferer)
+      : undefined;
+  }
 
-  track?: NumberField;
+  @Memoize() get track(): NumberField | undefined {
+    return this.rawMetadata?.track
+      ? new NumberField(this.rawMetadata.track)
+      : undefined;
+  }
 
-  type?: StringField;
+  @Memoize() get type(): StringField | undefined {
+    return this.rawMetadata?.type
+      ? new StringField(this.rawMetadata.type)
+      : undefined;
+  }
 
-  uploader?: StringField;
+  @Memoize() get uploader(): StringField | undefined {
+    return this.rawMetadata?.uploader
+      ? new StringField(this.rawMetadata.uploader)
+      : undefined;
+  }
 
-  utc_offset?: NumberField;
+  @Memoize() get utc_offset(): NumberField | undefined {
+    return this.rawMetadata?.utc_offset
+      ? new NumberField(this.rawMetadata.utc_offset)
+      : undefined;
+  }
 
-  venue?: StringField;
+  @Memoize() get venue(): StringField | undefined {
+    return this.rawMetadata?.venue
+      ? new StringField(this.rawMetadata.venue)
+      : undefined;
+  }
 
   /**
    * The number of downloads in the last week
@@ -211,111 +414,19 @@ export class Metadata {
    * @type {NumberField}
    * @memberof Metadata
    */
-  week?: NumberField;
+  @Memoize() get week(): NumberField | undefined {
+    return this.rawMetadata?.week
+      ? new NumberField(this.rawMetadata.week)
+      : undefined;
+  }
 
-  year?: DateField;
+  @Memoize() get year(): DateField | undefined {
+    return this.rawMetadata?.year
+      ? new DateField(this.rawMetadata.year)
+      : undefined;
+  }
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
-    this.identifier = json.identifier;
-
-    this.addeddate = json.addeddate ? new DateField(json.addeddate) : undefined;
-    this.publicdate = json.publicdate
-      ? new DateField(json.publicdate)
-      : undefined;
-    this.indexdate = json.indexdate ? new DateField(json.indexdate) : undefined;
-
-    this.audio_codec = json.audio_codec
-      ? new StringField(json.audio_codec)
-      : undefined;
-    this.audio_sample_rate = json.audio_sample_rate
-      ? new NumberField(json.audio_sample_rate)
-      : undefined;
-    this.collection = json.collection
-      ? new StringField(json.collection)
-      : undefined;
-    this.collections_raw = json.collections_raw
-      ? new StringField(json.collections_raw)
-      : undefined;
-    this.collection_size = json.collection_size
-      ? new ByteField(json.collection_size)
-      : undefined;
-    this.contributor = json.contributor
-      ? new StringField(json.contributor)
-      : undefined;
-    this.coverage = json.coverage ? new StringField(json.coverage) : undefined;
-    this.creator = json.creator ? new StringField(json.creator) : undefined;
-    this.date = json.date ? new DateField(json.date) : undefined;
-    this.description = json.description
-      ? new StringField(json.description)
-      : undefined;
-    this.downloads = json.downloads
-      ? new NumberField(json.downloads)
-      : undefined;
-    this.duration = json.duration
-      ? new DurationField(json.duration)
-      : undefined;
-    this['external-identifier'] = json['external-identifier']
-      ? new StringField(json['external-identifier'])
-      : undefined;
-    this.files_count = json.files_count
-      ? new NumberField(json.files_count)
-      : undefined;
-    this.isbn = json.isbn ? new StringField(json.isbn) : undefined;
-    this.item_count = json.item_count
-      ? new NumberField(json.item_count)
-      : undefined;
-    this.item_size = json.item_size ? new ByteField(json.item_size) : undefined;
-    this.language = json.language ? new StringField(json.language) : undefined;
-    this.length = json.length ? new DurationField(json.length) : undefined;
-    this.lineage = json.lineage ? new StringField(json.lineage) : undefined;
-    this.mediatype = json.mediatype
-      ? new MediaTypeField(json.mediatype)
-      : undefined;
-    this.month = json.month ? new NumberField(json.month) : undefined;
-    this.noindex = json.noindex ? new BooleanField(json.noindex) : undefined;
-    this.notes = json.notes ? new StringField(json.notes) : undefined;
-    this.num_favorites = json.num_favorites
-      ? new NumberField(json.num_favorites)
-      : undefined;
-    this.num_reviews = json.num_reviews
-      ? new NumberField(json.num_reviews)
-      : undefined;
-    this.openlibrary_edition = json.openlibrary_edition
-      ? new StringField(json.openlibrary_edition)
-      : undefined;
-    this.openlibrary_work = json.openlibrary_work
-      ? new StringField(json.openlibrary_work)
-      : undefined;
-    this.partner = json.partner ? new StringField(json.partner) : undefined;
-    this.ppi = json.ppi ? new NumberField(json.ppi) : undefined;
-    this.publisher = json.publisher
-      ? new StringField(json.publisher)
-      : undefined;
-    this.runtime = json.runtime ? new DurationField(json.runtime) : undefined;
-    this.scanner = json.scanner ? new StringField(json.scanner) : undefined;
-    this.source = json.source ? new StringField(json.source) : undefined;
-    this.start_localtime = json.start_localtime
-      ? new DateField(json.start_localtime)
-      : undefined;
-    this.start_time = json.start_time
-      ? new DateField(json.start_time)
-      : undefined;
-    this.stop_time = json.stop_time ? new DateField(json.stop_time) : undefined;
-    this.subject = json.subject ? new StringField(json.subject) : undefined;
-    this.taper = json.taper ? new StringField(json.taper) : undefined;
-    this.title = json.title ? new StringField(json.title) : undefined;
-    this.track = json.track ? new NumberField(json.track) : undefined;
-    this.transferer = json.transferer
-      ? new StringField(json.transferer)
-      : undefined;
-    this.type = json.type ? new StringField(json.type) : undefined;
-    this.uploader = json.uploader ? new StringField(json.uploader) : undefined;
-    this.utc_offset = json.utc_offset
-      ? new NumberField(json.utc_offset)
-      : undefined;
-    this.venue = json.venue ? new StringField(json.venue) : undefined;
-    this.week = json.week ? new NumberField(json.week) : undefined;
-    this.year = json.year ? new DateField(json.year) : undefined;
   }
 }

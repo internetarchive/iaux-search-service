@@ -1,9 +1,43 @@
-import {
-  FieldParserInterface,
-  FieldParserRawValue,
-} from '@internetarchive/field-parsers';
+import { Memoize } from 'typescript-memoize';
+import { FieldParserInterface } from '@internetarchive/field-parsers';
 
+/**
+ * The MetadataRawValue is all of the possible raw types we can get for a field.
+ *
+ * This allows the parsers to know if they can handle the raw value or not and
+ * how to handle it if they can.
+ */
 export type MetadataRawValue = string | string[] | number | boolean;
+
+export interface MetadataFieldInterface<T> {
+  /**
+   * The raw value received from the API response
+   *
+   * @type {MetadataRawValue}
+   * @memberof MetadataField
+   */
+  rawValue?: MetadataRawValue;
+
+  /**
+   * The first value if there are multiple or the only value if there is one
+   *
+   * @readonly
+   * @type {(T | undefined)}
+   * @memberof MetadataField
+   */
+  value?: T;
+
+  /**
+   * The array of all values for the field.
+   *
+   * Many fields only contain a single value and
+   * can be accessed via the `.value` getter
+   *
+   * @type {T[]}
+   * @memberof MetadataField
+   */
+  values: T[];
+}
 
 /**
  * The MetadataField is responsible for three things:
@@ -32,64 +66,38 @@ export type MetadataRawValue = string | string[] | number | boolean;
 export class MetadataField<
   Type,
   FieldParserInterfaceType extends FieldParserInterface<Type>
-> {
-  /**
-   * The raw value received from the API response
-   *
-   * @type {MetadataRawValue}
-   * @memberof MetadataField
-   */
+> implements MetadataFieldInterface<Type> {
+  /** @inheritdoc */
   rawValue?: MetadataRawValue;
 
-  /**
-   * The array of all values for the field.
-   *
-   * Many fields only contain a single value and
-   * can be accessed via the `.value` getter
-   *
-   * @type {Type[]}
-   * @memberof MetadataField
-   */
-  values: Type[] = [];
+  /** @inheritdoc */
+  @Memoize() get values(): Type[] {
+    const values = this.parseRawValue();
+    return values;
+  }
 
-  /**
-   * The first value if there are multiple or the only value if there is one
-   *
-   * @readonly
-   * @type {(Type | undefined)}
-   * @memberof MetadataField
-   */
-  get value(): Type | undefined {
-    return this.values.length > 0 ? this.values[0] : undefined;
+  /** @inheritdoc */
+  @Memoize() get value(): Type | undefined {
+    return this.values[0];
   }
 
   constructor(parser: FieldParserInterfaceType, rawValue?: MetadataRawValue) {
     this.parser = parser;
     this.rawValue = rawValue;
-
-    this.processRawValue();
   }
 
   private parser: FieldParserInterfaceType;
 
-  private processRawValue(): void {
-    if (this.rawValue === undefined) {
-      return;
-    }
-
-    if (Array.isArray(this.rawValue)) {
-      this.rawValue.forEach(value => {
-        this.parseAndPersistValue(value);
-      });
-    } else {
-      this.parseAndPersistValue(this.rawValue);
-    }
-  }
-
-  private parseAndPersistValue(value: FieldParserRawValue): void {
-    const parsedValue = this.parser.parseValue(value);
-    if (parsedValue !== undefined) {
-      this.values.push(parsedValue);
-    }
+  private parseRawValue(): Type[] {
+    if (this.rawValue === undefined) return [];
+    const rawValues = Array.isArray(this.rawValue)
+      ? this.rawValue
+      : [this.rawValue];
+    const values: Type[] = [];
+    rawValues.forEach(value => {
+      const parsed = this.parser.parseValue(value);
+      if (parsed !== undefined) values.push(parsed);
+    });
+    return values;
   }
 }

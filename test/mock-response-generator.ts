@@ -2,10 +2,14 @@
 
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchParams } from '../src/search-params';
+import { Metadata } from '../src/models/metadata';
 
 export class MockResponseGenerator {
   generateMockSearchResponse(params: SearchParams): SearchResponse {
     const fieldsAsString = params.fields?.join(',');
+
+    const metadata1 = new Metadata({ identifier: 'foo' });
+    const metadata2 = new Metadata({ identifier: 'bar' });
 
     return {
       rawResponse: {
@@ -31,12 +35,7 @@ export class MockResponseGenerator {
       response: {
         numFound: 12345,
         start: 0,
-        docs: [
-          {
-            identifier: 'foo',
-          },
-          { identifier: 'bar' },
-        ],
+        docs: [metadata1, metadata2],
       },
     };
   }
