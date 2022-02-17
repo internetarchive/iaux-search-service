@@ -80,7 +80,7 @@ export class SortParam {
  * parameters to an IA-style query string. ie. it converts the `fields` array
  * to `fl=identifier,collection` and `sort` to `sort=date+desc,downloads+asc`
  */
-export class SearchParams {
+export interface SearchParams {
   query: string;
 
   sort?: SortParam[];
@@ -92,57 +92,4 @@ export class SearchParams {
   fields?: string[];
 
   aggregations?: AggregateSearchParams;
-
-  constructor(options: {
-    query: string;
-    sort?: SortParam[];
-    rows?: number;
-    page?: number;
-    fields?: string[];
-    aggregations?: AggregateSearchParams;
-  }) {
-    this.query = options.query;
-    this.sort = options.sort;
-    this.rows = options.rows;
-    this.page = options.page;
-    this.fields = options.fields;
-    this.aggregations = options.aggregations;
-  }
-
-  /**
-   * Return a URLSearchParams representation of the parameters for use in network requests.
-   *
-   * @readonly
-   * @type {URLSearchParams}
-   * @memberof SearchParams
-   */
-  get asUrlSearchParams(): URLSearchParams {
-    const params: URLSearchParams = new URLSearchParams();
-    params.append('q', this.query);
-    params.append('output', 'json');
-
-    if (this.rows) {
-      params.append('rows', String(this.rows));
-    }
-
-    if (this.page) {
-      params.append('page', String(this.page));
-    }
-
-    if (this.fields) {
-      params.append('fl', this.fields.join(','));
-    }
-
-    if (this.sort) {
-      const sortStrings = this.sort.map(sort => sort.asString);
-      params.append('sort', sortStrings.join(','));
-    }
-
-    const searchParams = this.aggregations?.asSearchParams;
-    if (searchParams) {
-      params.append('user_aggs', searchParams);
-    }
-
-    return params;
-  }
 }
