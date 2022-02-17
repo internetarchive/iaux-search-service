@@ -16,6 +16,10 @@ export interface SearchServiceInterface {
     params: SearchParams
   ): Promise<Result<SearchResponse, SearchServiceError>>;
 
+  search(options: {
+    query: string;
+  }): Promise<Result<SearchResponse, SearchServiceError>>;
+
   /**
    * Fetch metadata for a given identifier
    *

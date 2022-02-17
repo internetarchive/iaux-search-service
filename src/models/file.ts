@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Memoize } from 'typescript-memoize';
 import {
   Byte,
   ByteParser,
@@ -13,69 +15,91 @@ import {
  * @class File
  */
 export class File {
-  name: string;
+  rawValue: Record<string, any>;
 
-  source: string;
+  get name(): string {
+    return this.rawValue.name;
+  }
 
-  btih: string;
+  get source(): string {
+    return this.rawValue.source;
+  }
 
-  md5: string;
+  get btih(): string {
+    return this.rawValue.btih;
+  }
 
-  format: string;
+  get md5(): string {
+    return this.rawValue.md5;
+  }
 
-  mtime: string;
+  get format(): string {
+    return this.rawValue.format;
+  }
 
-  crc32: string;
+  get mtime(): string {
+    return this.rawValue.mtime;
+  }
 
-  sha1: string;
+  get crc32(): string {
+    return this.rawValue.crc32;
+  }
 
-  original?: string;
+  get sha1(): string {
+    return this.rawValue.sha1;
+  }
 
-  size?: Byte;
+  get original(): string | undefined {
+    return this.rawValue.original;
+  }
 
-  title?: string;
+  @Memoize() get size(): Byte | undefined {
+    return this.rawValue.size
+      ? ByteParser.shared.parseValue(this.rawValue.size)
+      : undefined;
+  }
 
-  length?: Duration;
+  get title(): string | undefined {
+    return this.rawValue.title;
+  }
 
-  height?: number;
+  @Memoize() get length(): Duration | undefined {
+    return this.rawValue.length
+      ? DurationParser.shared.parseValue(this.rawValue.length)
+      : undefined;
+  }
 
-  width?: number;
+  @Memoize() get height(): number | undefined {
+    return this.rawValue.height
+      ? NumberParser.shared.parseValue(this.rawValue.height)
+      : undefined;
+  }
 
-  track?: number;
+  @Memoize() get width(): number | undefined {
+    return this.rawValue.width
+      ? NumberParser.shared.parseValue(this.rawValue.width)
+      : undefined;
+  }
 
-  external_identifier?: string;
+  @Memoize() get track(): number | undefined {
+    return this.rawValue.track
+      ? NumberParser.shared.parseValue(this.rawValue.track)
+      : undefined;
+  }
 
-  creator?: string;
+  get external_identifier(): string | undefined {
+    return this.rawValue.external_identifier;
+  }
 
-  album?: string;
+  get creator(): string | undefined {
+    return this.rawValue.creator;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get album(): string | undefined {
+    return this.rawValue.album;
+  }
+
   constructor(json: Record<string, any>) {
-    this.name = json.name;
-    this.source = json.source;
-    this.btih = json.btih;
-    this.md5 = json.md5;
-    this.format = json.format;
-    this.mtime = json.mtime;
-    this.crc32 = json.crc32;
-    this.sha1 = json.sha1;
-    this.original = json.original;
-    this.title = json.title;
-    this.length = json.length
-      ? DurationParser.shared.parseValue(json.length)
-      : undefined;
-    this.size = json.size ? ByteParser.shared.parseValue(json.size) : undefined;
-    this.height = json.height
-      ? NumberParser.shared.parseValue(json.height)
-      : undefined;
-    this.width = json.width
-      ? NumberParser.shared.parseValue(json.width)
-      : undefined;
-    this.track = json.track
-      ? NumberParser.shared.parseValue(json.track)
-      : undefined;
-    this.external_identifier = json['external-identifier'];
-    this.creator = json.creator;
-    this.album = json.album;
+    this.rawValue = json;
   }
 }
