@@ -1,6 +1,6 @@
 export { Metadata } from './src/models/metadata';
 export { File } from './src/models/file';
-export { Aggregation } from './src/models/aggregation';
+export { Aggregation, Bucket } from './src/models/aggregation';
 export { Review } from './src/models/review';
 export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
 
