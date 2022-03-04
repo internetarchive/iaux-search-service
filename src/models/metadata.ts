@@ -318,6 +318,12 @@ export class Metadata {
       : undefined;
   }
 
+  @Memoize() get reviewdate(): DateField | undefined {
+    return this.rawMetadata?.reviewdate
+      ? new DateField(this.rawMetadata.reviewdate)
+      : undefined;
+  }
+
   @Memoize() get runtime(): DurationField | undefined {
     return this.rawMetadata?.runtime
       ? new DurationField(this.rawMetadata.runtime)
