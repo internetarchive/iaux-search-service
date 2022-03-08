@@ -83,18 +83,62 @@ describe('SearchParams', () => {
     expect(queryAsString).to.equal(expected);
   });
 
-  it('properly generates a URLSearchParam with aggregations', async () => {
+  it('properly generates a URLSearchParam with advanced aggregations', async () => {
     const query = 'title:foo AND collection:bar';
-    const aggregations = new AggregateSearchParams([
-      {
-        field: 'foo',
-        size: 10,
-      },
-      {
-        field: 'bar',
-        size: 7,
-      },
-    ]);
+    const aggregations = new AggregateSearchParams({
+      advancedParams: [
+        {
+          field: 'foo',
+          size: 10,
+        },
+        {
+          field: 'bar',
+          size: 7,
+        },
+      ],
+    });
+    const params = new SearchParams({
+      query,
+      aggregations,
+    });
+    const urlSearchParam = params.asUrlSearchParams;
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with simple aggregations', async () => {
+    const query = 'title:foo AND collection:bar';
+    const aggregations = new AggregateSearchParams({
+      simpleParams: ['year', 'collection', 'subject'],
+    });
+    const params = new SearchParams({
+      query,
+      aggregations,
+    });
+    const urlSearchParam = params.asUrlSearchParams;
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=year%2Ccollection%2Csubject';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('advanced aggregations take precedence if both simple and advanced provided', async () => {
+    const query = 'title:foo AND collection:bar';
+    const aggregations = new AggregateSearchParams({
+      advancedParams: [
+        {
+          field: 'foo',
+          size: 10,
+        },
+        {
+          field: 'bar',
+          size: 7,
+        },
+      ],
+      simpleParams: ['year'],
+    });
     const params = new SearchParams({
       query,
       aggregations,

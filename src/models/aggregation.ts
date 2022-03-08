@@ -19,4 +19,8 @@ export interface Aggregation {
   doc_count_error_upper_bound?: number;
   sum_other_doc_count?: number;
   buckets: Bucket[];
+  first_bucket_key?: number;
+  last_bucket_key?: number;
+  number_buckets?: number;
+  interval?: number;
 }
