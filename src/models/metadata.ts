@@ -59,6 +59,12 @@ export class Metadata {
       : undefined;
   }
 
+  @Memoize() get avg_rating(): NumberField | undefined {
+    return this.rawMetadata?.avg_rating
+      ? new NumberField(this.rawMetadata.avg_rating)
+      : undefined;
+  }
+
   /**
    * All of the collections that an Item is in, including
    * all of the side-loaded collections from the ListAPI
