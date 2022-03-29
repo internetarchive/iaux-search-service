@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/search-service",
-  "version": "0.3.0-alpha.2",
+  "version": "0.3.0-alpha.3",
   "description": "A search service for the Internet Archive",
   "license": "AGPL-3.0-only",
   "main": "dist/index.js",
