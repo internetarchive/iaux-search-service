@@ -33,5 +33,4 @@ export { SearchResponseParams } from './src/responses/search/search-response-par
 export { DefaultSearchBackend } from './src/search-backend/default-search-backend';
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
-export { SearchParams } from './src/search-params';
-export { SortParam } from './src/search-params';
+export { SearchParams, SortParam, SortDirection, AggregateSearchParams, AggregateSearchParam } from './src/search-params';
