@@ -96,7 +96,11 @@ export class MetadataField<
     const values: Type[] = [];
     rawValues.forEach(value => {
       const parsed = this.parser.parseValue(value);
-      if (parsed !== undefined) values.push(parsed);
+      if (Array.isArray(parsed)) {
+        values.push(...parsed);
+      } else {
+        if (parsed !== undefined) values.push(parsed);
+      }
     });
     return values;
   }
