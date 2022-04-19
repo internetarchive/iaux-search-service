@@ -192,6 +192,12 @@ export class Metadata {
       : undefined;
   }
 
+  @Memoize() get issue(): StringField | undefined {
+    return this.rawMetadata?.issue
+      ? new StringField(this.rawMetadata.issue)
+      : undefined;
+  }
+
   /**
    * For collections, the number of items in the collection
    *
@@ -417,6 +423,12 @@ export class Metadata {
   @Memoize() get venue(): StringField | undefined {
     return this.rawMetadata?.venue
       ? new StringField(this.rawMetadata.venue)
+      : undefined;
+  }
+
+  @Memoize() get volume(): StringField | undefined {
+    return this.rawMetadata?.volume
+      ? new StringField(this.rawMetadata.volume)
       : undefined;
   }
 
