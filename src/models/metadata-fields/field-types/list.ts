@@ -16,7 +16,7 @@ import { MetadataField, MetadataRawValue } from '../metadata-field';
  */
 export class ListField<
   T,
-  FieldParserInterfaceType extends FieldParserInterface<T>
+  FieldParserInterfaceType extends FieldParserInterface<T[]>
 > extends MetadataField<T, FieldParserInterfaceType> {
   constructor(rawValue: MetadataRawValue, parser: FieldParserInterfaceType) {
     super(parser, rawValue);
@@ -26,7 +26,7 @@ export class ListField<
 /**
  * The StringListField handles parsing of a list of strings.
  */
-export class StringListField extends ListField<string[], ListParser<string>> {
+export class StringListField extends ListField<string, ListParser<string>> {
   constructor(rawValue: MetadataRawValue) {
     const parser = new ListParser<string>(StringParser.shared);
     super(rawValue, parser);
@@ -36,7 +36,7 @@ export class StringListField extends ListField<string[], ListParser<string>> {
 /**
  * The NumberListField handles parsing of a list of numbers.
  */
-export class NumberListField extends ListField<number[], ListParser<number>> {
+export class NumberListField extends ListField<number, ListParser<number>> {
   constructor(rawValue: MetadataRawValue) {
     const parser = new ListParser<number>(NumberParser.shared);
     super(rawValue, parser);

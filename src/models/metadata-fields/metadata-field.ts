@@ -65,7 +65,7 @@ export interface MetadataFieldInterface<T> {
  */
 export class MetadataField<
   Type,
-  FieldParserInterfaceType extends FieldParserInterface<Type>
+  FieldParserInterfaceType extends FieldParserInterface<Type | Type[]>
 > implements MetadataFieldInterface<Type> {
   /** @inheritdoc */
   rawValue?: MetadataRawValue;
