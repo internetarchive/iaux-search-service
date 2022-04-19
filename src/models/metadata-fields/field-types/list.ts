@@ -17,7 +17,7 @@ import { MetadataField, MetadataRawValue } from '../metadata-field';
 export class ListField<
   T,
   FieldParserInterfaceType extends FieldParserInterface<T>
-  > extends MetadataField<T, FieldParserInterfaceType> {
+> extends MetadataField<T, FieldParserInterfaceType> {
   constructor(rawValue: MetadataRawValue, parser: FieldParserInterfaceType) {
     super(parser, rawValue);
   }
