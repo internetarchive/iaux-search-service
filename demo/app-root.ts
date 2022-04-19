@@ -13,7 +13,7 @@ import { nothing } from 'lit-html';
 import { Metadata } from '../src/models/metadata';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
-import { SearchParams } from '../src/search-params';
+import { AggregateSearchParams, SearchParams } from '../src/search-params';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 
@@ -116,10 +116,19 @@ export class AppRoot extends LitElement {
   async search(e: Event): Promise<void> {
     e.preventDefault();
     const term = this.searchInput.value;
+    const aggregations = new AggregateSearchParams({
+      advancedParams: [
+        {
+          field: 'year',
+          size: 100,
+        },
+      ],
+    });
     const searchParams = new SearchParams({
       query: term,
       rows: 10,
       fields: ['identifier', 'title'],
+      aggregations,
     });
     const result = await this.searchService.search(searchParams);
     if (result?.success) {

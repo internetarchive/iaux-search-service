@@ -18,5 +18,13 @@ export interface Bucket {
 export interface Aggregation {
   doc_count_error_upper_bound?: number;
   sum_other_doc_count?: number;
-  buckets: Bucket[];
+  /**
+   * The year_histogram returns a `number` array, and
+   * other facets return a `Bucket` array
+   */
+  buckets: Bucket[] | number[];
+  first_bucket_key?: number;
+  last_bucket_key?: number;
+  number_buckets?: number;
+  interval?: number;
 }

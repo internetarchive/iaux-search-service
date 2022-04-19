@@ -1,13 +1,19 @@
 export interface AggregateSearchParam {
   field: string;
-  size: number;
+  size?: number;
 }
 
 export class AggregateSearchParams {
-  searchParams: AggregateSearchParam[];
+  private advancedParams?: AggregateSearchParam[];
 
-  constructor(searchParams: AggregateSearchParam[]) {
-    this.searchParams = searchParams;
+  private simpleParams?: string[];
+
+  constructor(options: {
+    simpleParams?: string[];
+    advancedParams?: AggregateSearchParam[];
+  }) {
+    this.advancedParams = options.advancedParams;
+    this.simpleParams = options.simpleParams;
   }
 
   /**
@@ -30,15 +36,23 @@ export class AggregateSearchParams {
    *  }
    * ]
    *
-   * @returns {Record<string, AggregateSearchParam>[]}
+   * @returns string | undefined}
    * @memberof AggregateSearchParams
    */
-  get asSearchParams(): Record<string, AggregateSearchParam>[] {
-    return this.searchParams.map(param => {
-      return {
-        terms: param,
-      };
-    });
+  get asSearchParams(): string | undefined {
+    if (this.advancedParams) {
+      const params = this.advancedParams.map(param => {
+        return {
+          terms: param,
+        };
+      });
+      const stringified = JSON.stringify(params);
+      return stringified;
+    }
+
+    if (this.simpleParams) {
+      return this.simpleParams.join(',');
+    }
   }
 }
 
@@ -124,10 +138,9 @@ export class SearchParams {
       params.append('sort', sortStrings.join(','));
     }
 
-    if (this.aggregations) {
-      const searchParams = this.aggregations.asSearchParams;
-      const stringified = JSON.stringify(searchParams);
-      params.append('user_aggs', stringified);
+    const searchParams = this.aggregations?.asSearchParams;
+    if (searchParams) {
+      params.append('user_aggs', searchParams);
     }
 
     return params;
