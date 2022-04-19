@@ -8,6 +8,7 @@ import { StringField } from './metadata-fields/field-types/string';
 import { PageProgressionField } from './metadata-fields/field-types/page-progression';
 import { ByteField } from './metadata-fields/field-types/byte';
 import { MediaTypeField } from './metadata-fields/field-types/mediatype';
+import { StringListField } from './metadata-fields/field-types/list';
 
 /**
  * Metadata is an expansive model that describes an Item.
@@ -372,9 +373,9 @@ export class Metadata {
       : undefined;
   }
 
-  @Memoize() get subject(): StringField | undefined {
+  @Memoize() get subject(): StringListField | undefined {
     return this.rawMetadata?.subject
-      ? new StringField(this.rawMetadata.subject)
+      ? new StringListField(this.rawMetadata.subject)
       : undefined;
   }
 
