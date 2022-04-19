@@ -1,5 +1,6 @@
 import {
   FieldParserInterface,
+  ListParser,
   NumberParser,
   StringParser,
 } from '@internetarchive/field-parsers';
@@ -18,31 +19,26 @@ export class ListField<
   FieldParserInterfaceType extends FieldParserInterface<T>
   > extends MetadataField<T, FieldParserInterfaceType> {
   constructor(rawValue: MetadataRawValue, parser: FieldParserInterfaceType) {
-    const stringifiedValue = String(rawValue);
-    let results: string[] = [];
-    // first try splitting by comma, then by semi-colon
-    results = stringifiedValue.split(',');
-    if (results.length === 1) results = stringifiedValue.split(';');
-    const trimmed = results.map(s => s.trim());
-
-    super(parser, trimmed);
+    super(parser, rawValue);
   }
 }
 
 /**
  * The StringListField handles parsing of a list of strings.
  */
-export class StringListField extends ListField<string, StringParser> {
+export class StringListField extends ListField<string[], ListParser<string>> {
   constructor(rawValue: MetadataRawValue) {
-    super(rawValue, StringParser.shared);
+    const parser = new ListParser<string>(StringParser.shared);
+    super(rawValue, parser);
   }
 }
 
 /**
  * The NumberListField handles parsing of a list of numbers.
  */
-export class NumberListField extends ListField<number, NumberParser> {
+export class NumberListField extends ListField<number[], ListParser<number>> {
   constructor(rawValue: MetadataRawValue) {
-    super(rawValue, NumberParser.shared);
+    const parser = new ListParser<number>(NumberParser.shared);
+    super(rawValue, parser);
   }
 }

@@ -11,7 +11,7 @@ describe('List Field', () => {
 
       expect(stringListField.value).to.equal('foo');
       expect(stringListField.values).to.deep.equal(['foo']);
-      expect(stringListField.rawValue).to.deep.equal(['foo']);
+      expect(stringListField.rawValue).to.equal('foo');
     });
 
     it('can parse lists', () => {
@@ -19,7 +19,7 @@ describe('List Field', () => {
 
       expect(stringListField.value).to.equal('foo');
       expect(stringListField.values).to.deep.equal(['foo', 'bar', 'baz']);
-      expect(stringListField.rawValue).to.deep.equal(['foo', 'bar', 'baz']);
+      expect(stringListField.rawValue).to.equal('foo, bar, baz');
     });
 
     it('can parse lists of lists', () => {
@@ -38,12 +38,8 @@ describe('List Field', () => {
         'bop',
       ]);
       expect(stringListField.rawValue).to.deep.equal([
-        'foo',
-        'bar',
-        'baz',
-        'beep',
-        'boop',
-        'bop',
+        'foo, bar, baz',
+        'beep, boop, bop',
       ]);
     });
   });
@@ -54,6 +50,7 @@ describe('List Field', () => {
 
       expect(listField.value).to.equal(1);
       expect(listField.values).to.deep.equal([1, 2, 3]);
+      expect(listField.rawValue).to.equal('1, 2, 3');
     });
 
     it('can parse lists of lists', () => {
@@ -61,6 +58,7 @@ describe('List Field', () => {
 
       expect(listField.value).to.equal(1);
       expect(listField.values).to.deep.equal([1, 2, 3, 4, 5, 6]);
+      expect(listField.rawValue).to.deep.equal(['1, 2, 3', '4, 5, 6']);
     });
   });
 });
