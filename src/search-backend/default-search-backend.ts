@@ -15,7 +15,13 @@ export class DefaultSearchBackend implements SearchBackendInterface {
 
   private includeCredentials: boolean;
 
-  constructor(options?: { baseUrl?: string; includeCredentials?: boolean }) {
+  private requestScope?: string;
+
+  constructor(options?: {
+    baseUrl?: string;
+    includeCredentials?: boolean;
+    scope?: string;
+  }) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
 
     if (options?.includeCredentials !== undefined) {
@@ -26,7 +32,18 @@ export class DefaultSearchBackend implements SearchBackendInterface {
       // due to CORS restrictions, see
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSNotSupportingCredentials
       this.includeCredentials =
-        window.location.href.match(/^https?:\/\/.*archive\.org(:[0-9]+)?/) !== null;
+        window.location.href.match(/^https?:\/\/.*archive\.org(:[0-9]+)?/) !==
+        null;
+    }
+
+    if (options?.scope !== undefined) {
+      this.requestScope = options.scope;
+    } else {
+      const currentUrl = new URL(window.location.href);
+      const scope = currentUrl.searchParams.get('scope');
+      if (scope) {
+        this.requestScope = scope;
+      }
     }
   }
 
@@ -53,10 +70,15 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   private async fetchUrl(
     url: string
   ): Promise<Result<any, SearchServiceError>> {
+    const finalUrl = new URL(url);
+    if (this.requestScope) {
+      finalUrl.searchParams.set('scope', this.requestScope);
+    }
+
     let response: Response;
     // first try the fetch and return a networkError if it fails
     try {
-      response = await fetch(url, {
+      response = await fetch(finalUrl.href, {
         credentials: this.includeCredentials ? 'include' : 'same-origin',
       });
     } catch (err) {

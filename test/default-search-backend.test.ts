@@ -77,4 +77,44 @@ describe('DefaultSearchBackend', () => {
     expect(result.error?.type).to.equal(SearchServiceErrorType.decodingError);
     window.fetch = fetchBackup;
   });
+
+  it('appends the scope if provided', async () => {
+    const fetchBackup = window.fetch;
+    let urlCalled = '';
+    window.fetch = (url: RequestInfo): Promise<Response> => {
+      urlCalled = url.toString();
+      const response = new Response('boop');
+      return new Promise(resolve => resolve(response));
+    };
+
+    const backend = new DefaultSearchBackend({
+      scope: 'foo',
+    });
+    const result = await backend.fetchMetadata('foo');
+    expect(urlCalled.includes('scope=foo')).to.be.true;
+    window.fetch = fetchBackup;
+  });
+
+  it('includes credentials if requested', async () => {
+    const fetchBackup = window.fetch;
+    let urlCalled: RequestInfo;
+    let urlConfig: RequestInit | undefined;
+    window.fetch = (
+      url: RequestInfo,
+      config?: RequestInit
+    ): Promise<Response> => {
+      urlCalled = url;
+      urlConfig = config;
+      const response = new Response('boop');
+      return new Promise(resolve => resolve(response));
+    };
+
+    const backend = new DefaultSearchBackend({
+      scope: 'foo',
+      includeCredentials: true,
+    });
+    await backend.fetchMetadata('foo');
+    expect(urlConfig?.credentials).to.equal('include');
+    window.fetch = fetchBackup;
+  });
 });
