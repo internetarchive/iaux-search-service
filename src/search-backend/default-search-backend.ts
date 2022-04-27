@@ -13,8 +13,21 @@ import {
 export class DefaultSearchBackend implements SearchBackendInterface {
   private baseUrl: string;
 
-  constructor(baseUrl = 'archive.org') {
-    this.baseUrl = baseUrl;
+  private includeCredentials: boolean;
+
+  constructor(options?: { baseUrl?: string; includeCredentials?: boolean }) {
+    this.baseUrl = options?.baseUrl ?? 'archive.org';
+
+    if (options?.includeCredentials !== undefined) {
+      this.includeCredentials = options.includeCredentials;
+    } else {
+      // include credentials if the request is coming from an archive.org domain
+      // since credentialed requests are only allowed from archive.org domains
+      // due to CORS restrictions, see
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSNotSupportingCredentials
+      this.includeCredentials =
+        window.location.href.match(/^https?:\/\/.*archive\.org(:[0-9]+)?/) !== null;
+    }
   }
 
   /** @inheritdoc */
@@ -43,7 +56,9 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     let response: Response;
     // first try the fetch and return a networkError if it fails
     try {
-      response = await fetch(url);
+      response = await fetch(url, {
+        credentials: this.includeCredentials ? 'include' : 'same-origin',
+      });
     } catch (err) {
       const message =
         err instanceof Error
