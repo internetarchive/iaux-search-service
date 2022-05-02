@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams } from '../search-params';
+import { SearchParams, SearchParamURLGenerator } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
@@ -51,7 +51,9 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
-    const urlSearchParam = params.asUrlSearchParams;
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
     return this.fetchUrl(url);

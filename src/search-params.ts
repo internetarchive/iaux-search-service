@@ -3,19 +3,42 @@ export interface AggregateSearchParam {
   size?: number;
 }
 
-export class AggregateSearchParams {
-  private advancedParams?: AggregateSearchParam[];
+export interface AggregateSearchParams {
+  advancedParams?: AggregateSearchParam[];
 
-  private simpleParams?: string[];
+  simpleParams?: string[];
+}
 
-  constructor(options: {
-    simpleParams?: string[];
-    advancedParams?: AggregateSearchParam[];
-  }) {
-    this.advancedParams = options.advancedParams;
-    this.simpleParams = options.simpleParams;
-  }
+export type SortDirection = 'asc' | 'desc';
 
+export interface SortParam {
+  field: string;
+  direction: SortDirection;
+}
+
+/**
+ * SearchParams provides an encapsulation to all of the search parameters
+ * available for searching.
+ *
+ * It also provides an `asUrlSearchParams` method for converting the
+ * parameters to an IA-style query string. ie. it converts the `fields` array
+ * to `fl=identifier,collection` and `sort` to `sort=date+desc,downloads+asc`
+ */
+export interface SearchParams {
+  query: string;
+
+  sort?: SortParam[];
+
+  rows?: number;
+
+  page?: number;
+
+  fields?: string[];
+
+  aggregations?: AggregateSearchParams;
+}
+
+export class SearchParamURLGenerator {
   /**
    * Generates a query parameter from the given aggregate search params
    *
@@ -39,9 +62,11 @@ export class AggregateSearchParams {
    * @returns string | undefined}
    * @memberof AggregateSearchParams
    */
-  get asSearchParams(): string | undefined {
-    if (this.advancedParams) {
-      const params = this.advancedParams.map(param => {
+  static aggregateSearchParamsAsString(
+    aggregateSearchParams: AggregateSearchParams
+  ): string | undefined {
+    if (aggregateSearchParams.advancedParams) {
+      const params = aggregateSearchParams.advancedParams.map(param => {
         return {
           terms: param,
         };
@@ -50,46 +75,47 @@ export class AggregateSearchParams {
       return stringified;
     }
 
-    if (this.simpleParams) {
-      return this.simpleParams.join(',');
+    if (aggregateSearchParams.simpleParams) {
+      return aggregateSearchParams.simpleParams.join(',');
     }
   }
-}
 
-export type SortDirection = 'asc' | 'desc';
-
-export class SortParam {
-  field: string;
-  direction: SortDirection;
-
-  constructor(field: string, direction: SortDirection) {
-    this.field = field;
-    this.direction = direction;
+  static sortParamsAsString(sortParams: SortParam): string {
+    return `${sortParams.field} ${sortParams.direction}`;
   }
 
-  get asString(): string {
-    return `${this.field} ${this.direction}`;
+  static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
+    const params: URLSearchParams = new URLSearchParams();
+    params.append('q', searchParams.query);
+    params.append('output', 'json');
+
+    if (searchParams.rows) {
+      params.append('rows', String(searchParams.rows));
+    }
+
+    if (searchParams.page) {
+      params.append('page', String(searchParams.page));
+    }
+
+    if (searchParams.fields) {
+      params.append('fl', searchParams.fields.join(','));
+    }
+
+    if (searchParams.sort) {
+      const sortStrings = searchParams.sort.map(sort =>
+        this.sortParamsAsString(sort)
+      );
+      params.append('sort', sortStrings.join(','));
+    }
+
+    const aggregations = searchParams.aggregations;
+    if (aggregations) {
+      const aggString = this.aggregateSearchParamsAsString(aggregations);
+      if (aggString) {
+        params.append('user_aggs', aggString);
+      }
+    }
+
+    return params;
   }
-}
-
-/**
- * SearchParams provides an encapsulation to all of the search parameters
- * available for searching.
- *
- * It also provides an `asUrlSearchParams` method for converting the
- * parameters to an IA-style query string. ie. it converts the `fields` array
- * to `fl=identifier,collection` and `sort` to `sort=date+desc,downloads+asc`
- */
-export interface SearchParams {
-  query: string;
-
-  sort?: SortParam[];
-
-  rows?: number;
-
-  page?: number;
-
-  fields?: string[];
-
-  aggregations?: AggregateSearchParams;
 }

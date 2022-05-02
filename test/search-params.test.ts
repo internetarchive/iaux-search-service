@@ -3,30 +3,33 @@ import { expect } from '@open-wc/testing';
 import {
   AggregateSearchParams,
   SearchParams,
+  SearchParamURLGenerator,
   SortParam,
 } from '../src/search-params';
 
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = new SearchParams({ query });
+    const params = { query };
     expect(params.query).to.equal(query);
   });
 
   it('can be instantiated with query params and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const params = new SearchParams({
+    const params = {
       query,
       fields,
-    });
+    };
     expect(params.fields).to.deep.equal(fields);
   });
 
   it('properly generates a URLSearchParam with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = new SearchParams({ query });
-    const urlSearchParam = params.asUrlSearchParams;
+    const params = { query };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected = 'q=title%3Afoo+AND+collection%3Abar&output=json';
     expect(queryAsString).to.equal(expected);
@@ -35,11 +38,13 @@ describe('SearchParams', () => {
   it('properly generates a URLSearchParam with a query and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const params = new SearchParams({
+    const params = {
       query,
       fields,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&fl=identifier%2Cfoo%2Cbar';
@@ -49,15 +54,17 @@ describe('SearchParams', () => {
   it('properly generates a URLSearchParam with a query, sort, row, start, and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
-    const sort = [new SortParam('downloads', 'desc')];
-    const params = new SearchParams({
+    const sort: SortParam[] = [{ field: 'downloads', direction: 'desc' }];
+    const params = {
       query,
       sort,
       rows: 53,
       page: 27,
       fields,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fl=identifier%2Cfoo%2Cbar&sort=downloads+desc';
@@ -66,17 +73,19 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam multiple sort params', async () => {
     const query = 'title:foo AND collection:bar';
-    const sort = [
-      new SortParam('downloads', 'desc'),
-      new SortParam('foo', 'asc'),
+    const sort: SortParam[] = [
+      { field: 'downloads', direction: 'desc' },
+      { field: 'foo', direction: 'asc' },
     ];
-    const params = new SearchParams({
+    const params = {
       query,
       sort,
       rows: 53,
       page: 27,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads+desc%2Cfoo+asc';
@@ -85,7 +94,7 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with advanced aggregations', async () => {
     const query = 'title:foo AND collection:bar';
-    const aggregations = new AggregateSearchParams({
+    const aggregations = {
       advancedParams: [
         {
           field: 'foo',
@@ -96,12 +105,14 @@ describe('SearchParams', () => {
           size: 7,
         },
       ],
-    });
-    const params = new SearchParams({
+    };
+    const params = {
       query,
       aggregations,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
@@ -110,14 +121,16 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with simple aggregations', async () => {
     const query = 'title:foo AND collection:bar';
-    const aggregations = new AggregateSearchParams({
+    const aggregations = {
       simpleParams: ['year', 'collection', 'subject'],
-    });
-    const params = new SearchParams({
+    };
+    const params = {
       query,
       aggregations,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=year%2Ccollection%2Csubject';
@@ -126,7 +139,7 @@ describe('SearchParams', () => {
 
   it('advanced aggregations take precedence if both simple and advanced provided', async () => {
     const query = 'title:foo AND collection:bar';
-    const aggregations = new AggregateSearchParams({
+    const aggregations = {
       advancedParams: [
         {
           field: 'foo',
@@ -138,12 +151,14 @@ describe('SearchParams', () => {
         },
       ],
       simpleParams: ['year'],
-    });
-    const params = new SearchParams({
+    };
+    const params = {
       query,
       aggregations,
-    });
-    const urlSearchParam = params.asUrlSearchParams;
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const expected =
       'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';

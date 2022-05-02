@@ -33,7 +33,7 @@ describe('DefaultSearchBackend', () => {
     };
 
     const backend = new DefaultSearchBackend();
-    const params = new SearchParams({ query: 'foo' });
+    const params = { query: 'foo' };
     const result = await backend.performSearch(params);
     expect(result.success?.foo).to.equal('bar');
     window.fetch = fetchBackup;
@@ -113,7 +113,7 @@ describe('DefaultSearchBackend', () => {
       scope: 'foo',
       includeCredentials: true,
     });
-    await backend.performSearch(new SearchParams({ query: 'foo' }));
+    await backend.performSearch({ query: 'foo' });
     expect(urlConfig?.credentials).to.equal('include');
     window.fetch = fetchBackup;
   });

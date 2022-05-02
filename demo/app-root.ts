@@ -116,20 +116,20 @@ export class AppRoot extends LitElement {
   async search(e: Event): Promise<void> {
     e.preventDefault();
     const term = this.searchInput.value;
-    const aggregations = new AggregateSearchParams({
+    const aggregations = {
       advancedParams: [
         {
           field: 'year',
           size: 100,
         },
       ],
-    });
-    const searchParams = new SearchParams({
+    };
+    const searchParams = {
       query: term,
       rows: 10,
       fields: ['identifier', 'title'],
       aggregations,
-    });
+    };
     const result = await this.searchService.search(searchParams);
     if (result?.success) {
       this.searchResponse = result?.success;
