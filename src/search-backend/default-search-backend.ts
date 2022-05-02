@@ -6,6 +6,7 @@ import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../search-service-error';
+import { SearchParamURLGenerator } from '../search-param-url-generator';
 
 /**
  * The DefaultSearchBackend performs a `window.fetch` request to archive.org
@@ -51,7 +52,9 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
-    const urlSearchParam = params.asUrlSearchParams;
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
     const queryAsString = urlSearchParam.toString();
     const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
     return this.fetchUrl(url);

@@ -36,10 +36,9 @@ describe('SearchService', () => {
     }
 
     const query = 'title:foo AND collection:bar';
-    const params = new SearchParams({ query });
     const backend = new MockSearchBackend();
     const service = new SearchService(backend);
-    const result = await service.search(params);
+    const result = await service.search({ query });
     expect(result.success?.responseHeader.params.query).to.equal(query);
   });
 
@@ -179,8 +178,7 @@ describe('SearchService', () => {
     );
     expect(metadataValueResult.error?.message).to.equal('network error');
 
-    const params = new SearchParams({ query: 'boop' });
-    const searchResult = await service.search(params);
+    const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
     expect(searchResult.error?.type).to.equal(
       SearchServiceErrorType.networkError
@@ -219,8 +217,7 @@ describe('SearchService', () => {
     );
     expect(metadataResult.error?.message).to.equal('decoding error');
 
-    const params = new SearchParams({ query: 'boop' });
-    const searchResult = await service.search(params);
+    const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
     expect(searchResult.error?.type).to.equal(
       SearchServiceErrorType.decodingError

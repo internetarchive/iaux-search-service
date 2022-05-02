@@ -18,14 +18,14 @@ import {
 } from '@internetarchive/search-service';
 
 const searchService = SearchService.default;
-const dateSort = new SortParam('date', 'desc')
-const params = new SearchParams({
+const dateSort = { field: 'date', direction: 'desc' };
+const params = {
   query: 'collection:books AND title:(goody)',
   sort: [dateSort],
   rows: 25,
   start: 0,
   fields: ['identifier', 'collection', 'title', 'creator']
-});
+};
 
 const result = await searchService.performSearch(params);
 if (result.success) {
