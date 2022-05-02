@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams, SearchParamURLGenerator } from '../search-params';
+import { SearchParams } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../search-service-error';
+import { SearchParamURLGenerator } from '../search-param-url-generator';
 
 /**
  * The DefaultSearchBackend performs a `window.fetch` request to archive.org

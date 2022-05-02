@@ -1,11 +1,7 @@
 import { expect } from '@open-wc/testing';
+import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 
-import {
-  AggregateSearchParams,
-  SearchParams,
-  SearchParamURLGenerator,
-  SortParam,
-} from '../src/search-params';
+import { SortParam } from '../src/search-params';
 
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
