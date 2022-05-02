@@ -1,7 +1,7 @@
 import {
   FieldParserInterface,
   FieldParserRawValue,
-} from '@internetarchive/field-parsers/dist/src/field-parser-interface';
+} from '@internetarchive/field-parsers';
 import { expect } from '@open-wc/testing';
 import { MetadataField } from '../../../src/models/metadata-fields/metadata-field';
 
