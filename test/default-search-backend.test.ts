@@ -95,7 +95,30 @@ describe('DefaultSearchBackend', () => {
     window.fetch = fetchBackup;
   });
 
-  it('includes credentials if requested', async () => {
+  it('includes credentials for search endpoint if requested', async () => {
+    const fetchBackup = window.fetch;
+    let urlCalled: RequestInfo;
+    let urlConfig: RequestInit | undefined;
+    window.fetch = (
+      url: RequestInfo,
+      config?: RequestInit
+    ): Promise<Response> => {
+      urlCalled = url;
+      urlConfig = config;
+      const response = new Response('boop');
+      return new Promise(resolve => resolve(response));
+    };
+
+    const backend = new DefaultSearchBackend({
+      scope: 'foo',
+      includeCredentials: true,
+    });
+    await backend.performSearch(new SearchParams({ query: 'foo' }));
+    expect(urlConfig?.credentials).to.equal('include');
+    window.fetch = fetchBackup;
+  });
+
+  it('does not credentials for metadata endpoint', async () => {
     const fetchBackup = window.fetch;
     let urlCalled: RequestInfo;
     let urlConfig: RequestInit | undefined;
@@ -114,7 +137,7 @@ describe('DefaultSearchBackend', () => {
       includeCredentials: true,
     });
     await backend.fetchMetadata('foo');
-    expect(urlConfig?.credentials).to.equal('include');
+    expect(urlConfig?.credentials).to.equal('omit');
     window.fetch = fetchBackup;
   });
 });

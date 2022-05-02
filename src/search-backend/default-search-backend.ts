@@ -68,8 +68,8 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     // so don't include credentials until that is fixed
     return this.fetchUrl(url, {
       requestOptions: {
-        credentials: 'omit'
-      }
+        credentials: 'omit',
+      },
     });
   }
 
@@ -89,7 +89,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     try {
       const fetchOptions = options?.requestOptions ?? {
         credentials: this.includeCredentials ? 'include' : 'same-origin',
-      }
+      };
       response = await fetch(finalUrl.href, fetchOptions);
     } catch (err) {
       const message =
