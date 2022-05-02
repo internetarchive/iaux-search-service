@@ -64,11 +64,20 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   ): Promise<Result<any, SearchServiceError>> {
     const path = keypath ? `/${keypath}` : '';
     const url = `https://${this.baseUrl}/metadata/${identifier}${path}`;
-    return this.fetchUrl(url);
+    // the metadata endpoint doesn't current support credentialed requests
+    // so don't include credentials until that is fixed
+    return this.fetchUrl(url, {
+      requestOptions: {
+        credentials: 'omit'
+      }
+    });
   }
 
   private async fetchUrl(
-    url: string
+    url: string,
+    options?: {
+      requestOptions?: RequestInit;
+    }
   ): Promise<Result<any, SearchServiceError>> {
     const finalUrl = new URL(url);
     if (this.requestScope) {
@@ -78,9 +87,10 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     let response: Response;
     // first try the fetch and return a networkError if it fails
     try {
-      response = await fetch(finalUrl.href, {
+      const fetchOptions = options?.requestOptions ?? {
         credentials: this.includeCredentials ? 'include' : 'same-origin',
-      });
+      }
+      response = await fetch(finalUrl.href, fetchOptions);
     } catch (err) {
       const message =
         err instanceof Error
