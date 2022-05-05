@@ -13,7 +13,6 @@ import { nothing } from 'lit-html';
 import { Metadata } from '../src/models/metadata';
 import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
-import { AggregateSearchParams, SearchParams } from '../src/search-params';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 
