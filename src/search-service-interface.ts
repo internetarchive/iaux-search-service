@@ -1,9 +1,8 @@
 import { MetadataResponse } from './responses/metadata/metadata-response';
 import { Result } from '@internetarchive/result-type';
 import { SearchResponse } from './responses/search/search-response';
-import { AggregateSearchParams, SearchParams } from './search-params';
+import { SearchParams } from './search-params';
 import { SearchServiceError } from './search-service-error';
-import { SortParam } from '..';
 
 export interface SearchServiceInterface {
   /**
@@ -16,15 +15,6 @@ export interface SearchServiceInterface {
   search(
     params: SearchParams
   ): Promise<Result<SearchResponse, SearchServiceError>>;
-
-  search(options: {
-    query: string;
-    sort?: SortParam[];
-    rows?: number;
-    page?: number;
-    fields?: string[];
-    aggregations?: AggregateSearchParams;
-  }): Promise<Result<SearchResponse, SearchServiceError>>;
 
   /**
    * Fetch metadata for a given identifier
