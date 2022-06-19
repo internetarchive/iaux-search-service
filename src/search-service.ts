@@ -2,6 +2,8 @@ import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
 import { DefaultSearchBackend } from './search-backend/default-search-backend';
+import { BetaSearchBackend } from './search-backend/beta-search-backend';
+import { BetaFullTextSearchBackend } from './search-backend/beta-full-text-search-backend';
 import {
   SearchServiceError,
   SearchServiceErrorType,
@@ -18,6 +20,14 @@ import { Result } from '@internetarchive/result-type';
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService(
     new DefaultSearchBackend()
+  );
+
+  public static beta: SearchServiceInterface = new SearchService(
+    new BetaSearchBackend()
+  );
+
+  public static betaFullText: SearchServiceInterface = new SearchService(
+    new BetaFullTextSearchBackend()
   );
 
   private searchBackend: SearchBackendInterface;

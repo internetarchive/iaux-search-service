@@ -12,7 +12,7 @@ import { SearchParamURLGenerator } from '../search-param-url-generator';
  * The DefaultSearchBackend performs a `window.fetch` request to archive.org
  */
 export class DefaultSearchBackend implements SearchBackendInterface {
-  private baseUrl: string;
+  protected baseUrl: string;
 
   private includeCredentials: boolean;
 
@@ -76,7 +76,7 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     });
   }
 
-  private async fetchUrl(
+  protected async fetchUrl(
     url: string,
     options?: {
       requestOptions?: RequestInit;
