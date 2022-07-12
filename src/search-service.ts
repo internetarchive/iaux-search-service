@@ -1,15 +1,19 @@
+import { ResponseFactory } from './responses/response-factory';
 import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
 import { DefaultSearchBackend } from './search-backend/default-search-backend';
-import { BetaSearchBackend } from './search-backend/beta-search-backend';
-import { BetaFullTextSearchBackend } from './search-backend/beta-full-text-search-backend';
+import { AlphaSearchBackend } from './search-backend/alpha-search-backend';
+import { AlphaFullTextSearchBackend } from './search-backend/alpha-full-text-search-backend';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
-import { SearchBackendInterface } from './search-backend/search-backend-interface';
+import {
+  SearchBackendInterface,
+  SearchBackendType,
+} from './search-backend/search-backend-interface';
 import { Result } from '@internetarchive/result-type';
 
 /**
@@ -22,18 +26,21 @@ export class SearchService implements SearchServiceInterface {
     new DefaultSearchBackend()
   );
 
-  public static beta: SearchServiceInterface = new SearchService(
-    new BetaSearchBackend()
+  public static alpha: SearchServiceInterface = new SearchService(
+    new AlphaSearchBackend()
   );
 
-  public static betaFullText: SearchServiceInterface = new SearchService(
-    new BetaFullTextSearchBackend()
+  public static alphaFullText: SearchServiceInterface = new SearchService(
+    new AlphaFullTextSearchBackend()
   );
 
   private searchBackend: SearchBackendInterface;
 
+  private searchBackendType: SearchBackendType;
+
   constructor(searchBackend: SearchBackendInterface) {
     this.searchBackend = searchBackend;
+    this.searchBackendType = searchBackend.serviceParam.name;
   }
 
   /** @inheritdoc */
@@ -44,8 +51,10 @@ export class SearchService implements SearchServiceInterface {
     if (rawResponse.error) {
       return rawResponse;
     }
-
-    const modeledResponse = new SearchResponse(rawResponse.success);
+    const modeledResponse = ResponseFactory.create(
+      this.searchBackendType,
+      rawResponse.success
+    );
     return { success: modeledResponse };
   }
 

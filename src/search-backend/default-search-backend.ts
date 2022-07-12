@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams } from '../search-params';
+import {
+  SearchBackendInterface,
+  ServiceParam,
+} from './search-backend-interface';
+import { SearchParams, ParamType } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
@@ -17,6 +20,11 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   private includeCredentials: boolean;
 
   private requestScope?: string;
+
+  readonly serviceParam: ServiceParam = {
+    name: 'default',
+    param: '',
+  };
 
   constructor(options?: {
     baseUrl?: string;
@@ -52,8 +60,10 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
+    params.service = this.serviceParam;
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      this.querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
@@ -141,4 +151,16 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     const result = { error };
     return result;
   }
+
+  /** @inheritdoc */
+  readonly querystringParams: Record<ParamType, string> = {
+    query: 'q',
+    sort: 'sort',
+    rows: 'rows',
+    page: 'page',
+    fields: 'fl',
+    aggregations: 'user_aggs',
+    aggregations_size: 'user_aggs_size',
+    service: '',
+  };
 }

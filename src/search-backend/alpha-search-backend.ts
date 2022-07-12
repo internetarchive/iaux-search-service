@@ -1,33 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ServiceParam } from './search-backend-interface';
 import { DefaultSearchBackend } from './default-search-backend';
-import { SearchParams } from '../search-params';
+import { SearchParams, ParamType } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import { SearchServiceError } from '../search-service-error';
 import { SearchParamURLGenerator } from '../search-param-url-generator';
 
 /**
- * The BetaFullTextSearchBackend performs a `window.fetch` request to www-ximm.archive.org
+ * The AlphaSearchBackend performs a `window.fetch` request to www-ximm.archive.org
  */
-export class BetaFullTextSearchBackend extends DefaultSearchBackend {
+export class AlphaSearchBackend extends DefaultSearchBackend {
+  private readonly testUrl_1 =
+    'ia-petabox-ximm-search-page-production-service.archive.org';
+  private readonly testUrl_2 = 'www-ximm.archive.org';
+
+  readonly serviceParam: ServiceParam = {
+    name: 'alpha',
+    param: '',
+  };
+
   constructor(options?: {
     baseUrl?: string;
     includeCredentials?: boolean;
     scope?: string;
   }) {
     super(options);
-    this.baseUrl = options?.baseUrl ?? 'www-ximm.archive.org';
+    this.baseUrl = options?.baseUrl ?? this.testUrl_1;
   }
 
   /** @inheritdoc */
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
+    params.service = this.serviceParam;
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      this.querystringParams
     );
     const queryAsString = urlSearchParam.toString();
-    const betaPath = 'services/search/beta/page_production';
-    const url = `https://${this.baseUrl}/${betaPath}/?${queryAsString}&service_backend=fts`;
+    const url = `https://${this.baseUrl}/services/search/beta/page_production/?${queryAsString}`;
     return this.fetchUrl(url);
   }
 
@@ -46,4 +57,16 @@ export class BetaFullTextSearchBackend extends DefaultSearchBackend {
       },
     });
   }
+
+  /** @inheritdoc */
+  readonly querystringParams: Record<ParamType, string> = {
+    query: 'q',
+    sort: 'sort',
+    rows: 'rows',
+    page: 'page',
+    fields: 'fields',
+    aggregations: 'aggregations',
+    aggregations_size: 'aggregations_size',
+    service: 'service_backend',
+  };
 }

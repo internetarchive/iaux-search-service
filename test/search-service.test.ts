@@ -3,7 +3,7 @@
 import { expect } from '@open-wc/testing';
 
 import { SearchService } from '../src/search-service';
-import { SearchParams } from '../src/search-params';
+import { SearchParams, ParamType } from '../src/search-params';
 
 import { MockResponseGenerator } from './mock-response-generator';
 import { SearchResponse } from '../src/responses/search/search-response';
@@ -13,11 +13,19 @@ import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../src/search-service-error';
-import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
+import {
+  SearchBackendInterface,
+  ServiceParam,
+} from '../src/search-backend/search-backend-interface';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {
     class MockSearchBackend implements SearchBackendInterface {
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       async fetchMetadata(
         identifier: string
       ): Promise<Result<MetadataResponse, SearchServiceError>> {
@@ -33,6 +41,17 @@ describe('SearchService', () => {
         );
         return { success: mockResponse };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'user_aggs_size',
+        service: '',
+      };
     }
 
     const query = 'title:foo AND collection:bar';
@@ -44,11 +63,17 @@ describe('SearchService', () => {
 
   it('can request metadata when requested', async () => {
     class MockSearchBackend implements SearchBackendInterface {
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       performSearch(
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
         throw new Error('Method not implemented.');
       }
+
       async fetchMetadata(
         identifier: string
       ): Promise<Result<MetadataResponse, SearchServiceError>> {
@@ -58,6 +83,17 @@ describe('SearchService', () => {
         );
         return { success: mockResponse };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'aggregations_size',
+        service: '',
+      };
     }
 
     const backend = new MockSearchBackend();
@@ -69,11 +105,18 @@ describe('SearchService', () => {
   describe('requestMetadataValue', async () => {
     class MockSearchBackend implements SearchBackendInterface {
       response: any;
+
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       performSearch(
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
         throw new Error('Method not implemented.');
       }
+
       async fetchMetadata(
         identifier: string,
         keypath?: string
@@ -84,6 +127,17 @@ describe('SearchService', () => {
           },
         };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'user_aggs_size',
+        service: '',
+      };
     }
 
     it('can request a metadata value', async () => {
@@ -113,6 +167,11 @@ describe('SearchService', () => {
 
   it('returns an error result if the item is not found', async () => {
     class MockSearchBackend implements SearchBackendInterface {
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       performSearch(
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
@@ -125,6 +184,17 @@ describe('SearchService', () => {
         // we get an empty JSON object when an item is not found
         return { success: {} as any };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'user_aggs_size',
+        service: '',
+      };
     }
 
     const backend = new MockSearchBackend();
@@ -142,6 +212,11 @@ describe('SearchService', () => {
 
   it('returns the search backend network error if one occurs', async () => {
     class MockSearchBackend implements SearchBackendInterface {
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       async performSearch(
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
@@ -151,6 +226,7 @@ describe('SearchService', () => {
         );
         return { error };
       }
+
       async fetchMetadata(
         identifier: string
       ): Promise<Result<MetadataResponse, SearchServiceError>> {
@@ -160,6 +236,17 @@ describe('SearchService', () => {
         );
         return { error };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'aggregations_size',
+        service: '',
+      };
     }
 
     const backend = new MockSearchBackend();
@@ -188,6 +275,11 @@ describe('SearchService', () => {
 
   it('returns the search backend decoding error if one occurs', async () => {
     class MockSearchBackend implements SearchBackendInterface {
+      readonly serviceParam: ServiceParam = {
+        name: 'default',
+        param: '',
+      };
+
       async performSearch(
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
@@ -206,6 +298,17 @@ describe('SearchService', () => {
         );
         return { error };
       }
+
+      readonly querystringParams: Record<ParamType, string> = {
+        query: 'q',
+        sort: 'sort',
+        rows: 'rows',
+        page: 'page',
+        fields: 'fl',
+        aggregations: 'user_aggs',
+        aggregations_size: 'user_aggs_size',
+        service: '',
+      };
     }
 
     const backend = new MockSearchBackend();

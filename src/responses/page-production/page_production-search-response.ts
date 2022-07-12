@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SearchResponseHeader } from './search-response-header';
-import { SearchResponseDetails } from './search-response-details';
+import { SearchResponseHeader } from '../search/search-response-header';
+import { SearchResponseDetails } from '../search/search-response-details';
 
 /**
  * The top-level response model when retrieving a response from the advanced search endpoint.
@@ -8,7 +8,7 @@ import { SearchResponseDetails } from './search-response-details';
  * @export
  * @class SearchResponse
  */
-export class SearchResponse {
+export class PageProductionSearchResponse {
   /**
    * The raw JSON received from the endpoint. This is useful for inspecting if needed.
    *
@@ -18,7 +18,7 @@ export class SearchResponse {
   rawResponse: Record<string, any>;
 
   /**
-   * The response header
+   * The resonse header
    *
    * @type {SearchResponseHeader}
    * @memberof SearchResponse

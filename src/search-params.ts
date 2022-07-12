@@ -1,3 +1,4 @@
+import { ServiceParam } from './search-backend/search-backend-interface';
 export interface AggregateSearchParam {
   field: string;
   size?: number;
@@ -36,4 +37,16 @@ export interface SearchParams {
   fields?: string[];
 
   aggregations?: AggregateSearchParams;
+
+  service?: ServiceParam;
 }
+
+export type ParamType =
+  | 'query'
+  | 'sort'
+  | 'rows'
+  | 'page'
+  | 'fields'
+  | 'aggregations'
+  | 'aggregations_size'
+  | 'service';

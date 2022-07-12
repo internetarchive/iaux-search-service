@@ -2,8 +2,8 @@ import {
   AggregateSearchParams,
   SearchParams,
   SortParam,
+  ParamType,
 } from './search-params';
-
 export class SearchParamURLGenerator {
   /**
    * Generates a query parameter from the given aggregate search params
@@ -50,36 +50,49 @@ export class SearchParamURLGenerator {
     return `${sortParams.field} ${sortParams.direction}`;
   }
 
-  static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
+  /**
+   * Generates query parameters from the search parameters
+   * @param searchParams
+   * @param queryParams
+   * @returns URLSearchParams
+   */
+  static generateURLSearchParams(
+    searchParams: SearchParams,
+    queryParams: Record<ParamType, string>
+  ): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
-    params.append('q', searchParams.query);
+    params.append(queryParams.query, searchParams.query);
     params.append('output', 'json');
 
     if (searchParams.rows) {
-      params.append('rows', String(searchParams.rows));
+      params.append(queryParams.rows, String(searchParams.rows));
     }
 
     if (searchParams.page) {
-      params.append('page', String(searchParams.page));
+      params.append(queryParams.page, String(searchParams.page));
     }
 
     if (searchParams.fields) {
-      params.append('fl', searchParams.fields.join(','));
+      params.append(queryParams.fields, searchParams.fields.join(','));
     }
 
     if (searchParams.sort) {
       const sortStrings = searchParams.sort.map(sort =>
         this.sortParamsAsString(sort)
       );
-      params.append('sort', sortStrings.join(','));
+      params.append(queryParams.sort, sortStrings.join(','));
     }
 
     const aggregations = searchParams.aggregations;
     if (aggregations) {
       const aggString = this.aggregateSearchParamsAsString(aggregations);
       if (aggString) {
-        params.append('user_aggs', aggString);
+        params.append(queryParams.aggregations, aggString);
       }
+    }
+
+    if (searchParams.service?.param) {
+      params.append(queryParams.service, searchParams.service.param);
     }
 
     return params;

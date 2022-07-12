@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Result } from '@internetarchive/result-type';
-import { SearchParams } from '../search-params';
+import { SearchParams, ParamType } from '../search-params';
 import { SearchServiceError } from '../search-service-error';
 
 /**
@@ -18,6 +18,18 @@ import { SearchServiceError } from '../search-service-error';
  */
 export interface SearchBackendInterface {
   /**
+   * Required service query parameter settings for this backend class.
+   *
+   * serviceParam.name used to set/get by-service query parameter names.
+   * serviceParam.param used to set the service= query parameter value.
+   *
+   * @type {ServiceParam}
+   * @example { name: 'alpha', param: '' }
+   * @example { name: 'alpha-full-text', param: 'fts' }
+   */
+  readonly serviceParam: ServiceParam;
+
+  /**
    * Perform a search for the given parameters.
    *
    * @param params
@@ -34,4 +46,22 @@ export interface SearchBackendInterface {
     identifier: string,
     keypath?: string
   ): Promise<Result<any, SearchServiceError>>;
+
+  /**
+   * Map of search params to querystring params.
+   */
+  readonly querystringParams: Record<ParamType, string>;
 }
+
+/**
+ * Types of search backends implemented by the `SearchService`.
+ */
+export type SearchBackendType = 'default' | 'alpha' | 'alpha-full-text';
+
+/**
+ * Map search backend type to its service parameter, if any.
+ */
+export type ServiceParam = {
+  name: SearchBackendType;
+  param: string;
+};

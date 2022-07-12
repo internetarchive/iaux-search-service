@@ -1,7 +1,18 @@
 import { expect } from '@open-wc/testing';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 
-import { SortParam } from '../src/search-params';
+import { SortParam, ParamType } from '../src/search-params';
+
+const querystringParams: Record<ParamType, string> = {
+  query: 'q',
+  sort: 'sort',
+  rows: 'rows',
+  page: 'page',
+  fields: 'fl',
+  aggregations: 'user_aggs',
+  aggregations_size: 'aggregations_size',
+  service: '',
+};
 
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
@@ -24,7 +35,8 @@ describe('SearchParams', () => {
     const query = 'title:foo AND collection:bar';
     const params = { query };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected = 'q=title%3Afoo+AND+collection%3Abar&output=json';
@@ -39,7 +51,8 @@ describe('SearchParams', () => {
       fields,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -59,7 +72,8 @@ describe('SearchParams', () => {
       fields,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -80,7 +94,8 @@ describe('SearchParams', () => {
       page: 27,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -107,7 +122,8 @@ describe('SearchParams', () => {
       aggregations,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -125,7 +141,8 @@ describe('SearchParams', () => {
       aggregations,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
@@ -153,7 +170,8 @@ describe('SearchParams', () => {
       aggregations,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      querystringParams
     );
     const queryAsString = urlSearchParam.toString();
     const expected =

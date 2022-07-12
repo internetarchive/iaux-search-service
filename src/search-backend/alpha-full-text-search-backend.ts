@@ -1,14 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefaultSearchBackend } from './default-search-backend';
+import { ServiceParam } from './search-backend-interface';
+import { AlphaSearchBackend } from './alpha-search-backend';
 import { SearchParams } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import { SearchServiceError } from '../search-service-error';
 import { SearchParamURLGenerator } from '../search-param-url-generator';
 
 /**
- * The BetaSearchBackend performs a `window.fetch` request to www-ximm.archive.org
+ * The AlphaFullTextSearchBackend performs a `window.fetch` request to www-ximm.archive.org
  */
-export class BetaSearchBackend extends DefaultSearchBackend {
+export class AlphaFullTextSearchBackend extends AlphaSearchBackend {
+  readonly serviceParam: ServiceParam = {
+    name: 'alpha-full-text',
+    param: 'fts',
+  };
+
   constructor(options?: {
     baseUrl?: string;
     includeCredentials?: boolean;
@@ -22,11 +28,14 @@ export class BetaSearchBackend extends DefaultSearchBackend {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
+    params.service = this.serviceParam;
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
+      params,
+      this.querystringParams
     );
     const queryAsString = urlSearchParam.toString();
-    const url = `https://${this.baseUrl}/services/search/beta/page_production/?${queryAsString}`;
+    const betaPath = 'services/search/beta/page_production';
+    const url = `https://${this.baseUrl}/${betaPath}/?${queryAsString}&service_backend=fts`;
     return this.fetchUrl(url);
   }
 

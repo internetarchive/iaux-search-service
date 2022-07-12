@@ -15,10 +15,13 @@ import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
-
+import { SearchBackendType } from '../src/search-backend/search-backend-interface';
 @customElement('app-root')
 export class AppRoot extends LitElement {
   private searchService: SearchServiceInterface = SearchService.default;
+
+  @query("input[name='service-name']:checked")
+  private serviceName!: HTMLInputElement;
 
   @query('#search-input')
   private searchInput!: HTMLInputElement;
@@ -42,18 +45,49 @@ export class AppRoot extends LitElement {
       <fieldset>
         <legend>Search</legend>
         <form>
-          <label>Search</label>
-          <input type="text" id="search-input" placeholder="Search Term" />
-          <input type="submit" value="Search" @click=${this.search} />
+          <fieldset>
+            <p>
+              <label>Backend</label>
+              <input
+                type="radio"
+                id="default"
+                name="service-name"
+                value="default"
+                checked
+              />
+              <label for="default">advancedsearch.php</label>
+              <input
+                type="radio"
+                id="alpha"
+                name="service-name"
+                value="alpha"
+              />
+              <label for="alpha">alpha</label>
+              <input
+                type="radio"
+                id="alpha-full-text"
+                name="service-name"
+                value="alpha-full-text"
+              />
+              <label for="alpha-fts">alpha FTS</label>
+            </p>
+            <p>
+              <label>Search</label>
+              <input type="text" id="search-input" placeholder="Search Term" />
+              <input type="submit" value="Search" @click=${this.search} />
+            </p>
+          </fieldset>
         </form>
         <form>
-          <label>Metadata</label>
-          <input type="text" id="metadata-input" placeholder="Identifier" />
-          <input
-            type="submit"
-            value="Get Metadata"
-            @click=${this.getMetadata}
-          />
+          <p>
+            <label>Metadata</label>
+            <input type="text" id="metadata-input" placeholder="Identifier" />
+            <input
+              type="submit"
+              value="Get Metadata"
+              @click=${this.getMetadata}
+            />
+          </p>
         </form>
       </fieldset>
 
@@ -107,6 +141,7 @@ export class AppRoot extends LitElement {
 
   async getMetadata(e: Event): Promise<void> {
     e.preventDefault();
+    this.searchService = SearchService.default;
     const identifier = this.metadataInput.value;
     const result = await this.searchService.fetchMetadata(identifier);
     this.metadataResponse = result?.success;
@@ -115,6 +150,9 @@ export class AppRoot extends LitElement {
   async search(e: Event): Promise<void> {
     e.preventDefault();
     const term = this.searchInput.value;
+    this.searchService = this.getService(
+      this.serviceName.value as SearchBackendType
+    );
     const aggregations = {
       advancedParams: [
         {
@@ -135,6 +173,17 @@ export class AppRoot extends LitElement {
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
+    }
+  }
+
+  getService(name: SearchBackendType): SearchServiceInterface {
+    switch (name) {
+      case 'alpha':
+        return SearchService.alpha;
+      case 'alpha-full-text':
+        return SearchService.alphaFullText;
+      default:
+        return SearchService.default;
     }
   }
 
