@@ -1,4 +1,5 @@
-import { ServiceParam } from './search-backend/search-backend-interface';
+import { ServiceParam } from './service-param';
+
 export interface AggregateSearchParam {
   field: string;
   size?: number;
