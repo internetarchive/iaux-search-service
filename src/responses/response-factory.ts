@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchResponse } from './search/search-response';
-import { SearchBackendType } from '../search-backend/search-backend-interface';
+import { SearchBackendType } from '../service-param';
 
 export class ResponseFactory {
   public static create(

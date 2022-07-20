@@ -10,10 +10,8 @@ import {
   SearchServiceErrorType,
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
-import {
-  SearchBackendInterface,
-  SearchBackendType,
-} from './search-backend/search-backend-interface';
+import { SearchBackendInterface } from './search-backend/search-backend-interface';
+import { SearchBackendType } from './service-param';
 import { Result } from '@internetarchive/result-type';
 
 /**

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  SearchBackendInterface,
-  ServiceParam,
-} from './search-backend-interface';
+import { SearchBackendInterface } from './search-backend-interface';
+import { ServiceParam } from '../service-param';
 import { SearchParams, ParamType } from '../search-params';
 import { Result } from '@internetarchive/result-type';
 import {

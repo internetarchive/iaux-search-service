@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ServiceParam } from './search-backend-interface';
+import { ServiceParam } from '../service-param';
 import { DefaultSearchBackend } from './default-search-backend';
 import { SearchParams, ParamType } from '../search-params';
 import { Result } from '@internetarchive/result-type';

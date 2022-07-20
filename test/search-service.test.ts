@@ -13,10 +13,8 @@ import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../src/search-service-error';
-import {
-  SearchBackendInterface,
-  ServiceParam,
-} from '../src/search-backend/search-backend-interface';
+import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
+import { ServiceParam } from '../src/service-param';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {

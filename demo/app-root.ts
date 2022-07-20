@@ -15,7 +15,7 @@ import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
-import { SearchBackendType } from '../src/search-backend/search-backend-interface';
+import { SearchBackendType } from '../src/service-param';
 @customElement('app-root')
 export class AppRoot extends LitElement {
   private searchService: SearchServiceInterface = SearchService.default;
