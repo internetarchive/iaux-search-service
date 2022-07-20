@@ -88,6 +88,7 @@ describe('Metadata Field', () => {
 
   it('does not add value to values array if parsed value is undefined', () => {
     class MockFloatParser implements FieldParserInterface<number> {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       parseValue(rawValue: FieldParserRawValue): number | undefined {
         return undefined;
       }
