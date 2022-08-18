@@ -87,7 +87,7 @@ export class File {
       : undefined;
   }
 
-  get external_identifier(): string | undefined {
+  get external_identifier(): string | string[] | undefined {
     return this.rawValue.external_identifier;
   }
 
