@@ -349,6 +349,12 @@ export class Metadata {
       : undefined;
   }
 
+  @Memoize() get snippets(): StringField | undefined {
+    return this.rawMetadata?.snippets
+      ? new StringField(this.rawMetadata.snippets)
+      : undefined;
+  }
+
   @Memoize() get source(): StringField | undefined {
     return this.rawMetadata?.source
       ? new StringField(this.rawMetadata.source)
