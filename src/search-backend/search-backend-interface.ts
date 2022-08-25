@@ -27,6 +27,7 @@ export interface SearchBackendInterface {
   /**
    * Fetch metadata for a single item with an optional keypath
    *
+   * @deprecated
    * @param identifier
    * @param keypath
    */
