@@ -25,7 +25,7 @@ export class SearchParamURLGenerator {
    *  }
    * ]
    *
-   * @returns string | undefined}
+   * @returns {string | undefined}
    * @memberof AggregateSearchParams
    */
   static aggregateSearchParamsAsString(

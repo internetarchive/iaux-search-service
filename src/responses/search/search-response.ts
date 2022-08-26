@@ -18,7 +18,7 @@ export class SearchResponse {
   rawResponse: Record<string, any>;
 
   /**
-   * The resonse header
+   * The response header
    *
    * @type {SearchResponseHeader}
    * @memberof SearchResponse
