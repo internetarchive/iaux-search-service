@@ -31,8 +31,8 @@ export interface SearchBackendInterface {
    * @param identifier
    * @param keypath
    */
-  // fetchMetadata(
-  //   identifier: string,
-  //   keypath?: string
-  // ): Promise<Result<any, SearchServiceError>>;
+  fetchMetadata(
+    identifier: string,
+    keypath?: string
+  ): Promise<Result<any, SearchServiceError>>;
 }
