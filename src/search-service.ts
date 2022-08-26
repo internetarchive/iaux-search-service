@@ -9,6 +9,7 @@ import {
 import { SearchServiceInterface } from './search-service-interface';
 import { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { Result } from '@internetarchive/result-type';
+import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -17,7 +18,7 @@ import { Result } from '@internetarchive/result-type';
  */
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService(
-    new DefaultSearchBackend()
+    new MetadataSearchBackend()
   );
 
   private searchBackend: SearchBackendInterface;
