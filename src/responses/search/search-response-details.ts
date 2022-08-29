@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Aggregation } from '../../models/aggregation';
 import { Metadata } from '../../models/metadata';
+import { SearchHitSchema } from './search-hit-schema';
 
 /**
  * This is the search response details inside the SearchResponse object that contains
@@ -42,10 +43,12 @@ export class SearchResponseDetails {
    */
   aggregations?: Record<string, Aggregation>;
 
-  constructor(json: SearchResponseDetails) {
-    this.numFound = json.numFound;
-    this.start = json.start;
-    this.docs = json.docs.map((doc: any) => new Metadata(doc));
-    this.aggregations = json.aggregations;
+  constructor(body: SearchResponseDetails, schema: SearchHitSchema) {
+    const type = schema.hit_type;
+    
+    this.numFound = body.numFound;
+    this.start = body.start;
+    this.docs = body.docs.map((doc: any) => new Metadata(doc));
+    this.aggregations = body.aggregations;
   }
 }

@@ -35,7 +35,7 @@ export class SearchResponse {
 
   constructor(json: Record<string, any>) {
     this.rawResponse = json;
-    this.responseHeader = json.responseHeader;
-    this.response = new SearchResponseDetails(json.response);
+    this.responseHeader = json.response.header;
+    this.response = new SearchResponseDetails(json.response.body, json.response.hit_schema);
   }
 }
