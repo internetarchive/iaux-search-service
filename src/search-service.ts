@@ -1,15 +1,12 @@
 import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { MetadataResponse } from './responses/metadata/metadata-response';
-import { DefaultSearchBackend } from './search-backend/default-search-backend';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from './search-service-error';
 import { SearchServiceInterface } from './search-service-interface';
-import { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { Result } from '@internetarchive/result-type';
-import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
 import { SearchType } from './search-type';
 import { SearchBackendFactory } from './search-backend/search-backend-factory';
 
