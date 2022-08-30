@@ -5,12 +5,20 @@ import type { SearchBackendInterface } from "./search-backend-interface";
 import type { SearchBackendOptions } from "./search-backend-options";
 
 /**
- * A factory to obtain the correct search backend 
+ * A factory to obtain the correct search backend for a given search type.
  */
 export class SearchBackendFactory {
   private constructor() {}
 
-  static getBackendForSearchType(type: SearchType, options: SearchBackendOptions = {}): SearchBackendInterface {
+  /**
+   * Retrieve a search backend that can handle the given type of search.
+   * @param type The type of search that the backend needs to handle.
+   * @param options Options to pass to the search backend.
+   */
+  static getBackendForSearchType(
+    type: SearchType, 
+    options: SearchBackendOptions = {}
+  ): SearchBackendInterface {
     switch (type) {
       case SearchType.FULLTEXT:
       case SearchType.TV:

@@ -19,7 +19,7 @@ export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService();
 
   constructor() {
-    //this.searchBackend = searchBackend;
+    //
   }
 
   /** @inheritdoc */
