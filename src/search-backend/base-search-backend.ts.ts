@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams } from '../search-params';
-import { Result } from '@internetarchive/result-type';
+import type { SearchParams } from '../search-params';
+import type { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../search-service-error';
-import { SearchBackendOptions } from './search-backend-options';
+import type { SearchBackendOptions } from './search-backend-options';
 
 /**
  * An abstract base class for search backends.

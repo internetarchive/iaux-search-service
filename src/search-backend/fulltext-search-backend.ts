@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SearchParams } from '../search-params';
-import { Result } from '@internetarchive/result-type';
-import {
+import type { SearchParams } from '../search-params';
+import type { Result } from '@internetarchive/result-type';
+import type {
   SearchServiceError,
 } from '../search-service-error';
 import { SearchParamURLGenerator } from '../search-param-url-generator';
 import { BaseSearchBackend } from './base-search-backend.ts';
-import { SearchBackendOptions } from './search-backend-options';
+import type { SearchBackendOptions } from './search-backend-options';
 
 /**
  * The FulltextSearchBackend performs a `window.fetch` request to archive.org

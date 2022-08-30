@@ -1,8 +1,8 @@
 import { FulltextSearchBackend } from "./fulltext-search-backend";
 import { MetadataSearchBackend } from "./metadata-search-backend";
 import { SearchType } from "../search-type";
-import { SearchBackendInterface } from "./search-backend-interface";
-import { SearchBackendOptions } from "./search-backend-options";
+import type { SearchBackendInterface } from "./search-backend-interface";
+import type { SearchBackendOptions } from "./search-backend-options";
 
 /**
  * A factory to obtain the correct search backend 

@@ -1,9 +1,9 @@
-import { MetadataResponse } from './responses/metadata/metadata-response';
-import { Result } from '@internetarchive/result-type';
-import { SearchResponse } from './responses/search/search-response';
-import { SearchParams } from './search-params';
-import { SearchServiceError } from './search-service-error';
-import { SearchType } from './search-type';
+import type { MetadataResponse } from './responses/metadata/metadata-response';
+import type { Result } from '@internetarchive/result-type';
+import type { SearchResponse } from './responses/search/search-response';
+import type { SearchParams } from './search-params';
+import type { SearchServiceError } from './search-service-error';
+import type { SearchType } from './search-type';
 
 export interface SearchServiceInterface {
   /**

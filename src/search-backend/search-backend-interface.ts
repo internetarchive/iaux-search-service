@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Result } from '@internetarchive/result-type';
-import { SearchParams } from '../search-params';
-import { SearchServiceError } from '../search-service-error';
+import type { Result } from '@internetarchive/result-type';
+import type { SearchParams } from '../search-params';
+import type { SearchServiceError } from '../search-service-error';
 
 /**
  * An interface to provide the network layer to the `SearchService`.
