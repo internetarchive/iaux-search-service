@@ -10,6 +10,8 @@ import { SearchServiceInterface } from './search-service-interface';
 import { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { Result } from '@internetarchive/result-type';
 import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
+import { SearchType } from './search-type';
+import { SearchBackendFactory } from './search-backend/search-backend-factory';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -17,21 +19,20 @@ import { MetadataSearchBackend } from './search-backend/metadata-search-backend'
  * object, depending on the type of response.
  */
 export class SearchService implements SearchServiceInterface {
-  public static default: SearchServiceInterface = new SearchService(
-    new MetadataSearchBackend()
-  );
+  public static default: SearchServiceInterface = new SearchService();
 
-  private searchBackend: SearchBackendInterface;
-
-  constructor(searchBackend: SearchBackendInterface) {
-    this.searchBackend = searchBackend;
+  constructor() {
+    //this.searchBackend = searchBackend;
   }
 
   /** @inheritdoc */
   async search(
-    params: SearchParams
+    params: SearchParams,
+    searchType: SearchType = SearchType.METADATA
   ): Promise<Result<SearchResponse, SearchServiceError>> {
-    const rawResponse = await this.searchBackend.performSearch(params);
+    const searchBackend = SearchBackendFactory.getBackendForSearchType(searchType);
+
+    const rawResponse = await searchBackend.performSearch(params);
     if (rawResponse.error) {
       return rawResponse;
     }
@@ -44,7 +45,9 @@ export class SearchService implements SearchServiceInterface {
   async fetchMetadata(
     identifier: string
   ): Promise<Result<MetadataResponse, SearchServiceError>> {
-    const rawResponse = await this.searchBackend.fetchMetadata(identifier);
+    const searchBackend = SearchBackendFactory.getBackendForSearchType(SearchType.METADATA);
+
+    const rawResponse = await searchBackend.fetchMetadata(identifier);
     if (rawResponse.error) {
       return rawResponse;
     }
@@ -64,7 +67,9 @@ export class SearchService implements SearchServiceInterface {
     identifier: string,
     keypath: string
   ): Promise<Result<T, SearchServiceError>> {
-    const result = await this.searchBackend.fetchMetadata(identifier, keypath);
+    const searchBackend = SearchBackendFactory.getBackendForSearchType(SearchType.METADATA);
+
+    const result = await searchBackend.fetchMetadata(identifier, keypath);
     if (result.error) {
       return result;
     }

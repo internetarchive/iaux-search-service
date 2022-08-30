@@ -3,6 +3,7 @@ import { Result } from '@internetarchive/result-type';
 import { SearchResponse } from './responses/search/search-response';
 import { SearchParams } from './search-params';
 import { SearchServiceError } from './search-service-error';
+import { SearchType } from './search-type';
 
 export interface SearchServiceInterface {
   /**
@@ -13,12 +14,14 @@ export interface SearchServiceInterface {
    * @memberof SearchServiceInterface
    */
   search(
-    params: SearchParams
+    params: SearchParams,
+    searchType?: SearchType
   ): Promise<Result<SearchResponse, SearchServiceError>>;
 
   /**
    * Fetch metadata for a given identifier
    *
+   * @deprecated
    * @param {string} identifier
    * @returns {Promise<Result<MetadataResponse, SearchServiceError>>}
    * @memberof SearchServiceInterface
@@ -55,6 +58,7 @@ export interface SearchServiceInterface {
    * /metadata/:identifier/metadata/title
    * /metadata/:identifier/files/0/name // first file name
    *
+   * @deprecated
    * @param identifier
    * @param keypath
    */
