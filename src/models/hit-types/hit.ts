@@ -19,17 +19,27 @@ type Merge<T, U> = {
 };
 
 /**
+ * Applying this to the Hit type forces Intellisense to present Hit as
+ * a type in its own right, and not as the underlying merge type it aliases.
+ * Really just to keep things clean at the call site.
+ */
+interface PreserveAlias {}
+
+/**
  * Hit is an expansive type definition encompassing all the optional 
  * and required properties that may occur on any type of hit returned 
  * by the various search backends. (Most metadata properties are
  * optional anyway).
  */
-export type Hit = Partial<Merge<ItemHit, TextHit>>;
+export type Hit = Partial<Merge<ItemHit, TextHit>> & PreserveAlias;
 
+/**
+ * A factory for creating instances of various hit types.
+ */
 export class HitFactory {
   private constructor() {}
 
-  static createFromType(hit: Hit, type: HitType): Hit {
+  static createFromType(type: HitType, hit: Hit): Hit {
     switch (type) {
       case 'item':
         return new ItemHit(hit);
