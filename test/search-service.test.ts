@@ -21,7 +21,7 @@ describe('SearchService', () => {
         params: SearchParams
       ): Promise<Result<SearchResponse, SearchServiceError>> {
         const responseGenerator = new MockResponseGenerator();
-        const mockResponse = responseGenerator.generateMockSearchResponse(
+        const mockResponse = responseGenerator.generateMockMetadataSearchResponse(
           params
         );
         return { success: mockResponse };
@@ -30,9 +30,9 @@ describe('SearchService', () => {
 
     const query = 'title:foo AND collection:bar';
     const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
+    const service = new SearchService();
     const result = await service.search({ query });
-    expect(result.success?.responseHeader.params.query).to.equal(query);
+    expect(result.success?.request.finalized_parameters.user_query).to.equal(query);
   });
 
   it('returns the search backend network error if one occurs', async () => {
@@ -49,7 +49,7 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
+    const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
@@ -73,7 +73,7 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
+    const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
