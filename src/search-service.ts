@@ -8,8 +8,7 @@ import { SearchBackendFactory } from './search-backend/search-backend-factory';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
- * the Search Backend and modeling it as a `SearchResponse` or `MetadataResponse`
- * object, depending on the type of response.
+ * the Search Backend and modeling it as a `SearchResponse` object.
  */
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService();
