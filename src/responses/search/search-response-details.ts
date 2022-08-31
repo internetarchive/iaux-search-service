@@ -1,39 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Aggregation } from '../../models/aggregation';
+import type { Aggregation } from '../../models/aggregation';
+import { Hit, HitFactory } from '../../models/hit-types/hit';
+import { ItemHit } from '../../models/hit-types/item-hit';
+import { TextHit } from '../../models/hit-types/text-hit';
 import { Metadata } from '../../models/metadata';
-import { SearchHitSchema } from './search-hit-schema';
+import type { SearchHitSchema } from './search-hit-schema';
+
+export interface SearchResponseBody {
+  hits: SearchResponseHits,
+  aggregations?: Record<string, Aggregation>
+}
+
+export interface SearchResponseHits {
+  total: number,
+  returned: number,
+  hits: Hit[]
+}
 
 /**
  * This is the search response details inside the SearchResponse object that contains
  * the search results, under the `docs` key.
  *
  * @export
- * @class Response
  */
 export class SearchResponseDetails {
   /**
    * Total number of results found
-   *
-   * @type {number}
-   * @memberof Response
    */
-  numFound: number;
+  totalHits: number;
 
   /**
-   * Search result start number for pagination
-   *
-   * @type {number}
-   * @memberof Response
+   * Number of returned hits in this response
    */
-  start: number;
+  returnedHits: number;
 
   /**
    * The array of search results
-   *
-   * @type {Metadata[]}
-   * @memberof Response
    */
-  docs: Metadata[];
+  hits: Hit[];
 
   /**
    * Requested aggregations such as facets or histogram data
@@ -43,12 +47,12 @@ export class SearchResponseDetails {
    */
   aggregations?: Record<string, Aggregation>;
 
-  constructor(body: SearchResponseDetails, schema: SearchHitSchema) {
+  constructor(body: SearchResponseBody, schema: SearchHitSchema) {
     const type = schema.hit_type;
-    
-    this.numFound = body.numFound;
-    this.start = body.start;
-    this.docs = body.docs.map((doc: any) => new Metadata(doc));
+
+    this.totalHits = body.hits.total;
+    this.returnedHits = body.hits.returned;
+    this.hits = body.hits.hits.map((hit: Hit) => HitFactory.createFromType(hit, type));
     this.aggregations = body.aggregations;
   }
 }

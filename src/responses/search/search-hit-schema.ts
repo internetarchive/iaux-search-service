@@ -1,7 +1,4 @@
-/**
- * Union of the different hit_type values returned by the PPS
- */
-export type HitType = 'item' | 'text';
+import { HitType } from "../../models/hit-types/hit"
 
 /**
  * Schema for individual field types within a hit
