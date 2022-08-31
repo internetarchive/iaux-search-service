@@ -44,12 +44,18 @@ export class SearchResponseDetails {
    */
   aggregations?: Record<string, Aggregation>;
 
-  constructor(body: SearchResponseBody, schema: SearchHitSchema) {
-    const hitType = schema.hit_type;
+  /**
+   * The hit schema for this response
+   */
+  schema?: SearchHitSchema;
 
-    this.totalHits = body.hits.total;
-    this.returnedHits = body.hits.returned;
-    this.hits = body.hits.hits.map((hit: Hit) => HitFactory.createFromType(hitType, hit));
-    this.aggregations = body.aggregations;
+  constructor(body: SearchResponseBody, schema: SearchHitSchema) {
+    this.schema = schema;
+    const hitType = schema?.hit_type;
+
+    this.totalHits = body?.hits?.total ?? 0;
+    this.returnedHits = body?.hits?.returned ?? 0;
+    this.hits = body?.hits?.hits?.map((hit: Hit) => HitFactory.createFromType(hitType, hit)) ?? [];
+    this.aggregations = body?.aggregations;
   }
 }
