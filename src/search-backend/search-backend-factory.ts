@@ -21,8 +21,8 @@ export class SearchBackendFactory {
   ): SearchBackendInterface {
     switch (type) {
       case SearchType.FULLTEXT:
-      case SearchType.TV:
-      case SearchType.RADIO:
+      case SearchType.TV: // Will eventually have its own service backend
+      case SearchType.RADIO: // Will eventually have its own service backend
         return new FulltextSearchBackend(options);
       case SearchType.METADATA:
       default:
