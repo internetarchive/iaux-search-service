@@ -8,13 +8,11 @@ import {
   query,
   TemplateResult,
 } from 'lit-element';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { nothing } from 'lit-html';
-import { Metadata } from '../src/models/metadata';
-import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
+import { Hit } from '../src/models/hit-types/hit';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -23,17 +21,11 @@ export class AppRoot extends LitElement {
   @query('#search-input')
   private searchInput!: HTMLInputElement;
 
-  @query('#metadata-input')
-  private metadataInput!: HTMLInputElement;
-
   @internalProperty()
   private searchResponse?: SearchResponse;
 
-  @internalProperty()
-  private metadataResponse?: MetadataResponse;
-
-  private get searchResults(): Metadata[] | undefined {
-    return this.searchResponse?.response.docs;
+  private get searchResults(): Hit[] | undefined {
+    return this.searchResponse?.response.hits;
   }
 
   /** @inheritdoc */
@@ -46,19 +38,9 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Search" @click=${this.search} />
         </form>
-        <form>
-          <label>Metadata</label>
-          <input type="text" id="metadata-input" placeholder="Identifier" />
-          <input
-            type="submit"
-            value="Get Metadata"
-            @click=${this.getMetadata}
-          />
-        </form>
       </fieldset>
 
       ${this.searchResults ? this.resultsTemplate : nothing}
-      ${this.metadataResponse ? this.metadataTemplate : nothing}
     `;
   }
 
@@ -84,32 +66,6 @@ export class AppRoot extends LitElement {
         </tbody>
       </table>
     `;
-  }
-
-  private get metadataTemplate(): TemplateResult {
-    const rawMetadata = this.metadataResponse?.metadata.rawMetadata;
-    if (!rawMetadata) return html`${nothing}`;
-
-    return html`
-      <h2>Metadata Response</h2>
-      <table>
-        ${Object.keys(rawMetadata).map(
-          key => html`
-            <tr>
-              <td>${key}</td>
-              <td>${unsafeHTML(rawMetadata[key])}</td>
-            </tr>
-          `
-        )}
-      </table>
-    `;
-  }
-
-  async getMetadata(e: Event): Promise<void> {
-    e.preventDefault();
-    const identifier = this.metadataInput.value;
-    const result = await this.searchService.fetchMetadata(identifier);
-    this.metadataResponse = result?.success;
   }
 
   async search(e: Event): Promise<void> {

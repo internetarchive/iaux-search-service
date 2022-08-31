@@ -49,12 +49,6 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>>;
 
-  /** @inheritdoc */
-  abstract fetchMetadata(
-    identifier: string,
-    keypath?: string
-  ): Promise<Result<any, SearchServiceError>>;
-
   /**
    * Fires a request to the URL (with this backend's options applied) and 
    * asynchronously returns a Result object containing either the raw response

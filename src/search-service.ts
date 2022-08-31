@@ -1,10 +1,6 @@
 import { SearchResponse } from './responses/search/search-response';
 import type { SearchParams } from './search-params';
-import { MetadataResponse } from './responses/metadata/metadata-response';
-import {
-  SearchServiceError,
-  SearchServiceErrorType,
-} from './search-service-error';
+import { SearchServiceError } from './search-service-error';
 import type { SearchServiceInterface } from './search-service-interface';
 import type { Result } from '@internetarchive/result-type';
 import { SearchType } from './search-type';
@@ -36,47 +32,5 @@ export class SearchService implements SearchServiceInterface {
 
     const modeledResponse = new SearchResponse(rawResponse.success);
     return { success: modeledResponse };
-  }
-
-  /** @inheritdoc */
-  async fetchMetadata(
-    identifier: string
-  ): Promise<Result<MetadataResponse, SearchServiceError>> {
-    const searchBackend = SearchBackendFactory.getBackendForSearchType(SearchType.METADATA);
-
-    const rawResponse = await searchBackend.fetchMetadata(identifier);
-    if (rawResponse.error) {
-      return rawResponse;
-    }
-
-    if (rawResponse.success?.metadata === undefined) {
-      return {
-        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
-      };
-    }
-
-    const modeledResponse = new MetadataResponse(rawResponse.success);
-    return { success: modeledResponse };
-  }
-
-  /** @inheritdoc */
-  async fetchMetadataValue<T>(
-    identifier: string,
-    keypath: string
-  ): Promise<Result<T, SearchServiceError>> {
-    const searchBackend = SearchBackendFactory.getBackendForSearchType(SearchType.METADATA);
-
-    const result = await searchBackend.fetchMetadata(identifier, keypath);
-    if (result.error) {
-      return result;
-    }
-
-    if (result.success?.result === undefined) {
-      return {
-        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
-      };
-    }
-
-    return { success: result.success.result };
   }
 }

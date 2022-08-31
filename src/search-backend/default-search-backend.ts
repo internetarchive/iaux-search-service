@@ -27,20 +27,4 @@ export class DefaultSearchBackend extends BaseSearchBackend {
     const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
     return this.fetchUrl(url);
   }
-
-  /** @inheritdoc */
-  async fetchMetadata(
-    identifier: string,
-    keypath?: string
-  ): Promise<Result<any, SearchServiceError>> {
-    const path = keypath ? `/${keypath}` : '';
-    const url = `https://${this.baseUrl}/metadata/${identifier}${path}`;
-    // the metadata endpoint doesn't currently support credentialed requests
-    // so don't include credentials until that is fixed
-    return this.fetchUrl(url, {
-      requestOptions: {
-        credentials: 'omit',
-      },
-    });
-  }
 }
