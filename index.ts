@@ -1,8 +1,5 @@
 export { Metadata } from './src/models/metadata';
-export { File } from './src/models/file';
 export { Aggregation, Bucket } from './src/models/aggregation';
-export { Review } from './src/models/review';
-export { SpeechMusicASREntry } from './src/models/speech-music-asr-entry';
 
 export { DateField } from './src/models/metadata-fields/field-types/date';
 
@@ -25,7 +22,6 @@ export {
   MetadataField,
 } from './src/models/metadata-fields/metadata-field';
 
-export { MetadataResponse } from './src/responses/metadata/metadata-response';
 export { SearchResponse } from './src/responses/search/search-response';
 export { SearchResponseHeader } from './src/responses/search/search-response-header';
 export { SearchResponseParams } from './src/responses/search/search-response-params';

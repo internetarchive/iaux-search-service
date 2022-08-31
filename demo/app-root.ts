@@ -13,6 +13,7 @@ import { SearchResponse } from '../src/responses/search/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { Hit } from '../src/models/hit-types/hit';
+import { SearchType } from '../src/search-type';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -34,9 +35,15 @@ export class AppRoot extends LitElement {
       <fieldset>
         <legend>Search</legend>
         <form>
-          <label>Search</label>
+          <label for="search-input">Search: </label>
           <input type="text" id="search-input" placeholder="Search Term" />
-          <input type="submit" value="Search" @click=${this.search} />
+          <input type="submit" value="Go" @click=${this.search} />
+
+          <fieldset id="search-options">
+            <legend>Search type:</legend>
+            <label><input type="radio" name="search-type" value="mds" checked>&nbsp;Metadata</label>
+            <label><input type="radio" name="search-type" value="fts">&nbsp;Full text</label>
+          </fieldset>
         </form>
       </fieldset>
 
@@ -55,11 +62,11 @@ export class AppRoot extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.searchResults?.map(metadata => {
+          ${this.searchResults?.map(hit => {
             return html`
               <tr>
-                <td>${metadata.identifier}</td>
-                <td>${metadata.title?.value}</td>
+                <td>${hit.identifier}</td>
+                <td>${hit.title?.value}</td>
               </tr>
             `;
           })}
@@ -85,7 +92,10 @@ export class AppRoot extends LitElement {
       fields: ['identifier', 'title'],
       aggregations,
     };
-    const result = await this.searchService.search(searchParams);
+    const checkedRadio = this.shadowRoot?.querySelector(`input[name='search-type']:checked`) as HTMLInputElement;
+    const searchType = checkedRadio?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
+    
+    const result = await this.searchService.search(searchParams, searchType);
     if (result?.success) {
       this.searchResponse = result?.success;
     } else {
@@ -96,9 +106,9 @@ export class AppRoot extends LitElement {
 
   static get styles(): CSSResult {
     return css`
-      /* th {
-        font-weight: bold;
-      } */
+      #search-options {
+        margin-top: 0.6rem;
+      }
     `;
   }
 }
