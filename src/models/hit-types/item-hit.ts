@@ -17,6 +17,7 @@ import { StringField } from "../metadata-fields/field-types/string";
  * @class ItemHit
  */
 export class ItemHit {
+
   /**
    * This is the raw hit response; useful for inspecting the raw data 
    * returned from the server.
