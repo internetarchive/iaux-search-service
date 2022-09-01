@@ -14,6 +14,7 @@ import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { Hit } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
+import { SearchParams, SortDirection } from '../src/search-params';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -39,7 +40,7 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <fieldset id="search-options">
+          <fieldset class="search-options">
             <legend>Search type:</legend>
             <input
               type="radio"
@@ -51,6 +52,22 @@ export class AppRoot extends LitElement {
             <label for="mds"> &nbsp;Metadata </label>
             <input type="radio" id="fts" name="search-type" value="fts" />
             <label for="fts"> &nbsp;Full text </label>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Sort by title:</legend>
+            <input
+              type="radio"
+              id="sort-none"
+              name="sort"
+              value="none"
+              checked
+            />
+            <label for="no-sort"> &nbsp;None </label>
+            <input type="radio" id="sort-asc" name="sort" value="asc" />
+            <label for="sort-asc"> &nbsp;Ascending </label>
+            <input type="radio" id="sort-desc" name="sort" value="desc" />
+            <label for="sort-desc"> &nbsp;Descending </label>
           </fieldset>
         </form>
       </fieldset>
@@ -94,19 +111,29 @@ export class AppRoot extends LitElement {
         },
       ],
     };
-    const searchParams = {
+
+    const checkedSort = this.shadowRoot?.querySelector(
+      `input[name='sort']:checked`
+    ) as HTMLInputElement;
+
+    const sortParam = checkedSort?.value === 'none' ? [] : [
+      { field: 'title', direction: checkedSort?.value as SortDirection }
+    ];
+
+    const searchParams: SearchParams = {
       query: term,
       rows: 10,
+      sort: sortParam,
       fields: ['identifier', 'title'],
       aggregations,
     };
 
-    const checkedRadio = this.shadowRoot?.querySelector(
+    const checkedSearchType = this.shadowRoot?.querySelector(
       `input[name='search-type']:checked`
     ) as HTMLInputElement;
 
     const searchType =
-      checkedRadio?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
+      checkedSearchType?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
 
     const result = await this.searchService.search(searchParams, searchType);
     if (result?.success) {
@@ -119,7 +146,7 @@ export class AppRoot extends LitElement {
 
   static get styles(): CSSResult {
     return css`
-      #search-options {
+      .search-options {
         margin-top: 0.6rem;
       }
     `;
