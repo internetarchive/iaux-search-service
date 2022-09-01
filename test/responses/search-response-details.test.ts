@@ -1,0 +1,43 @@
+import { expect } from '@open-wc/testing';
+import { HitType } from '../../src/models/hit-types/hit';
+import { ItemHit } from '../../src/models/hit-types/item-hit';
+import { TextHit } from '../../src/models/hit-types/text-hit';
+import { SearchResponseDetails } from '../../src/responses/search-response-details';
+
+describe('SearchResponseDetails', () => {
+  it('constructs item hits', () => {
+    const responseBody = {
+      hits: {
+        total: 2,
+        returned: 2,
+        hits: [{ identifier: 'foo' }, { identifier: 'bar' }],
+      },
+    };
+
+    const responseSchema = {
+      hit_type: 'item' as HitType,
+      field_properties: {},
+    };
+
+    const details = new SearchResponseDetails(responseBody, responseSchema);
+    expect(details.hits[0]).to.be.instanceOf(ItemHit);
+  });
+
+  it('constructs text hits', () => {
+    const responseBody = {
+      hits: {
+        total: 2,
+        returned: 2,
+        hits: [{ identifier: 'foo' }, { identifier: 'bar' }],
+      },
+    };
+
+    const responseSchema = {
+      hit_type: 'text' as HitType,
+      field_properties: {},
+    };
+
+    const details = new SearchResponseDetails(responseBody, responseSchema);
+    expect(details.hits[0]).to.be.instanceOf(TextHit);
+  });
+});
