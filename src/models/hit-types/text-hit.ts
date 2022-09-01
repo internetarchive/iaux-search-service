@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Memoize } from 'typescript-memoize';
 import { BooleanField } from '../metadata-fields/field-types/boolean';
 import { DateField } from '../metadata-fields/field-types/date';
