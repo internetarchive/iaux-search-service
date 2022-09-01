@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from '@open-wc/testing';
-import { DefaultSearchBackend } from '../src/search-backend/default-search-backend';
+import { DefaultSearchBackend } from '../../src/search-backend/default-search-backend';
 
 describe('DefaultSearchBackend', () => {
   it('can perform a search', async () => {

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from '@open-wc/testing';
-import { MetadataSearchBackend } from '../src/search-backend/metadata-search-backend';
+import { FulltextSearchBackend } from '../../src/search-backend/fulltext-search-backend';
 
-describe('MetadataSearchBackend', () => {
+describe('FulltextSearchBackend', () => {
   it('can perform a search', async () => {
     const fetchBackup = window.fetch;
     window.fetch = (): Promise<Response> => {
@@ -13,14 +13,14 @@ describe('MetadataSearchBackend', () => {
       });
     };
 
-    const backend = new MetadataSearchBackend();
+    const backend = new FulltextSearchBackend();
     const params = { query: 'foo' };
     const result = await backend.performSearch(params);
     expect(result.success?.foo).to.equal('bar');
     window.fetch = fetchBackup;
   });
 
-  it('sets the metadata service backend', async () => {
+  it('sets the fts service backend', async () => {
     const fetchBackup = window.fetch;
     let urlCalled: RequestInfo | URL;
     let urlConfig: RequestInit | undefined;
@@ -34,11 +34,11 @@ describe('MetadataSearchBackend', () => {
       return new Promise(resolve => resolve(response));
     };
 
-    const backend = new MetadataSearchBackend();
+    const backend = new FulltextSearchBackend();
     await backend.performSearch({ query: 'foo' });
     expect(
       new URL(urlCalled!.toString()).searchParams.get('service_backend')
-    ).to.equal('metadata');
+    ).to.equal('fts');
     window.fetch = fetchBackup;
   });
 
@@ -56,7 +56,7 @@ describe('MetadataSearchBackend', () => {
       return new Promise(resolve => resolve(response));
     };
 
-    const backend = new MetadataSearchBackend({
+    const backend = new FulltextSearchBackend({
       scope: 'foo',
       includeCredentials: true,
     });
