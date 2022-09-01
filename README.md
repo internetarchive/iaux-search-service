@@ -31,10 +31,11 @@ const params = {
 const result = await searchService.search(params, SearchType.METADATA);
 if (result.success) {
   const searchResponse = result.success;
-  searchResponse.response.totalHits // => number -- all search results available to fetch
-  searchResponse.response.returnedHits // => number -- how many search results are in this response
+  searchResponse.response.totalHits // => number -- total number of search results available to fetch
+  searchResponse.response.returnedHits // => number -- how many search results are included in this response
   searchResponse.response.hits // => Hit[] array
   searchResponse.response.hits[0].identifier // => 'some-item-identifier'
+  searchResponse.response.hits[0].title?.value // => 'some-item-title', or possibly undefined if no title exists on the item
 }
 ```
 
