@@ -260,7 +260,7 @@ export class Metadata {
   }
 
   @Memoize() get noindex(): BooleanField | undefined {
-    return this.rawMetadata?.noindex
+    return this.rawMetadata?.noindex != null
       ? new BooleanField(this.rawMetadata.noindex)
       : undefined;
   }

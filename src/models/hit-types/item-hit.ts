@@ -1,7 +1,6 @@
 import { Memoize } from 'typescript-memoize';
 import { BooleanField } from '../metadata-fields/field-types/boolean';
 import { DateField } from '../metadata-fields/field-types/date';
-import { StringListField } from '../metadata-fields/field-types/list';
 import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
 import { NumberField } from '../metadata-fields/field-types/number';
 import { StringField } from '../metadata-fields/field-types/string';
@@ -156,7 +155,7 @@ export class ItemHit {
    * Optional.
    */
   @Memoize() get lending___available_to_borrow(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.lending___available_to_borrow
+    return this.rawMetadata?.fields?.lending___available_to_borrow != null
       ? new BooleanField(this.rawMetadata.fields.lending___available_to_borrow)
       : undefined;
   }
@@ -166,7 +165,7 @@ export class ItemHit {
    * Optional.
    */
   @Memoize() get lending___available_to_browse(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.lending___available_to_browse
+    return this.rawMetadata?.fields?.lending___available_to_browse != null
       ? new BooleanField(this.rawMetadata.fields.lending___available_to_browse)
       : undefined;
   }
@@ -176,7 +175,7 @@ export class ItemHit {
    * Optional.
    */
   @Memoize() get lending___available_to_waitlist(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.lending___available_to_waitlist
+    return this.rawMetadata?.fields?.lending___available_to_waitlist != null
       ? new BooleanField(
           this.rawMetadata.fields.lending___available_to_waitlist
         )
@@ -218,7 +217,7 @@ export class ItemHit {
 
   /** Optional. */
   @Memoize() get noindex(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.noindex
+    return this.rawMetadata?.fields?.noindex != null
       ? new BooleanField(this.rawMetadata.fields.noindex)
       : undefined;
   }
@@ -247,9 +246,9 @@ export class ItemHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get subject(): StringListField | undefined {
+  @Memoize() get subject(): StringField | undefined {
     return this.rawMetadata?.fields?.subject
-      ? new StringListField(this.rawMetadata.fields.subject)
+      ? new StringField(this.rawMetadata.fields.subject)
       : undefined;
   }
 
@@ -288,9 +287,9 @@ export class ItemHit {
    * Computed from date.
    * Optional.
    */
-  @Memoize() get year(): DateField | undefined {
+  @Memoize() get year(): NumberField | undefined {
     return this.rawMetadata?.fields?.year
-      ? new DateField(this.rawMetadata.fields.year)
+      ? new NumberField(this.rawMetadata.fields.year)
       : undefined;
   }
 }

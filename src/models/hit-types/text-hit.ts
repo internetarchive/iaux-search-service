@@ -1,7 +1,6 @@
 import { Memoize } from 'typescript-memoize';
 import { BooleanField } from '../metadata-fields/field-types/boolean';
 import { DateField } from '../metadata-fields/field-types/date';
-import { StringListField } from '../metadata-fields/field-types/list';
 import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
 import { NumberField } from '../metadata-fields/field-types/number';
 import { StringField } from '../metadata-fields/field-types/string';
@@ -41,10 +40,10 @@ export class TextHit {
    * Synthesized in processing of FTS API hit; TBD
    * Optional.
    */
-  @Memoize() get highlights(): StringField | undefined {
+  @Memoize() get highlight(): StringField | undefined {
     // Note: _not_ inside the fields object.
-    return this.rawMetadata?.highlights
-      ? new StringField(this.rawMetadata.highlights)
+    return this.rawMetadata?.highlight?.text
+      ? new StringField(this.rawMetadata.highlight.text)
       : undefined;
   }
 
@@ -141,7 +140,7 @@ export class TextHit {
    * Computed in processing of FTS API hit.
    */
   @Memoize() get result_in_subfile(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.result_in_subfile
+    return this.rawMetadata?.fields?.result_in_subfile != null
       ? new BooleanField(this.rawMetadata.fields.result_in_subfile)
       : undefined;
   }
@@ -157,9 +156,9 @@ export class TextHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get subject(): StringListField | undefined {
+  @Memoize() get subject(): StringField | undefined {
     return this.rawMetadata?.fields?.subject
-      ? new StringListField(this.rawMetadata.fields.subject)
+      ? new StringField(this.rawMetadata.fields.subject)
       : undefined;
   }
 
@@ -180,9 +179,9 @@ export class TextHit {
    * Computed from date.
    * Optional.
    */
-  @Memoize() get year(): DateField | undefined {
+  @Memoize() get year(): NumberField | undefined {
     return this.rawMetadata?.fields?.year
-      ? new DateField(this.rawMetadata.fields.year)
+      ? new NumberField(this.rawMetadata.fields.year)
       : undefined;
   }
 

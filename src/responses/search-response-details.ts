@@ -11,7 +11,7 @@ export interface SearchResponseBody {
 export interface SearchResponseHits {
   total: number;
   returned: number;
-  hits: Hit[];
+  hits: Record<string, any>[];
 }
 
 /**
