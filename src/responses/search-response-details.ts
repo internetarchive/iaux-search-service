@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Aggregation } from '../../models/aggregation';
-import { Hit, HitFactory } from '../../models/hit-types/hit';
+import type { Aggregation } from '../models/aggregation';
+import { Hit, HitFactory } from '../models/hit-types/hit';
 import type { SearchHitSchema } from './search-hit-schema';
 
 export interface SearchResponseBody {

@@ -64,7 +64,7 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.fields) {
-      params.append('fl', searchParams.fields.join(','));
+      params.append('fields', searchParams.fields.join(','));
     }
 
     if (searchParams.sort) {

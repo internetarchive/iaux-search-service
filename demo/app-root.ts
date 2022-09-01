@@ -9,7 +9,7 @@ import {
   TemplateResult,
 } from 'lit-element';
 import { nothing } from 'lit-html';
-import { SearchResponse } from '../src/responses/search/search-response';
+import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { Hit } from '../src/models/hit-types/hit';
