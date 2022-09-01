@@ -50,6 +50,10 @@ export class MockResponseGenerator {
         totalHits: 12345,
         returnedHits: 2,
         hits: [metadata1, metadata2],
+        schema: {
+          hit_type: 'item',
+          field_properties: {},
+        },
       },
     };
   }
@@ -98,6 +102,10 @@ export class MockResponseGenerator {
         totalHits: 12345,
         returnedHits: 2,
         hits: [text1, text2],
+        schema: {
+          hit_type: 'text',
+          field_properties: {},
+        },
       },
     };
   }
