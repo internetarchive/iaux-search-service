@@ -74,7 +74,7 @@ export class AppRoot extends LitElement {
             return html`
               <tr>
                 <td>${hit.identifier}</td>
-                <td>${hit.title?.value}</td>
+                <td>${hit.title?.value ?? '(Untitled)'}</td>
               </tr>
             `;
           })}
