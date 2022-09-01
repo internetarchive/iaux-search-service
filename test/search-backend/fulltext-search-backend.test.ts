@@ -37,6 +37,7 @@ describe('FulltextSearchBackend', () => {
     const backend = new FulltextSearchBackend();
     await backend.performSearch({ query: 'foo' });
     expect(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       new URL(urlCalled!.toString()).searchParams.get('service_backend')
     ).to.equal('fts');
     window.fetch = fetchBackup;

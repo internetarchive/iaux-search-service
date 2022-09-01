@@ -116,9 +116,10 @@ export class AppRoot extends LitElement {
       `input[name='sort']:checked`
     ) as HTMLInputElement;
 
-    const sortParam = checkedSort?.value === 'none' ? [] : [
-      { field: 'title', direction: checkedSort?.value as SortDirection }
-    ];
+    const sortParam =
+      checkedSort?.value === 'none'
+        ? []
+        : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
 
     const searchParams: SearchParams = {
       query: term,
@@ -133,7 +134,9 @@ export class AppRoot extends LitElement {
     ) as HTMLInputElement;
 
     const searchType =
-      checkedSearchType?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
+      checkedSearchType?.value === 'fts'
+        ? SearchType.FULLTEXT
+        : SearchType.METADATA;
 
     const result = await this.searchService.search(searchParams, searchType);
     if (result?.success) {

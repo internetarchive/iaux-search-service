@@ -88,7 +88,7 @@ describe('Metadata Field', () => {
 
   it('does not add value to values array if parsed value is undefined', () => {
     class MockFloatParser implements FieldParserInterface<number> {
-      parseValue(rawValue: FieldParserRawValue): number | undefined {
+      parseValue(): number | undefined {
         return undefined;
       }
     }
