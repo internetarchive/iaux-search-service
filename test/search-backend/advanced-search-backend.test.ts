@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from '@open-wc/testing';
-import { DefaultSearchBackend } from '../../src/search-backend/default-search-backend';
+import { AdvancedSearchBackend } from '../../src/search-backend/advanced-search-backend';
 
 describe('DefaultSearchBackend', () => {
   it('can perform a search', async () => {
@@ -13,7 +13,7 @@ describe('DefaultSearchBackend', () => {
       });
     };
 
-    const backend = new DefaultSearchBackend();
+    const backend = new AdvancedSearchBackend();
     const params = { query: 'foo' };
     const result = await backend.performSearch(params);
     expect(result.success?.foo).to.equal('bar');
@@ -34,7 +34,7 @@ describe('DefaultSearchBackend', () => {
       return new Promise(resolve => resolve(response));
     };
 
-    const backend = new DefaultSearchBackend({
+    const backend = new AdvancedSearchBackend({
       scope: 'foo',
       includeCredentials: true,
     });

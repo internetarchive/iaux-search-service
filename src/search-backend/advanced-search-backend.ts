@@ -8,8 +8,9 @@ import type { SearchBackendOptions } from './search-backend-options';
 
 /**
  * The DefaultSearchBackend performs a `window.fetch` request to archive.org
+ * @deprecated
  */
-export class DefaultSearchBackend extends BaseSearchBackend {
+export class AdvancedSearchBackend extends BaseSearchBackend {
   constructor(options?: SearchBackendOptions) {
     super(options);
   }

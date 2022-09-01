@@ -1,4 +1,7 @@
 export { Metadata } from './src/models/metadata';
+export { ItemHit } from './src/models/hit-types/item-hit';
+export { TextHit } from './src/models/hit-types/text-hit';
+export { Hit, HitType, HitFactory } from './src/models/hit-types/hit';
 export { Aggregation, Bucket } from './src/models/aggregation';
 
 export { DateField } from './src/models/metadata-fields/field-types/date';
@@ -26,9 +29,13 @@ export { SearchResponse } from './src/responses/search-response';
 export { SearchResponseHeader } from './src/responses/search-response-header';
 export { SearchResponseParams } from './src/responses/search-response-params';
 
-export { DefaultSearchBackend } from './src/search-backend/default-search-backend';
+export { AdvancedSearchBackend } from './src/search-backend/advanced-search-backend';
+export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
+export { FulltextSearchBackend } from './src/search-backend/fulltext-search-backend';
+
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
+export { SearchType } from './src/search-type';
 export {
   SearchParams,
   SortParam,
