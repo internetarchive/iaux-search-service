@@ -1,10 +1,10 @@
-import { Memoize } from "typescript-memoize";
-import { BooleanField } from "../metadata-fields/field-types/boolean";
-import { DateField } from "../metadata-fields/field-types/date";
-import { StringListField } from "../metadata-fields/field-types/list";
-import { MediaTypeField } from "../metadata-fields/field-types/mediatype";
-import { NumberField } from "../metadata-fields/field-types/number";
-import { StringField } from "../metadata-fields/field-types/string";
+import { Memoize } from 'typescript-memoize';
+import { BooleanField } from '../metadata-fields/field-types/boolean';
+import { DateField } from '../metadata-fields/field-types/date';
+import { StringListField } from '../metadata-fields/field-types/list';
+import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
+import { NumberField } from '../metadata-fields/field-types/number';
+import { StringField } from '../metadata-fields/field-types/string';
 
 /**
  * A model that describes a textual hit from the FTS API.
@@ -17,9 +17,8 @@ import { StringField } from "../metadata-fields/field-types/string";
  * @class TextHit
  */
 export class TextHit {
-
   /**
-   * This is the raw hit response; useful for inspecting the raw data 
+   * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
   rawMetadata?: Record<string, any>;

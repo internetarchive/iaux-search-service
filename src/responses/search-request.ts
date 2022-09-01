@@ -1,9 +1,9 @@
-import { SearchRequestParams } from "./search-request-params";
+import { SearchRequestParams } from './search-request-params';
 
 /**
  * A model for the request parameters returned with each search response.
  */
-export class SearchRequest{
+export class SearchRequest {
   /**
    * The original client parameters sent with the request
    */

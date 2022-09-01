@@ -1,14 +1,16 @@
-import { FulltextSearchBackend } from "./fulltext-search-backend";
-import { MetadataSearchBackend } from "./metadata-search-backend";
-import { SearchType } from "../search-type";
-import type { SearchBackendInterface } from "./search-backend-interface";
-import type { SearchBackendOptions } from "./search-backend-options";
+import { FulltextSearchBackend } from './fulltext-search-backend';
+import { MetadataSearchBackend } from './metadata-search-backend';
+import { SearchType } from '../search-type';
+import type { SearchBackendInterface } from './search-backend-interface';
+import type { SearchBackendOptions } from './search-backend-options';
 
 /**
  * A factory to obtain the correct search backend for a given search type.
  */
 export class SearchBackendFactory {
-  private constructor() {}
+  private constructor() {
+    //
+  }
 
   /**
    * Retrieve a search backend that can handle the given type of search.
@@ -16,7 +18,7 @@ export class SearchBackendFactory {
    * @param options Options to pass to the search backend.
    */
   static getBackendForSearchType(
-    type: SearchType, 
+    type: SearchType,
     options: SearchBackendOptions = {}
   ): SearchBackendInterface {
     switch (type) {

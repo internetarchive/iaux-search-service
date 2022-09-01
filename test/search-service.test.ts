@@ -6,13 +6,14 @@ import { SearchService } from '../src/search-service';
 import { SearchParams } from '../src/search-params';
 
 import { MockResponseGenerator } from './mock-response-generator';
-import { SearchResponse } from '../src/responses/search/search-response';
+import { SearchResponse } from '../src/responses/search-response';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../src/search-service-error';
 import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
+import { SearchBackendFactory } from '../src/search-backend/search-backend-factory';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {
@@ -28,11 +29,20 @@ describe('SearchService', () => {
       }
     }
 
-    const query = 'title:foo AND collection:bar';
     const backend = new MockSearchBackend();
+    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
+    SearchBackendFactory.getBackendForSearchType = () => {
+      return backend;
+    };
+
+    const query = 'title:foo AND collection:bar';
     const service = new SearchService();
     const result = await service.search({ query });
-    expect(result.success?.request.finalized_parameters.user_query).to.equal(query);
+    expect(result.success?.request.finalized_parameters.user_query).to.equal(
+      query
+    );
+
+    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend network error if one occurs', async () => {
@@ -49,6 +59,11 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
+    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
+    SearchBackendFactory.getBackendForSearchType = () => {
+      return backend;
+    };
+
     const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
@@ -57,6 +72,8 @@ describe('SearchService', () => {
       SearchServiceErrorType.networkError
     );
     expect(searchResult.error?.message).to.equal('network error');
+
+    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend decoding error if one occurs', async () => {
@@ -73,6 +90,11 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
+    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
+    SearchBackendFactory.getBackendForSearchType = () => {
+      return backend;
+    };
+
     const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
@@ -81,5 +103,7 @@ describe('SearchService', () => {
       SearchServiceErrorType.decodingError
     );
     expect(searchResult.error?.message).to.equal('decoding error');
+
+    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
   });
 });

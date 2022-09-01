@@ -1,4 +1,4 @@
-import { SearchResponse } from './responses/search/search-response';
+import { SearchResponse } from './responses/search-response';
 import type { SearchParams } from './search-params';
 import { SearchServiceError } from './search-service-error';
 import type { SearchServiceInterface } from './search-service-interface';
@@ -22,7 +22,9 @@ export class SearchService implements SearchServiceInterface {
     params: SearchParams,
     searchType: SearchType = SearchType.METADATA
   ): Promise<Result<SearchResponse, SearchServiceError>> {
-    const searchBackend = SearchBackendFactory.getBackendForSearchType(searchType);
+    const searchBackend = SearchBackendFactory.getBackendForSearchType(
+      searchType
+    );
 
     const rawResponse = await searchBackend.performSearch(params);
     if (rawResponse.error) {

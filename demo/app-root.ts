@@ -41,8 +41,16 @@ export class AppRoot extends LitElement {
 
           <fieldset id="search-options">
             <legend>Search type:</legend>
-            <label><input type="radio" name="search-type" value="mds" checked>&nbsp;Metadata</label>
-            <label><input type="radio" name="search-type" value="fts">&nbsp;Full text</label>
+            <input
+              type="radio"
+              id="mds"
+              name="search-type"
+              value="mds"
+              checked
+            />
+            <label for="mds"> &nbsp;Metadata </label>
+            <input type="radio" id="fts" name="search-type" value="fts" />
+            <label for="fts"> &nbsp;Full text </label>
           </fieldset>
         </form>
       </fieldset>
@@ -92,9 +100,14 @@ export class AppRoot extends LitElement {
       fields: ['identifier', 'title'],
       aggregations,
     };
-    const checkedRadio = this.shadowRoot?.querySelector(`input[name='search-type']:checked`) as HTMLInputElement;
-    const searchType = checkedRadio?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
-    
+
+    const checkedRadio = this.shadowRoot?.querySelector(
+      `input[name='search-type']:checked`
+    ) as HTMLInputElement;
+
+    const searchType =
+      checkedRadio?.value === 'fts' ? SearchType.FULLTEXT : SearchType.METADATA;
+
     const result = await this.searchService.search(searchParams, searchType);
     if (result?.success) {
       this.searchResponse = result?.success;

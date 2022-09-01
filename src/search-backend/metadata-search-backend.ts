@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SearchParams } from '../search-params';
 import type { Result } from '@internetarchive/result-type';
-import type {
-  SearchServiceError,
-} from '../search-service-error';
+import type { SearchServiceError } from '../search-service-error';
 import { SearchParamURLGenerator } from '../search-param-url-generator';
 import { BaseSearchBackend } from './base-search-backend.ts';
 import type { SearchBackendOptions } from './search-backend-options';
@@ -14,11 +12,14 @@ import type { SearchBackendOptions } from './search-backend-options';
 export class MetadataSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
-  constructor(options?: SearchBackendOptions & {
-    servicePath?: string;
-  }) {
+  constructor(
+    options?: SearchBackendOptions & {
+      servicePath?: string;
+    }
+  ) {
     super(options);
-    this.servicePath = options?.servicePath ?? '/services/search/beta/page_production';
+    this.servicePath =
+      options?.servicePath ?? '/services/search/beta/page_production';
   }
 
   /** @inheritdoc */

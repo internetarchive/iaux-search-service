@@ -4,14 +4,14 @@ import { Hit, HitFactory } from '../models/hit-types/hit';
 import type { SearchHitSchema } from './search-hit-schema';
 
 export interface SearchResponseBody {
-  hits: SearchResponseHits,
-  aggregations?: Record<string, Aggregation>
+  hits: SearchResponseHits;
+  aggregations?: Record<string, Aggregation>;
 }
 
 export interface SearchResponseHits {
-  total: number,
-  returned: number,
-  hits: Hit[]
+  total: number;
+  returned: number;
+  hits: Hit[];
 }
 
 /**
@@ -55,7 +55,10 @@ export class SearchResponseDetails {
 
     this.totalHits = body?.hits?.total ?? 0;
     this.returnedHits = body?.hits?.returned ?? 0;
-    this.hits = body?.hits?.hits?.map((hit: Hit) => HitFactory.createFromType(hitType, hit)) ?? [];
+    this.hits =
+      body?.hits?.hits?.map((hit: Hit) =>
+        HitFactory.createFromType(hitType, hit)
+      ) ?? [];
     this.aggregations = body?.aggregations;
   }
 }

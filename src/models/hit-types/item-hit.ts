@@ -1,10 +1,10 @@
-import { Memoize } from "typescript-memoize";
-import { BooleanField } from "../metadata-fields/field-types/boolean";
-import { DateField } from "../metadata-fields/field-types/date";
-import { StringListField } from "../metadata-fields/field-types/list";
-import { MediaTypeField } from "../metadata-fields/field-types/mediatype";
-import { NumberField } from "../metadata-fields/field-types/number";
-import { StringField } from "../metadata-fields/field-types/string";
+import { Memoize } from 'typescript-memoize';
+import { BooleanField } from '../metadata-fields/field-types/boolean';
+import { DateField } from '../metadata-fields/field-types/date';
+import { StringListField } from '../metadata-fields/field-types/list';
+import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
+import { NumberField } from '../metadata-fields/field-types/number';
+import { StringField } from '../metadata-fields/field-types/string';
 
 /**
  * A model that describes an item hit from the MDS API.
@@ -17,9 +17,8 @@ import { StringField } from "../metadata-fields/field-types/string";
  * @class ItemHit
  */
 export class ItemHit {
-
   /**
-   * This is the raw hit response; useful for inspecting the raw data 
+   * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
   rawMetadata?: Record<string, any>;
@@ -52,7 +51,7 @@ export class ItemHit {
    * Computed during document construction, for collection items only.
    * Optional.
    */
-   @Memoize() get collection_files_count(): NumberField | undefined {
+  @Memoize() get collection_files_count(): NumberField | undefined {
     return this.rawMetadata?.fields?.collection_files_count
       ? new NumberField(this.rawMetadata.fields.collection_files_count)
       : undefined;
@@ -178,7 +177,9 @@ export class ItemHit {
    */
   @Memoize() get lending___available_to_waitlist(): BooleanField | undefined {
     return this.rawMetadata?.fields?.lending___available_to_waitlist
-      ? new BooleanField(this.rawMetadata.fields.lending___available_to_waitlist)
+      ? new BooleanField(
+          this.rawMetadata.fields.lending___available_to_waitlist
+        )
       : undefined;
   }
 
@@ -265,7 +266,7 @@ export class ItemHit {
       ? new StringField(this.rawMetadata.fields.type)
       : undefined;
   }
-  
+
   /** Optional. */
   @Memoize() get volume(): StringField | undefined {
     return this.rawMetadata?.fields?.volume

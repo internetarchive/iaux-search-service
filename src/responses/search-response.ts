@@ -44,6 +44,9 @@ export class SearchResponse {
     this.rawResponse = json;
     this.request = json.request;
     this.responseHeader = json.response?.header;
-    this.response = new SearchResponseDetails(json.response?.body, json.response?.hit_schema);
+    this.response = new SearchResponseDetails(
+      json.response?.body,
+      json.response?.hit_schema
+    );
   }
 }

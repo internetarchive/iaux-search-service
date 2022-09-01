@@ -50,7 +50,7 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
   ): Promise<Result<any, SearchServiceError>>;
 
   /**
-   * Fires a request to the URL (with this backend's options applied) and 
+   * Fires a request to the URL (with this backend's options applied) and
    * asynchronously returns a Result object containing either the raw response
    * JSON or a SearchServiceError.
    */
