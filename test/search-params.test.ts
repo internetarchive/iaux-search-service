@@ -63,7 +63,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads+desc';
+      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads%3Adesc';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -84,7 +84,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads+desc%2Cfoo+asc';
+      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads%3Adesc%2Cfoo%3Aasc';
     expect(queryAsString).to.equal(expected);
   });
 

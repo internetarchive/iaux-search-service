@@ -47,7 +47,7 @@ export class SearchParamURLGenerator {
   }
 
   static sortParamsAsString(sortParams: SortParam): string {
-    return `${sortParams.field} ${sortParams.direction}`;
+    return `${sortParams.field}:${sortParams.direction}`;
   }
 
   static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
