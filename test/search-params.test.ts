@@ -88,6 +88,37 @@ describe('SearchParams', () => {
     expect(queryAsString).to.equal(expected);
   });
 
+  it('properly generates a URLSearchParam with a page_type', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      pageType: 'foo',
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with a page_type and page_target', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      pageType: 'foo',
+      pageTarget: 'bar',
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo&page_target=bar';
+    expect(queryAsString).to.equal(expected);
+  });
+
   it('properly generates a URLSearchParam with advanced aggregations', async () => {
     const query = 'title:foo AND collection:bar';
     const aggregations = {
