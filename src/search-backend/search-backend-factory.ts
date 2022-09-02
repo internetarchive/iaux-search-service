@@ -20,7 +20,8 @@ export class SearchBackendFactory {
    */
   @Memoize((type: SearchType, options: SearchBackendOptions = {}) => {
     // We can memoize backends based on their params, to avoid constructing redundant backends
-    return `${type};${options.includeCredentials ?? ''};${options.scope ?? ''};${options.baseUrl ?? ''}`;
+    const { includeCredentials = '', scope = '', baseUrl = '' } = options;
+    return `${type};${includeCredentials};${scope};${baseUrl}`;
   })
   static getBackendForSearchType(
     type: SearchType,
