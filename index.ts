@@ -29,7 +29,6 @@ export { SearchResponse } from './src/responses/search-response';
 export { SearchResponseHeader } from './src/responses/search-response-header';
 export { SearchResponseParams } from './src/responses/search-response-params';
 
-export { AdvancedSearchBackend } from './src/search-backend/advanced-search-backend';
 export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
 export { FulltextSearchBackend } from './src/search-backend/fulltext-search-backend';
 

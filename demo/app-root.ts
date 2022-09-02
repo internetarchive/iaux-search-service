@@ -63,7 +63,7 @@ export class AppRoot extends LitElement {
               value="none"
               checked
             />
-            <label for="no-sort"> &nbsp;None </label>
+            <label for="sort-none"> &nbsp;None </label>
             <input type="radio" id="sort-asc" name="sort" value="asc" />
             <label for="sort-asc"> &nbsp;Ascending </label>
             <input type="radio" id="sort-desc" name="sort" value="desc" />
