@@ -31,6 +31,10 @@ export class SearchParamURLGenerator {
   static aggregateSearchParamsAsString(
     aggregateSearchParams: AggregateSearchParams
   ): string | undefined {
+    if (aggregateSearchParams.omit) {
+      return 'false';
+    }
+
     if (aggregateSearchParams.advancedParams) {
       const params = aggregateSearchParams.advancedParams.map(param => {
         return {

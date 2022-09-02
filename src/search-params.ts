@@ -7,6 +7,8 @@ export interface AggregateSearchParams {
   advancedParams?: AggregateSearchParam[];
 
   simpleParams?: string[];
+
+  omit?: boolean
 }
 
 export type SortDirection = 'asc' | 'desc';
