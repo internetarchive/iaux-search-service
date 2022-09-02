@@ -1,5 +1,7 @@
+import { DateParser } from '@internetarchive/field-parsers';
 import { expect } from '@open-wc/testing';
 import { TextHit } from '../../../src/models/hit-types/text-hit';
+import { DateField } from '../../../src/models/metadata-fields/field-types/date';
 
 describe('TextHit', () => {
   it('constructs basic text hit', () => {
@@ -8,7 +10,16 @@ describe('TextHit', () => {
     expect(hit.creator).to.be.undefined;
   });
 
-  it('constructs text hit with partial fields', () => {
+  it('handles improper data without throwing', () => {
+    const hit = new TextHit({});
+    expect(hit.creator).to.be.undefined;
+    expect(hit.date).to.be.undefined;
+    expect(hit.description).to.be.undefined;
+    expect(hit.subject).to.be.undefined;
+    expect(hit.title).to.be.undefined;
+  });
+
+  it('constructs text hit with all fields', () => {
     const json = {
       fields: {
         identifier: 'foo',
@@ -40,24 +51,23 @@ describe('TextHit', () => {
     const hit = new TextHit(json);
     expect(hit.rawMetadata).to.deep.equal(json);
     expect(hit.identifier).to.equal(json.fields.identifier);
-    expect(hit.mediatype?.value).to.equal(json.fields.mediatype);
-    expect(hit.filename?.value).to.equal(json.fields.filename);
-    expect(hit.file_basename?.value).to.equal(json.fields.file_basename);
-    expect(hit.file_creation_mtime?.value).to.equal(
-      json.fields.file_creation_mtime
-    );
-    expect(hit.page_num?.value).to.equal(json.fields.page_num);
-    expect(hit.title?.value).to.equal(json.fields.title);
-    expect(hit.creator?.values).to.deep.equal(json.fields.creator);
-    expect(hit.subject?.values).to.deep.equal(json.fields.subject);
-    expect(hit.downloads?.value).to.equal(json.fields.downloads);
-    expect(hit.collection?.values).to.deep.equal(json.fields.collection);
-    expect(hit.year?.value).to.equal(json.fields.year);
-    expect(hit.result_in_subfile?.value).to.equal(
-      json.fields.result_in_subfile
-    );
-    expect(hit.description?.value).to.equal(json.fields.description);
-    expect(hit.__href__?.value).to.equal(json.fields.__href__);
+
+    // Ensure all existing fields are present
+    for (const key of Object.keys(json.fields)) {
+      if (key === 'identifier') continue;
+      const fieldName = key as Exclude<keyof typeof json.fields, 'identifier'>;
+
+      if (Array.isArray(json.fields[fieldName])) {
+        expect(hit[fieldName]?.values).to.deep.equal(json.fields[fieldName]);
+      } else if (hit[fieldName] instanceof DateField) {
+        expect(hit[fieldName]?.value).to.deep.equal(
+          DateParser.shared.parseValue(json.fields[fieldName].toString())
+        );
+      } else {
+        expect(hit[fieldName]?.value).to.equal(json.fields[fieldName]);
+      }
+    }
+
     expect(hit.highlight?.values).to.deep.equal(json.highlight.text);
   });
 });
