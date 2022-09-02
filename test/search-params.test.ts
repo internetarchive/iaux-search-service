@@ -119,6 +119,23 @@ describe('SearchParams', () => {
     expect(queryAsString).to.equal(expected);
   });
 
+  it('properly generates a URLSearchParam with aggregations omitted', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      aggregations: {
+        omit: true,
+      },
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=false';
+    expect(queryAsString).to.equal(expected);
+  });
+
   it('properly generates a URLSearchParam with advanced aggregations', async () => {
     const query = 'title:foo AND collection:bar';
     const aggregations = {
