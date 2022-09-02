@@ -29,6 +29,10 @@ export interface SortParam {
 export interface SearchParams {
   query: string;
 
+  pageType: string;
+
+  pageTarget: string;
+
   sort?: SortParam[];
 
   rows?: number;

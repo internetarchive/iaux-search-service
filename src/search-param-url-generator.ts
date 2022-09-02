@@ -59,6 +59,14 @@ export class SearchParamURLGenerator {
     params.append('q', searchParams.query);
     params.append('output', 'json');
 
+    if (searchParams.pageType) {
+      params.append('page_type', String(searchParams.pageType));
+    }
+
+    if (searchParams.pageTarget) {
+      params.append('page_target', String(searchParams.pageTarget));
+    }
+
     if (searchParams.rows) {
       params.append('rows', String(searchParams.rows));
     }
