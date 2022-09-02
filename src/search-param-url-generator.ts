@@ -56,8 +56,7 @@ export class SearchParamURLGenerator {
 
   static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
-    params.append('q', searchParams.query);
-    params.append('output', 'json');
+    params.append('user_query', searchParams.query);
 
     if (searchParams.pageType) {
       params.append('page_type', String(searchParams.pageType));
@@ -68,7 +67,7 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.rows) {
-      params.append('rows', String(searchParams.rows));
+      params.append('hits_per_page', String(searchParams.rows));
     }
 
     if (searchParams.page) {
@@ -90,7 +89,7 @@ export class SearchParamURLGenerator {
     if (aggregations) {
       const aggString = this.aggregateSearchParamsAsString(aggregations);
       if (aggString) {
-        params.append('user_aggs', aggString);
+        params.append('aggregations', aggString);
       }
     }
 

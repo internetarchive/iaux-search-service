@@ -27,7 +27,7 @@ describe('SearchParams', () => {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected = 'q=title%3Afoo+AND+collection%3Abar&output=json';
+    const expected = 'user_query=title%3Afoo+AND+collection%3Abar';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -43,7 +43,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&fields=identifier%2Cfoo%2Cbar';
+      'user_query=title%3Afoo+AND+collection%3Abar&fields=identifier%2Cfoo%2Cbar';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -63,7 +63,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads%3Adesc';
+      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads%3Adesc';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -84,7 +84,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads%3Adesc%2Cfoo%3Aasc';
+      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&sort=downloads%3Adesc%2Cfoo%3Aasc';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -111,7 +111,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -129,7 +129,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=year%2Ccollection%2Csubject';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -157,7 +157,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
 });
