@@ -31,10 +31,10 @@ export class AppRoot extends LitElement {
   private aggregationsResponse?: SearchResponse;
 
   @internalProperty()
-  private loadingSearchResults: boolean = false;
+  private loadingSearchResults = false;
 
   @internalProperty()
-  private loadingAggregations: boolean = false;
+  private loadingAggregations = false;
 
   private get searchResults(): Hit[] | undefined {
     return this.searchResponse?.response.hits;
@@ -138,10 +138,7 @@ export class AppRoot extends LitElement {
         </form>
       </fieldset>
 
-      ${this.searchResults
-        ? this.resultsTemplate
-        : nothing
-      }
+      ${this.searchResults ? this.resultsTemplate : nothing}
     `;
   }
 
@@ -149,12 +146,10 @@ export class AppRoot extends LitElement {
     return html`
       ${this.loadingSearchResults
         ? html`<h3>Loading search results...</h3>`
-        : this.searchResultsTemplate
-      }
+        : this.searchResultsTemplate}
       ${this.loadingAggregations
         ? html`<h3>Loading aggregations...</h3>`
-        : this.aggregationsTemplate
-      }
+        : this.aggregationsTemplate}
     `;
   }
 
@@ -190,13 +185,15 @@ export class AppRoot extends LitElement {
           return html`
             <h3>${key}</h3>
             <p>
-              ${agg.buckets.map((bucket: number | Bucket) => {
-                if (typeof bucket === 'number') {
-                  return bucket;
-                } else {
-                  return `${bucket.key} (${bucket.doc_count})`
-                }
-              }).join(', ')}
+              ${agg.buckets
+                .map((bucket: number | Bucket) => {
+                  if (typeof bucket === 'number') {
+                    return bucket;
+                  } else {
+                    return `${bucket.key} (${bucket.doc_count})`;
+                  }
+                })
+                .join(', ')}
             </p>
           `;
         })}
@@ -242,7 +239,7 @@ export class AppRoot extends LitElement {
       rows: 10,
       fields: ['identifier', 'title'],
       sort: sortParam,
-      aggregations: { omit: true }
+      aggregations: { omit: true },
     };
 
     this.loadingSearchResults = true;
@@ -261,17 +258,19 @@ export class AppRoot extends LitElement {
    * Fetch the search aggregations (facets)
    */
   private async fetchAggregations(query: string, searchType: SearchType) {
-    const checkedAggs = this.shadowRoot?.querySelectorAll(`input[name='aggs']:checked`);
+    const checkedAggs = this.shadowRoot?.querySelectorAll(
+      `input[name='aggs']:checked`
+    );
     const aggregations = {
-      simpleParams: checkedAggs 
-        ? [...checkedAggs].map((elmt) => (elmt as HTMLInputElement).value)
-        : undefined
+      simpleParams: checkedAggs
+        ? [...checkedAggs].map(elmt => (elmt as HTMLInputElement).value)
+        : undefined,
     };
 
     const searchParams: SearchParams = {
       query,
       rows: 0,
-      aggregations
+      aggregations,
     };
 
     this.loadingAggregations = true;
