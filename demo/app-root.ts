@@ -15,6 +15,7 @@ import { SearchServiceInterface } from '../src/search-service-interface';
 import { Hit } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
 import { SearchParams, SortDirection } from '../src/search-params';
+import { Aggregation, Bucket } from '../src/models/aggregation';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -26,8 +27,21 @@ export class AppRoot extends LitElement {
   @internalProperty()
   private searchResponse?: SearchResponse;
 
+  @internalProperty()
+  private aggregationsResponse?: SearchResponse;
+
+  @internalProperty()
+  private loadingSearchResults: boolean = false;
+
+  @internalProperty()
+  private loadingAggregations: boolean = false;
+
   private get searchResults(): Hit[] | undefined {
     return this.searchResponse?.response.hits;
+  }
+
+  private get searchAggregations(): Record<string, Aggregation> | undefined {
+    return this.aggregationsResponse?.response.aggregations;
   }
 
   /** @inheritdoc */
@@ -69,14 +83,82 @@ export class AppRoot extends LitElement {
             <input type="radio" id="sort-desc" name="sort" value="desc" />
             <label for="sort-desc"> &nbsp;Descending </label>
           </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Include aggregations for:</legend>
+            <input
+              type="checkbox"
+              id="aggs-subject"
+              name="aggs"
+              value="subject"
+              checked
+            />
+            <label for="aggs-subject">Subject </label>
+            <input
+              type="checkbox"
+              id="aggs-language"
+              name="aggs"
+              value="language"
+              checked
+            />
+            <label for="aggs-language">Language </label>
+            <input
+              type="checkbox"
+              id="aggs-creator"
+              name="aggs"
+              value="creator"
+              checked
+            />
+            <label for="aggs-creator">Creator </label>
+            <input
+              type="checkbox"
+              id="aggs-collection"
+              name="aggs"
+              value="collection"
+              checked
+            />
+            <label for="aggs-collection">Collection </label>
+            <input
+              type="checkbox"
+              id="aggs-mediatype"
+              name="aggs"
+              value="mediatype"
+              checked
+            />
+            <label for="aggs-mediatype">Mediatype </label>
+            <input
+              type="checkbox"
+              id="aggs-year"
+              name="aggs"
+              value="year"
+              checked
+            />
+            <label for="aggs-year"> &nbsp;Year </label>
+          </fieldset>
         </form>
       </fieldset>
 
-      ${this.searchResults ? this.resultsTemplate : nothing}
+      ${this.searchResults
+        ? this.resultsTemplate
+        : nothing
+      }
     `;
   }
 
   private get resultsTemplate(): TemplateResult {
+    return html`
+      ${this.loadingSearchResults
+        ? html`<h3>Loading search results...</h3>`
+        : this.searchResultsTemplate
+      }
+      ${this.loadingAggregations
+        ? html`<h3>Loading aggregations...</h3>`
+        : this.aggregationsTemplate
+      }
+    `;
+  }
+
+  private get searchResultsTemplate(): TemplateResult {
     return html`
       <h2>Search Results</h2>
       <table>
@@ -100,34 +182,34 @@ export class AppRoot extends LitElement {
     `;
   }
 
-  async search(e: Event): Promise<void> {
+  private get aggregationsTemplate(): TemplateResult {
+    return html`
+      <div>
+        <h2>Aggregations</h2>
+        ${Object.entries(this.searchAggregations ?? {}).map(([key, agg]) => {
+          return html`
+            <h3>${key}</h3>
+            <p>
+              ${agg.buckets.map((bucket: number | Bucket) => {
+                if (typeof bucket === 'number') {
+                  return bucket;
+                } else {
+                  return `${bucket.key} (${bucket.doc_count})`
+                }
+              }).join(', ')}
+            </p>
+          `;
+        })}
+      </div>
+    `;
+  }
+
+  /**
+   * Conduct a full search (both hits and aggregations)
+   */
+  private async search(e: Event): Promise<void> {
     e.preventDefault();
     const term = this.searchInput.value;
-    const aggregations = {
-      advancedParams: [
-        {
-          field: 'year',
-          size: 100,
-        },
-      ],
-    };
-
-    const checkedSort = this.shadowRoot?.querySelector(
-      `input[name='sort']:checked`
-    ) as HTMLInputElement;
-
-    const sortParam =
-      checkedSort?.value === 'none'
-        ? []
-        : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
-
-    const searchParams: SearchParams = {
-      query: term,
-      rows: 10,
-      sort: sortParam,
-      fields: ['identifier', 'title'],
-      aggregations,
-    };
 
     const checkedSearchType = this.shadowRoot?.querySelector(
       `input[name='search-type']:checked`
@@ -138,9 +220,66 @@ export class AppRoot extends LitElement {
         ? SearchType.FULLTEXT
         : SearchType.METADATA;
 
+    this.fetchSearchResults(term, searchType);
+    this.fetchAggregations(term, searchType);
+  }
+
+  /**
+   * Fetch the search hits
+   */
+  private async fetchSearchResults(query: string, searchType: SearchType) {
+    const checkedSort = this.shadowRoot?.querySelector(
+      `input[name='sort']:checked`
+    ) as HTMLInputElement;
+
+    const sortParam =
+      checkedSort?.value === 'none'
+        ? []
+        : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
+
+    const searchParams: SearchParams = {
+      query,
+      rows: 10,
+      fields: ['identifier', 'title'],
+      sort: sortParam,
+      aggregations: { omit: true }
+    };
+
+    this.loadingSearchResults = true;
     const result = await this.searchService.search(searchParams, searchType);
+    this.loadingSearchResults = false;
+
     if (result?.success) {
       this.searchResponse = result?.success;
+    } else {
+      alert(`Oh noes: ${result?.error?.message}`);
+      console.error('Error searching', result?.error);
+    }
+  }
+
+  /**
+   * Fetch the search aggregations (facets)
+   */
+  private async fetchAggregations(query: string, searchType: SearchType) {
+    const checkedAggs = this.shadowRoot?.querySelectorAll(`input[name='aggs']:checked`);
+    const aggregations = {
+      simpleParams: checkedAggs 
+        ? [...checkedAggs].map((elmt) => (elmt as HTMLInputElement).value)
+        : undefined
+    };
+
+    const searchParams: SearchParams = {
+      query,
+      rows: 0,
+      aggregations
+    };
+
+    this.loadingAggregations = true;
+    const result = await this.searchService.search(searchParams, searchType);
+    this.loadingAggregations = false;
+
+    if (result?.success) {
+      this.aggregationsResponse = result?.success;
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
