@@ -161,6 +161,7 @@ export class AppRoot extends LitElement {
           <tr>
             <th>Identifier</th>
             <th>Title</th>
+            ${this.snippetsHeaderTemplate}
           </tr>
         </thead>
         <tbody>
@@ -169,6 +170,7 @@ export class AppRoot extends LitElement {
               <tr>
                 <td>${hit.identifier}</td>
                 <td>${hit.title?.value ?? '(Untitled)'}</td>
+                ${this.snippetTemplate(hit)}
               </tr>
             `;
           })}
@@ -199,6 +201,18 @@ export class AppRoot extends LitElement {
         })}
       </div>
     `;
+  }
+
+  private get snippetsHeaderTemplate() {
+    return this.searchResults?.some(hit => hit.highlight)
+      ? html`<th>Snippets</th>`
+      : nothing;
+  }
+
+  private snippetTemplate(hit: Hit) {
+    return hit.highlight
+      ? html`<td>${hit.highlight.value}</td>`
+      : nothing;
   }
 
   /**
