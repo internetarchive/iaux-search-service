@@ -203,14 +203,16 @@ export class AppRoot extends LitElement {
     `;
   }
 
-  private get snippetsHeaderTemplate() {
+  private get snippetsHeaderTemplate(): TemplateResult {
     return this.searchResults?.some(hit => hit.highlight)
       ? html`<th>Snippets</th>`
-      : nothing;
+      : html`${nothing}`;
   }
 
-  private snippetTemplate(hit: Hit) {
-    return hit.highlight ? html`<td>${hit.highlight.value}</td>` : nothing;
+  private snippetTemplate(hit: Hit): TemplateResult {
+    return hit.highlight
+      ? html`<td>${hit.highlight.value}</td>`
+      : html`${nothing}`;
   }
 
   /**
