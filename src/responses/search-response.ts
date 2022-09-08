@@ -4,7 +4,7 @@ import { SearchResponseDetails } from './search-response-details';
 import { SearchRequest } from './search-request';
 
 /**
- * The top-level response model when retrieving a response from the advanced search endpoint.
+ * The top-level response model when retrieving a response from the page production service endpoint.
  *
  * @export
  * @class SearchResponse
