@@ -54,11 +54,6 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <div class="search-options">
-            <label for="num-rows">Number of result rows:</label>
-            <input type="number" id="num-rows" value="10" min="0" max="50" />
-          </div>
-
           <fieldset class="search-options">
             <legend>Search type:</legend>
             <input
@@ -71,6 +66,18 @@ export class AppRoot extends LitElement {
             <label for="mds"> &nbsp;Metadata </label>
             <input type="radio" id="fts" name="search-type" value="fts" />
             <label for="fts"> &nbsp;Full text </label>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Search size:</legend>
+            <div class="field-row">
+              <label for="num-rows">Number of result rows:</label>
+              <input type="number" id="num-rows" value="10" min="0" max="99" />
+            </div>
+            <div class="field-row">
+              <label for="num-aggs">Number of aggregation rows:</label>
+              <input type="number" id="num-aggs" value="6" min="0" max="50" />
+            </div>
           </fieldset>
 
           <fieldset class="search-options">
@@ -291,10 +298,16 @@ export class AppRoot extends LitElement {
         : undefined,
     };
 
+    const numAggsInput = this.shadowRoot?.querySelector(
+      '#num-aggs'
+    ) as HTMLInputElement;
+    const numAggs = Number(numAggsInput?.value);
+
     const searchParams: SearchParams = {
       query,
       rows: 0,
       aggregations,
+      aggregationsSize: numAggs,
     };
 
     this.loadingAggregations = true;
@@ -313,6 +326,10 @@ export class AppRoot extends LitElement {
     return css`
       .search-options {
         margin-top: 0.6rem;
+      }
+
+      .field-row {
+        margin: 0.3rem 0;
       }
     `;
   }

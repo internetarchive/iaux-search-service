@@ -93,6 +93,10 @@ export class SearchParamURLGenerator {
       }
     }
 
+    if (searchParams.aggregationsSize != null) {
+      params.append('aggregations_size', String(searchParams.aggregationsSize));
+    }
+
     return params;
   }
 }

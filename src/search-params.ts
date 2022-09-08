@@ -43,4 +43,6 @@ export interface SearchParams {
   fields?: string[];
 
   aggregations?: AggregateSearchParams;
+
+  aggregationsSize?: number;
 }
