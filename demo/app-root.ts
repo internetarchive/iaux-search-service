@@ -210,9 +210,7 @@ export class AppRoot extends LitElement {
   }
 
   private snippetTemplate(hit: Hit) {
-    return hit.highlight
-      ? html`<td>${hit.highlight.value}</td>`
-      : nothing;
+    return hit.highlight ? html`<td>${hit.highlight.value}</td>` : nothing;
   }
 
   /**
