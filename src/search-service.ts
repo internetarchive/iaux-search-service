@@ -4,7 +4,7 @@ import { SearchServiceError } from './search-service-error';
 import type { SearchServiceInterface } from './search-service-interface';
 import type { Result } from '@internetarchive/result-type';
 import { SearchType } from './search-type';
-import { SearchBackendOptions } from './search-backend/search-backend-options';
+import { SearchBackendOptionsInterface } from './search-backend/search-backend-options';
 import { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { FulltextSearchBackend } from './search-backend/fulltext-search-backend';
 import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
@@ -44,14 +44,14 @@ export class SearchService implements SearchServiceInterface {
    * @param type The type of search that the backend needs to handle.
    * @param options Options to pass to the search backend.
    */
-  @Memoize((type: SearchType, options: SearchBackendOptions = {}) => {
+  @Memoize((type: SearchType, options: SearchBackendOptionsInterface = {}) => {
     // We can memoize backends based on their params, to avoid constructing redundant backends
     const { includeCredentials = '', scope = '', baseUrl = '' } = options;
     return `${type};${includeCredentials};${scope};${baseUrl}`;
   })
   private static getBackendForSearchType(
     type: SearchType,
-    options: SearchBackendOptions = {}
+    options: SearchBackendOptionsInterface = {}
   ): SearchBackendInterface {
     switch (type) {
       case SearchType.TV: // Will eventually have its own service backend

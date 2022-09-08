@@ -3,8 +3,8 @@ import type { SearchParams } from '../search-params';
 import type { Result } from '@internetarchive/result-type';
 import type { SearchServiceError } from '../search-service-error';
 import { SearchParamURLGenerator } from '../search-param-url-generator';
-import { BaseSearchBackend } from './base-search-backend.ts';
-import type { SearchBackendOptions } from './search-backend-options';
+import { BaseSearchBackend } from './base-search-backend';
+import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
  * The FulltextSearchBackend performs a `window.fetch` request to archive.org
@@ -13,7 +13,7 @@ export class FulltextSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
   constructor(
-    options?: SearchBackendOptions & {
+    options?: SearchBackendOptionsInterface & {
       servicePath?: string;
     }
   ) {

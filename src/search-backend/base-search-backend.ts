@@ -6,7 +6,7 @@ import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../search-service-error';
-import type { SearchBackendOptions } from './search-backend-options';
+import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
  * An abstract base class for search backends.
@@ -18,7 +18,7 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
 
   protected requestScope?: string;
 
-  constructor(options?: SearchBackendOptions) {
+  constructor(options?: SearchBackendOptionsInterface) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
 
     if (options?.includeCredentials !== undefined) {
