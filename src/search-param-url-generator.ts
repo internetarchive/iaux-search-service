@@ -58,11 +58,11 @@ export class SearchParamURLGenerator {
     const params: URLSearchParams = new URLSearchParams();
     params.append('user_query', searchParams.query);
 
-    if (searchParams.pageType != null) {
+    if (searchParams.pageType) {
       params.append('page_type', String(searchParams.pageType));
     }
 
-    if (searchParams.pageTarget != null) {
+    if (searchParams.pageTarget) {
       params.append('page_target', String(searchParams.pageTarget));
     }
 
