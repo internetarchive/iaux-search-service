@@ -54,6 +54,11 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
+          <div class="search-options">
+            <label for="num-rows">Number of result rows:</label>
+            <input type="number" id="num-rows" value="10" min="0" max="50" />
+          </div>
+
           <fieldset class="search-options">
             <legend>Search type:</legend>
             <input
@@ -248,9 +253,14 @@ export class AppRoot extends LitElement {
         ? []
         : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
 
+    const rowsInput = this.shadowRoot?.querySelector(
+      '#num-rows'
+    ) as HTMLInputElement;
+    const numRows = Number(rowsInput?.value);
+
     const searchParams: SearchParams = {
       query,
-      rows: 10,
+      rows: numRows,
       fields: ['identifier', 'title'],
       sort: sortParam,
       aggregations: { omit: true },
