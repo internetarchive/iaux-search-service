@@ -7,9 +7,9 @@ import { NumberField } from '../metadata-fields/field-types/number';
 import { StringField } from '../metadata-fields/field-types/string';
 
 /**
- * A model that describes a textual hit from the FTS API.
+ * A model that describes a textual hit from a full text search via the PPS endpoint.
  *
- * The fields in here get casted to their respective field types. See `metadata-fields/field-type`.
+ * The fields in here are cast to their respective field types. See `metadata-fields/field-type`.
  *
  * Add additional fields as needed.
  *

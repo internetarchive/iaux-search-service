@@ -7,9 +7,9 @@ import { NumberField } from '../metadata-fields/field-types/number';
 import { StringField } from '../metadata-fields/field-types/string';
 
 /**
- * A model that describes an item hit from the MDS API.
+ * A model that describes an item hit from a Metadata Search via the PPS endpoint.
  *
- * The fields in here get casted to their respective field types. See `metadata-fields/field-type`.
+ * The fields in here are cast to their respective field types. See `metadata-fields/field-type`.
  *
  * Add additional fields as needed.
  *
