@@ -16,7 +16,7 @@ describe('ItemHit', () => {
     expect(hit.title).to.be.undefined;
   });
 
-  it('handles improper data without throwing', () => {
+  it('handles incomplete data without throwing', () => {
     const hit = new ItemHit({});
     expect(hit.creator).to.be.undefined;
     expect(hit.date).to.be.undefined;

@@ -10,7 +10,7 @@ describe('TextHit', () => {
     expect(hit.creator).to.be.undefined;
   });
 
-  it('handles improper data without throwing', () => {
+  it('handles incomplete data without throwing', () => {
     const hit = new TextHit({});
     expect(hit.creator).to.be.undefined;
     expect(hit.date).to.be.undefined;
