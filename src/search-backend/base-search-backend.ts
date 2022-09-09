@@ -12,6 +12,10 @@ import type { SearchBackendOptionsInterface } from './search-backend-options';
  * An abstract base class for search backends.
  */
 export abstract class BaseSearchBackend implements SearchBackendInterface {
+  /**
+   * The base URL / host this backend should use for its requests.
+   * Defaults to 'archive.org'.
+   */
   protected baseUrl: string;
 
   protected includeCredentials: boolean;

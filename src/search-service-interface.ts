@@ -6,7 +6,7 @@ import type { SearchType } from './search-type';
 
 export interface SearchServiceInterface {
   /**
-   * Perform a search for given search params
+   * Perform a search for given search params.
    *
    * @param {SearchParams} params
    * @returns {Promise<Result<SearchResponse, SearchServiceError>>}
