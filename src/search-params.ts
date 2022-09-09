@@ -41,9 +41,9 @@ export interface SortParam {
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
  *
- * The `SearchParamURLGenerator.generateUrlSearchParams` method can be used
- * for converting the parameters to a PPS-conforming query string -- i.e., it
- * converts the `fields` array to `fields=identifier,collection` and `sort` to
+ * We use `SearchParamURLGenerator.generateUrlSearchParams` to convert the 
+ * parameters to a PPS-conforming query string -- i.e., it converts the 
+ * `fields` array to `fields=identifier,collection` and `sort` to
  * `sort=date:desc,downloads:asc`
  */
 export interface SearchParams {
