@@ -8,8 +8,19 @@ export interface AggregateSearchParam {
  * a search query.
  */
 export interface AggregateSearchParams {
+  /**
+   * An array of objects each specifying both a field name for which 
+   * aggregations should be returned and the number of "buckets" that
+   * should be returned for it.
+   * 
+   * Note: this format may not be supported by all backends. Run some 
+   * test queries with advanced aggregation objects before relying on this.
+   */
   advancedParams?: AggregateSearchParam[];
 
+  /**
+   * An array of field names for which aggregations should be returned.
+   */
   simpleParams?: string[];
 
   /**
