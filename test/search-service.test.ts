@@ -13,7 +13,9 @@ import {
   SearchServiceErrorType,
 } from '../src/search-service-error';
 import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
-import { SearchBackendFactory } from '../src/search-backend/search-backend-factory';
+import { SearchType } from '../src/search-type';
+import { MetadataSearchBackend } from '../src/search-backend/metadata-search-backend';
+import { FulltextSearchBackend } from '../src/search-backend/fulltext-search-backend';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {
@@ -30,8 +32,8 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
-    SearchBackendFactory.getBackendForSearchType = () => {
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => {
       return backend;
     };
 
@@ -42,7 +44,7 @@ describe('SearchService', () => {
       query
     );
 
-    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
+    SearchService.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend network error if one occurs', async () => {
@@ -59,8 +61,8 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
-    SearchBackendFactory.getBackendForSearchType = () => {
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => {
       return backend;
     };
 
@@ -73,7 +75,7 @@ describe('SearchService', () => {
     );
     expect(searchResult.error?.message).to.equal('network error');
 
-    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
+    SearchService.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend decoding error if one occurs', async () => {
@@ -90,8 +92,8 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const realFactoryMethod = SearchBackendFactory.getBackendForSearchType;
-    SearchBackendFactory.getBackendForSearchType = () => {
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => {
       return backend;
     };
 
@@ -104,6 +106,18 @@ describe('SearchService', () => {
     );
     expect(searchResult.error?.message).to.equal('decoding error');
 
-    SearchBackendFactory.getBackendForSearchType = realFactoryMethod;
+    SearchService.getBackendForSearchType = realFactoryMethod;
+  });
+
+  it('factory method gets metadata backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.METADATA)
+    ).to.be.instanceOf(MetadataSearchBackend);
+  });
+
+  it('factory method gets fulltext backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.FULLTEXT)
+    ).to.be.instanceOf(FulltextSearchBackend);
   });
 });

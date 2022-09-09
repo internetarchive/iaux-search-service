@@ -43,7 +43,7 @@ export class SearchService implements SearchServiceInterface {
     const { includeCredentials = '', scope = '', baseUrl = '' } = options;
     return `${type};${includeCredentials};${scope};${baseUrl}`;
   })
-  private static getBackendForSearchType(
+  static getBackendForSearchType(
     type: SearchType,
     options: SearchBackendOptionsInterface = {}
   ): SearchBackendInterface {
