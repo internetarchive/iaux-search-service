@@ -37,7 +37,8 @@ export class HitFactory {
       case 'text':
         return new TextHit(result);
       default:
-        throw new Error(`Unrecognized hit type: ${type}`);
+        // The hit type doesn't tell us what to construct, so just return the input
+        return result;
     }
   }
 }
