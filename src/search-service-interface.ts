@@ -8,9 +8,11 @@ export interface SearchServiceInterface {
   /**
    * Perform a search for given search params.
    *
-   * @param {SearchParams} params
+   * @param {SearchParams} params Params object specifying the search query, 
+   * sorting/aggregation options, and other ways to adjust what is returned.
+   * @param {SearchType} searchType What type of search to perform (e.g., 
+   * metadata or full text)
    * @returns {Promise<Result<SearchResponse, SearchServiceError>>}
-   * @memberof SearchServiceInterface
    */
   search(
     params: SearchParams,
