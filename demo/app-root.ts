@@ -12,7 +12,7 @@ import { nothing } from 'lit-html';
 import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
-import { Hit } from '../src/models/hit-types/hit';
+import { Result } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
 import { SearchParams, SortDirection } from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
@@ -36,8 +36,8 @@ export class AppRoot extends LitElement {
   @internalProperty()
   private loadingAggregations = false;
 
-  private get searchResults(): Hit[] | undefined {
-    return this.searchResponse?.response.hits;
+  private get searchResults(): Result[] | undefined {
+    return this.searchResponse?.response.results;
   }
 
   private get searchAggregations(): Record<string, Aggregation> | undefined {
@@ -221,7 +221,7 @@ export class AppRoot extends LitElement {
       : html`${nothing}`;
   }
 
-  private snippetTemplate(hit: Hit): TemplateResult {
+  private snippetTemplate(hit: Result): TemplateResult {
     return hit.highlight
       ? html`<td>${hit.highlight.value}</td>`
       : html`${nothing}`;

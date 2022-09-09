@@ -33,12 +33,12 @@ describe('SearchResponseDetails', () => {
     };
 
     const details = new SearchResponseDetails(responseBody, responseSchema);
-    expect(details.hits[0]).to.be.instanceOf(ItemHit);
-    expect(details.hits[0].identifier).to.equal('foo');
-    expect(details.hits[0].mediatype?.value).to.equal('texts');
-    expect(details.hits[0].creator?.value).to.be.undefined;
-    expect(details.hits[1].identifier).to.equal('bar');
-    expect(details.hits[1].collection?.value).to.equal('baz');
+    expect(details.results[0]).to.be.instanceOf(ItemHit);
+    expect(details.results[0].identifier).to.equal('foo');
+    expect(details.results[0].mediatype?.value).to.equal('texts');
+    expect(details.results[0].creator?.value).to.be.undefined;
+    expect(details.results[1].identifier).to.equal('bar');
+    expect(details.results[1].collection?.value).to.equal('baz');
   });
 
   it('constructs text hits', () => {
@@ -69,11 +69,11 @@ describe('SearchResponseDetails', () => {
     };
 
     const details = new SearchResponseDetails(responseBody, responseSchema);
-    expect(details.hits[0]).to.be.instanceOf(TextHit);
-    expect(details.hits[0].identifier).to.equal('foo');
-    expect(details.hits[0].mediatype?.value).to.equal('texts');
-    expect(details.hits[0].creator?.value).to.be.undefined;
-    expect(details.hits[1].identifier).to.equal('bar');
-    expect(details.hits[1].collection?.value).to.equal('baz');
+    expect(details.results[0]).to.be.instanceOf(TextHit);
+    expect(details.results[0].identifier).to.equal('foo');
+    expect(details.results[0].mediatype?.value).to.equal('texts');
+    expect(details.results[0].creator?.value).to.be.undefined;
+    expect(details.results[1].identifier).to.equal('bar');
+    expect(details.results[1].collection?.value).to.equal('baz');
   });
 });

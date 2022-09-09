@@ -47,9 +47,9 @@ export class MockResponseGenerator {
         query_time: 3133,
       },
       response: {
-        totalHits: 12345,
-        returnedHits: 2,
-        hits: [metadata1, metadata2],
+        totalResults: 12345,
+        returnedCount: 2,
+        results: [metadata1, metadata2],
         schema: {
           hit_type: 'item',
           field_properties: {},
@@ -99,9 +99,9 @@ export class MockResponseGenerator {
         query_time: 3133,
       },
       response: {
-        totalHits: 12345,
-        returnedHits: 2,
-        hits: [text1, text2],
+        totalResults: 12345,
+        returnedCount: 2,
+        results: [text1, text2],
         schema: {
           hit_type: 'text',
           field_properties: {},

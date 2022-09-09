@@ -19,19 +19,19 @@ type Merge<T, U> = {
 };
 
 /**
- * Applying this to the Hit type forces Intellisense to present Hit as
+ * Applying this to the Result type forces Intellisense to present Result as
  * a type in its own right, and not as the underlying merge type it aliases.
  * Really just to keep things clean at the call site.
  */
 interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
- * Hit is an expansive type definition encompassing all the optional
+ * Result is an expansive type definition encompassing all the optional
  * and required properties that may occur on any type of hit returned
  * by the various search backends. (Most metadata properties are
  * optional anyway).
  */
-export type Hit = Partial<Merge<ItemHit, TextHit>> & PreserveAlias;
+export type Result = Partial<Merge<ItemHit, TextHit>> & PreserveAlias;
 
 /**
  * A factory for creating instances of various hit types.
@@ -41,12 +41,12 @@ export class HitFactory {
     // This is only here to ensure the constructor is private.
   }
 
-  static createFromType(type: HitType, hit: Hit): Hit {
+  static createFromType(type: HitType, result: Result): Result {
     switch (type) {
       case 'item':
-        return new ItemHit(hit);
+        return new ItemHit(result);
       case 'text':
-        return new TextHit(hit);
+        return new TextHit(result);
       default:
         throw new Error(`Unrecognized hit type: ${type}`);
     }
