@@ -9,11 +9,11 @@ export interface AggregateSearchParam {
  */
 export interface AggregateSearchParams {
   /**
-   * An array of objects each specifying both a field name for which 
+   * An array of objects each specifying both a field name for which
    * aggregations should be returned and the number of "buckets" that
    * should be returned for it.
-   * 
-   * Note: this format may not be supported by all backends. Run some 
+   *
+   * Note: this format may not be supported by all backends. Run some
    * test queries with advanced aggregation objects before relying on this.
    */
   advancedParams?: AggregateSearchParam[];
