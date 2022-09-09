@@ -1,11 +1,11 @@
 /**
- * The server-parsed request parameters that are returned 
+ * The server-parsed request parameters that are returned
  * with responses from the PPS endpoint.
- * 
- * While similar in structure to the `SearchParams` passed 
- * into a `search` call, this interface describes the _parsed_ 
- * parameters as the server has interpreted them (e.g., with 
- * raw sort and aggregation strings rather than the structured 
+ *
+ * While similar in structure to the `SearchParams` passed
+ * into a `search` call, this interface describes the _parsed_
+ * parameters as the server has interpreted them (e.g., with
+ * raw sort and aggregation strings rather than the structured
  * objects that callers pass with a query).
  */
 export interface SearchRequestParams {

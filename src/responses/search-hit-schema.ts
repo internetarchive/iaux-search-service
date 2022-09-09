@@ -15,13 +15,13 @@ export interface FieldSchema {
  */
 export interface SearchHitSchema {
   /**
-   * A string identifying what type of hits were returned 
+   * A string identifying what type of hits were returned
    * (and which this schema describes)
    */
   hit_type: HitType;
 
   /**
-   * A map of the fields present on each search hit, with info 
+   * A map of the fields present on each search hit, with info
    * about their type and whether they are optional or multivalued.
    */
   field_properties: Record<string, FieldSchema>;
