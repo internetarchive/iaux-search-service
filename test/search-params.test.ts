@@ -181,6 +181,25 @@ describe('SearchParams', () => {
     expect(queryAsString).to.equal(expected);
   });
 
+  it('properly generates a URLSearchParam with an aggregations_size param', async () => {
+    const query = 'title:foo AND collection:bar';
+    const aggregations = {
+      simpleParams: ['year', 'collection', 'subject'],
+    };
+    const params = {
+      query,
+      aggregations,
+      aggregationsSize: 3,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject&aggregations_size=3';
+    expect(queryAsString).to.equal(expected);
+  });
+
   it('advanced aggregations take precedence if both simple and advanced provided', async () => {
     const query = 'title:foo AND collection:bar';
     const aggregations = {
