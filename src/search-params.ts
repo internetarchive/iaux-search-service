@@ -113,6 +113,8 @@ export interface SearchParams {
 
   /**
    * The number of buckets that should be returned for each aggregation type.
+   * This defaults to 6 in the PPS (the number of facets displayed for each
+   * facet type by default in the sidebar).
    */
   aggregationsSize?: number;
 }
