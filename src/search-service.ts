@@ -17,10 +17,6 @@ import { Memoize } from 'typescript-memoize';
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService();
 
-  constructor() {
-    //
-  }
-
   /** @inheritdoc */
   async search(
     params: SearchParams,
