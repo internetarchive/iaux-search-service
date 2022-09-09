@@ -26,9 +26,7 @@ export class SearchService implements SearchServiceInterface {
     params: SearchParams,
     searchType: SearchType = SearchType.METADATA
   ): Promise<Result<SearchResponse, SearchServiceError>> {
-    const searchBackend = SearchService.getBackendForSearchType(
-      searchType
-    );
+    const searchBackend = SearchService.getBackendForSearchType(searchType);
 
     const rawResponse = await searchBackend.performSearch(params);
     if (rawResponse.error) {
