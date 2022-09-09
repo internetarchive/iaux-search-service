@@ -8,17 +8,6 @@ import { TextHit } from './text-hit';
 export type HitType = 'item' | 'text';
 
 /**
- * A type having all properties that exist on either T or U.
- */
-type Merge<T, U> = {
-  [K in keyof T | keyof U]: K extends keyof T
-    ? T[K]
-    : K extends keyof U
-    ? U[K]
-    : never;
-};
-
-/**
  * Applying this to the Result type forces Intellisense to present Result as
  * a type in its own right, and not as the underlying merge type it aliases.
  * Really just to keep things clean at the call site.
@@ -27,11 +16,11 @@ interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-in
 
 /**
  * Result is an expansive type definition encompassing all the optional
- * and required properties that may occur on any type of hit returned
- * by the various search backends. (Most metadata properties are
- * optional anyway).
+ * and required properties that may occur on any type of search result
+ * ('hit') returned by the various search backends. (Most metadata
+ * properties are optional anyway).
  */
-export type Result = Partial<Merge<ItemHit, TextHit>> & PreserveAlias;
+export type Result = Partial<ItemHit & TextHit> & PreserveAlias;
 
 /**
  * A factory for creating instances of various hit types.
