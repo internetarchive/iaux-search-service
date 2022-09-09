@@ -5,6 +5,6 @@
 export enum SearchType {
   METADATA,
   FULLTEXT,
-  TV,
-  RADIO,
+  //TV, // not yet available
+  //RADIO, // not yet available
 }

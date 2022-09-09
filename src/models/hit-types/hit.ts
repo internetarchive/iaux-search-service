@@ -38,7 +38,7 @@ export type Hit = Partial<Merge<ItemHit, TextHit>> & PreserveAlias;
  */
 export class HitFactory {
   private constructor() {
-    //
+    // This is only here to ensure the constructor is private.
   }
 
   static createFromType(type: HitType, hit: Hit): Hit {

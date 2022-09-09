@@ -48,8 +48,8 @@ export class SearchService implements SearchServiceInterface {
     options: SearchBackendOptionsInterface = {}
   ): SearchBackendInterface {
     switch (type) {
-      case SearchType.TV: // Will eventually have its own service backend
-      case SearchType.RADIO: // Will eventually have its own service backend
+      //case SearchType.TV: // Will eventually have its own service backend
+      //case SearchType.RADIO: // Will eventually have its own service backend
       case SearchType.FULLTEXT:
         return new FulltextSearchBackend(options);
       case SearchType.METADATA:
