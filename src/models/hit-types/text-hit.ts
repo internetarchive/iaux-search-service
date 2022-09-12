@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Memoize } from 'typescript-memoize';
+import { Metadata } from '../metadata';
 import { BooleanField } from '../metadata-fields/field-types/boolean';
 import { DateField } from '../metadata-fields/field-types/date';
 import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
@@ -21,7 +22,7 @@ export class TextHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  rawMetadata?: typeof Metadata.prototype.rawMetadata;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
@@ -33,7 +34,7 @@ export class TextHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): string | undefined {
+  get identifier(): typeof Metadata.prototype.identifier {
     return this.rawMetadata?.fields?.identifier;
   }
 
@@ -49,7 +50,7 @@ export class TextHit {
   }
 
   /** Multivalued. */
-  @Memoize() get collection(): StringField | undefined {
+  @Memoize() get collection(): typeof Metadata.prototype.collection {
     return this.rawMetadata?.fields?.collection
       ? new StringField(this.rawMetadata.fields.collection)
       : undefined;
@@ -65,14 +66,14 @@ export class TextHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get creator(): StringField | undefined {
+  @Memoize() get creator(): typeof Metadata.prototype.creator {
     return this.rawMetadata?.fields?.creator
       ? new StringField(this.rawMetadata.fields.creator)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get date(): DateField | undefined {
+  @Memoize() get date(): typeof Metadata.prototype.date {
     return this.rawMetadata?.fields?.date
       ? new DateField(this.rawMetadata.fields.date)
       : undefined;
@@ -83,7 +84,7 @@ export class TextHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get description(): StringField | undefined {
+  @Memoize() get description(): typeof Metadata.prototype.description {
     return this.rawMetadata?.fields?.description
       ? new StringField(this.rawMetadata.fields.description)
       : undefined;
@@ -93,7 +94,7 @@ export class TextHit {
    * Total views over ITEM (not text) lifetime, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get downloads(): NumberField | undefined {
+  @Memoize() get downloads(): typeof Metadata.prototype.downloads {
     return this.rawMetadata?.fields?.downloads
       ? new NumberField(this.rawMetadata.fields.downloads)
       : undefined;
@@ -117,7 +118,7 @@ export class TextHit {
       : undefined;
   }
 
-  @Memoize() get mediatype(): MediaTypeField | undefined {
+  @Memoize() get mediatype(): typeof Metadata.prototype.mediatype {
     return this.rawMetadata?.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
       : undefined;
@@ -131,7 +132,7 @@ export class TextHit {
   }
 
   /** Optional. */
-  @Memoize() get publicdate(): DateField | undefined {
+  @Memoize() get publicdate(): typeof Metadata.prototype.publicdate {
     return this.rawMetadata?.fields?.publicdate
       ? new DateField(this.rawMetadata.fields.publicdate)
       : undefined;
@@ -147,7 +148,7 @@ export class TextHit {
   }
 
   /** Optional. */
-  @Memoize() get reviewdate(): DateField | undefined {
+  @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
       : undefined;
@@ -164,7 +165,7 @@ export class TextHit {
   }
 
   /** Optional. */
-  @Memoize() get title(): StringField | undefined {
+  @Memoize() get title(): typeof Metadata.prototype.title {
     return this.rawMetadata?.fields?.title
       ? new StringField(this.rawMetadata.fields.title)
       : undefined;
