@@ -1,7 +1,7 @@
 export { Metadata } from './src/models/metadata';
 export { ItemHit } from './src/models/hit-types/item-hit';
 export { TextHit } from './src/models/hit-types/text-hit';
-export { Result as Hit, HitType, HitFactory } from './src/models/hit-types/hit';
+export { Result, HitType } from './src/models/hit-types/hit';
 export { Aggregation, Bucket } from './src/models/aggregation';
 
 export { DateField } from './src/models/metadata-fields/field-types/date';

@@ -21,24 +21,3 @@ interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-in
  * properties are optional anyway).
  */
 export type Result = Partial<ItemHit & TextHit> & PreserveAlias;
-
-/**
- * A factory for creating instances of various hit types.
- */
-export class HitFactory {
-  private constructor() {
-    // This is only here to ensure the constructor is private.
-  }
-
-  static createFromType(type: HitType, result: Result): Result {
-    switch (type) {
-      case 'item':
-        return new ItemHit(result);
-      case 'text':
-        return new TextHit(result);
-      default:
-        // The hit type doesn't tell us what to construct, so just return the input
-        return result;
-    }
-  }
-}

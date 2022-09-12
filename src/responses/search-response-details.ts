@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Aggregation } from '../models/aggregation';
-import { Result, HitFactory } from '../models/hit-types/hit';
+import { Result, HitType } from '../models/hit-types/hit';
+import { ItemHit } from '../models/hit-types/item-hit';
+import { TextHit } from '../models/hit-types/text-hit';
 import type { SearchHitSchema } from './search-hit-schema';
 
 /**
@@ -63,8 +65,20 @@ export class SearchResponseDetails {
     this.returnedCount = body?.hits?.returned ?? 0;
     this.results =
       body?.hits?.hits?.map((hit: Result) =>
-        HitFactory.createFromType(hitType, hit)
+        SearchResponseDetails.createResult(hitType, hit)
       ) ?? [];
     this.aggregations = body?.aggregations;
+  }
+
+  private static createResult(type: HitType, result: Result): Result {
+    switch (type) {
+      case 'item':
+        return new ItemHit(result);
+      case 'text':
+        return new TextHit(result);
+      default:
+        // The hit type doesn't tell us what to construct, so just return the input
+        return result;
+    }
   }
 }
