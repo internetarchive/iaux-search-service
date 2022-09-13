@@ -1,5 +1,5 @@
-import { ItemHit } from './item-hit';
-import { TextHit } from './text-hit';
+import type { ItemHit } from './item-hit';
+import type { TextHit } from './text-hit';
 
 /**
  * Union of the different hit_type values returned by the PPS.

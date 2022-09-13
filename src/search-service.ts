@@ -1,11 +1,11 @@
 import { SearchResponse } from './responses/search-response';
 import type { SearchParams } from './search-params';
-import { SearchServiceError } from './search-service-error';
+import type { SearchServiceError } from './search-service-error';
 import type { SearchServiceInterface } from './search-service-interface';
 import type { Result } from '@internetarchive/result-type';
 import { SearchType } from './search-type';
-import { SearchBackendOptionsInterface } from './search-backend/search-backend-options';
-import { SearchBackendInterface } from './search-backend/search-backend-interface';
+import type { SearchBackendOptionsInterface } from './search-backend/search-backend-options';
+import type { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { FulltextSearchBackend } from './search-backend/fulltext-search-backend';
 import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
 import { Memoize } from 'typescript-memoize';

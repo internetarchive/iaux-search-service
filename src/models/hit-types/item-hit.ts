@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Memoize } from 'typescript-memoize';
-import { Metadata } from '../metadata';
+import type { Metadata } from '../metadata';
 import { BooleanField } from '../metadata-fields/field-types/boolean';
 import { DateField } from '../metadata-fields/field-types/date';
 import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
