@@ -22,7 +22,7 @@ export class ItemHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: typeof Metadata.prototype.rawMetadata;
+  rawMetadata?: Record<string, any>;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
