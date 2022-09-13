@@ -53,7 +53,7 @@ The maximum number of search results to be retrieved per page.
 #### `page`
 Which page of results to retrieve, beginning from page `1`.
 Each page is sized according to the `rows` parameter, so requesting `{ rows: 20, page: 3 }`
-will retrieve results 41-60.
+would retrieve results 41-60, etc.
 
 #### `fields`
 An array of metadata field names that should be present on the returned search results.
@@ -69,13 +69,13 @@ An object specifying which aggregations to retrieve with the query.
 To retrieve no aggregations at all, this object should be `{ omit: true }`.
 To retrieve aggregations for one or more keys, this object should resemble 
 ```js
-{ simpleParams: ['key1', 'key2', 'key3'] }
+{ simpleParams: ['subject', 'creator', /*...*/] }
 ```
 
 To specify the number of buckets for individual aggregation types, the object
 should instead use the `advancedParams` property, resembling
 ```js
-{ advancedParams: [{ field: 'key1', size: 2 }, { field: 'key2', size: 4 }, ...] }
+{ advancedParams: [{ field: 'subject', size: 2 }, { field: 'creator', size: 4 }, /*...*/] }
 ```
 
 However, these advanced aggregation parameters are not currently supported by the backend and may be removed at 
@@ -95,6 +95,38 @@ more types to be added in the future.
 #### `pageTarget`
 Used in conjunction with `pageType: 'collection_details'` to specify the identifier of the collection
 to retrieve results for.
+
+### Search types
+
+At present the only two types of search available are Metadata Search (`SearchType.METADATA`) 
+and Full Text Search (`SearchType.FULLTEXT`). This will eventually be extended to support other
+types of search including TV captions and radio transcripts. Calls that do not specify a search
+type will default to Metadata Search.
+
+### Return values
+
+Calls to `SearchService#search` will return a Promise that either resolves to a `SearchResponse`
+object or rejects with a `SearchServiceError`.
+
+`SearchResponse` objects are structured similar to this example:
+
+```js
+{
+  rawResponse: {/*...*/}, // The raw JSON fetched from the server
+  request: {
+    clientParameters: {/*...*/}, // The original client parameters sent with the request
+    finalizedParameters: {/*...*/} // The finalized request parameters as determined by the backend
+  },
+  responseHeader: {/*...*/}, // The header containing info about the response success/failure and processing time
+  response: {
+    totalResults: 12345, // The total number of search results matching the query
+    returnedCount: 50, // The number of search results returned in this response
+    results: [/*...*/], // The array of search results
+    aggregations: {/*...*/}, // A record mapping aggregation names to Aggregation objects
+    schema: {/*...*/} // The data schema to which the returned search results conform
+  }
+}
+```
 
 ### Fetch Metadata
 
