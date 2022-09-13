@@ -40,7 +40,7 @@ describe('SearchService', () => {
     const query = 'title:foo AND collection:bar';
     const service = new SearchService();
     const result = await service.search({ query });
-    expect(result.success?.request.finalized_parameters.user_query).to.equal(
+    expect(result.success?.request.finalizedParameters.user_query).to.equal(
       query
     );
 

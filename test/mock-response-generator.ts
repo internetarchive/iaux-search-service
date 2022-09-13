@@ -15,14 +15,14 @@ export class MockResponseGenerator {
         foo: 'bar',
       },
       request: {
-        client_parameters: {
+        clientParameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           page: params.page ?? 0,
           hits_per_page: params.rows ?? 0,
           fields: params.fields ?? [],
         },
-        finalized_parameters: {
+        finalizedParameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           service_backend: 'metadata',
@@ -67,14 +67,14 @@ export class MockResponseGenerator {
         foo: 'bar',
       },
       request: {
-        client_parameters: {
+        clientParameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           page: params.page ?? 0,
           hits_per_page: params.rows ?? 0,
           fields: params.fields ?? [],
         },
-        finalized_parameters: {
+        finalizedParameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           service_backend: 'fts',

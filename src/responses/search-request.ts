@@ -8,15 +8,15 @@ export class SearchRequest {
   /**
    * The original client parameters sent with the request
    */
-  client_parameters: SearchRequestParams;
+  clientParameters: SearchRequestParams;
 
   /**
    * The finalized request parameters as determined by the backend
    */
-  finalized_parameters: SearchRequestParams;
+  finalizedParameters: SearchRequestParams;
 
   constructor(json: Record<string, any>) {
-    this.client_parameters = json.client_parameters;
-    this.finalized_parameters = json.finalized_parameters;
+    this.clientParameters = json.client_parameters;
+    this.finalizedParameters = json.finalized_parameters;
   }
 }
