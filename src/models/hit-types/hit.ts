@@ -20,4 +20,4 @@ interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-in
  * ('hit') returned by the various search backends. (Most metadata
  * properties are optional anyway).
  */
-export type Result = Partial<ItemHit & TextHit> & PreserveAlias;
+export type SearchResult = Partial<ItemHit & TextHit> & PreserveAlias;
