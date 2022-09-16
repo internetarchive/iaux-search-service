@@ -73,7 +73,10 @@ export class SearchResponseDetails {
   /**
    * Returns a correctly-typed search result depending on the schema's hit_type.
    */
-  private static createResult(type: HitType, result: SearchResult): SearchResult {
+  private static createResult(
+    type: HitType,
+    result: SearchResult
+  ): SearchResult {
     switch (type) {
       case 'item':
         return new ItemHit(result);
