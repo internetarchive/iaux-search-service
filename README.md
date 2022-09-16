@@ -51,7 +51,7 @@ The full search query, which may include Lucene syntax.
 The maximum number of search results to be retrieved per page.
 
 #### `page`
-Which page of results to retrieve, beginning from page `1`.
+Which page of results to retrieve, beginning from page 1.
 Each page is sized according to the `rows` parameter, so requesting `{ rows: 20, page: 3 }`
 would retrieve results 41-60, etc.
 
@@ -61,8 +61,11 @@ An array of metadata field names that should be present on the returned search r
 #### `sort`
 An array of sorting parameters to apply to the results.
 The first array element specifies the primary sort, the second element the secondary sort, and so on.
-Each sorting parameter has the form `{ field: string, direction: 'asc' | 'desc' }`, where `field` is
-the name of the column to sort on (e.g., title) and `direction` is whether to sort ascending or descending.
+Each sorting parameter has the form 
+```js
+{ field: string, direction: 'asc' | 'desc' }
+```
+where `field` is the name of the column to sort on (e.g., title) and `direction` is whether to sort ascending or descending.
 
 #### `aggregations`
 An object specifying which aggregations to retrieve with the query.
