@@ -24,13 +24,13 @@ export class Aggregation {
    * The year_histogram returns a `number` array, and
    * other facets return a `Bucket` array.
    */
-  buckets: Bucket[] | number[];
-  doc_count_error_upper_bound?: number;
-  sum_other_doc_count?: number;
-  first_bucket_key?: number;
-  last_bucket_key?: number;
-  number_buckets?: number;
-  interval?: number;
+  readonly buckets: Bucket[] | number[];
+  readonly doc_count_error_upper_bound?: number;
+  readonly sum_other_doc_count?: number;
+  readonly first_bucket_key?: number;
+  readonly last_bucket_key?: number;
+  readonly number_buckets?: number;
+  readonly interval?: number;
 
   constructor(options: Aggregation) {
     this.buckets = options.buckets;
