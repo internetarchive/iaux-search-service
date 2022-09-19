@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Aggregation } from '../models/aggregation';
+import { Aggregation } from '../models/aggregation';
 import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
@@ -67,7 +67,17 @@ export class SearchResponseDetails {
       body?.hits?.hits?.map((hit: SearchResult) =>
         SearchResponseDetails.createResult(hitType, hit)
       ) ?? [];
-    this.aggregations = body?.aggregations;
+
+    // Construct Aggregation objects
+    if (body?.aggregations) {
+      this.aggregations = Object.entries(body.aggregations).reduce(
+        (acc, [key, val]) => {
+          acc[key] = new Aggregation(val);
+          return acc;
+        },
+        {} as Record<string, Aggregation>
+      );
+    }
   }
 
   /**
