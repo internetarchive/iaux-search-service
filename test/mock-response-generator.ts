@@ -6,7 +6,9 @@ import { ItemHit } from '../src/models/hit-types/item-hit';
 import { TextHit } from '../src/models/hit-types/text-hit';
 
 export class MockResponseGenerator {
-  generateMockMetadataSearchResponse(params: SearchParams): SearchResponse {
+  generateMockMetadataSearchResponse(
+    params: SearchParams
+  ): Record<string, any> {
     const metadata1 = new ItemHit({ identifier: 'foo' });
     const metadata2 = new ItemHit({ identifier: 'bar' });
 
@@ -15,14 +17,14 @@ export class MockResponseGenerator {
         foo: 'bar',
       },
       request: {
-        clientParameters: {
+        client_parameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           page: params.page ?? 0,
           hits_per_page: params.rows ?? 0,
           fields: params.fields ?? [],
         },
-        finalizedParameters: {
+        finalized_parameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           service_backend: 'metadata',
@@ -58,7 +60,9 @@ export class MockResponseGenerator {
     };
   }
 
-  generateMockFulltextSearchResponse(params: SearchParams): SearchResponse {
+  generateMockFulltextSearchResponse(
+    params: SearchParams
+  ): Record<string, any> {
     const text1 = new TextHit({ identifier: 'foo' });
     const text2 = new TextHit({ identifier: 'bar' });
 
@@ -67,14 +71,14 @@ export class MockResponseGenerator {
         foo: 'bar',
       },
       request: {
-        clientParameters: {
+        client_parameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           page: params.page ?? 0,
           hits_per_page: params.rows ?? 0,
           fields: params.fields ?? [],
         },
-        finalizedParameters: {
+        finalized_parameters: {
           client: 'page_production_service_endpoint',
           user_query: params.query,
           service_backend: 'fts',

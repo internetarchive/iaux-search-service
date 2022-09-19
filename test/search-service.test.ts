@@ -22,7 +22,7 @@ describe('SearchService', () => {
     class MockSearchBackend implements SearchBackendInterface {
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const responseGenerator = new MockResponseGenerator();
         const mockResponse = responseGenerator.generateMockMetadataSearchResponse(
           params
@@ -33,9 +33,7 @@ describe('SearchService', () => {
 
     const backend = new MockSearchBackend();
     const realFactoryMethod = SearchService.getBackendForSearchType;
-    SearchService.getBackendForSearchType = () => {
-      return backend;
-    };
+    SearchService.getBackendForSearchType = () => backend;
 
     const query = 'title:foo AND collection:bar';
     const service = new SearchService();
@@ -51,7 +49,7 @@ describe('SearchService', () => {
     class MockSearchBackend implements SearchBackendInterface {
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const error = new SearchServiceError(
           SearchServiceErrorType.networkError,
           'network error'
@@ -62,9 +60,7 @@ describe('SearchService', () => {
 
     const backend = new MockSearchBackend();
     const realFactoryMethod = SearchService.getBackendForSearchType;
-    SearchService.getBackendForSearchType = () => {
-      return backend;
-    };
+    SearchService.getBackendForSearchType = () => backend;
 
     const service = new SearchService();
 
@@ -82,7 +78,7 @@ describe('SearchService', () => {
     class MockSearchBackend implements SearchBackendInterface {
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const error = new SearchServiceError(
           SearchServiceErrorType.decodingError,
           'decoding error'
@@ -93,9 +89,7 @@ describe('SearchService', () => {
 
     const backend = new MockSearchBackend();
     const realFactoryMethod = SearchService.getBackendForSearchType;
-    SearchService.getBackendForSearchType = () => {
-      return backend;
-    };
+    SearchService.getBackendForSearchType = () => backend;
 
     const service = new SearchService();
 
