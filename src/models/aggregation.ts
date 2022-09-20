@@ -12,7 +12,13 @@ export interface Bucket {
 }
 
 export enum AggregationSortType {
+  /**
+   * Sort descending numerically by count/frequency
+   */
   COUNT,
+  /**
+   * Sort ascending alphabetically by key
+   */
   ALPHABETICAL,
 }
 
@@ -61,7 +67,8 @@ export class Aggregation {
    * returned as-is.
    *
    * @param sortType What to sort the buckets on.
-   * Accepted values are `AggregationSortType.COUNT` and `AggregationSortType.ALPHABETICAL`.
+   * Accepted values are `AggregationSortType.COUNT` (descending order) and 
+   * `AggregationSortType.ALPHABETICAL` (ascending order).
    */
   @Memoize()
   getSortedBuckets(sortType?: AggregationSortType): Bucket[] | number[] {
