@@ -16,6 +16,16 @@ export enum AggregationSortType {
   ALPHABETICAL,
 }
 
+export interface AggregationOptions {
+  buckets: Bucket[] | number[];
+  doc_count_error_upper_bound?: number;
+  sum_other_doc_count?: number;
+  first_bucket_key?: number;
+  last_bucket_key?: number;
+  number_buckets?: number;
+  interval?: number;
+}
+
 /**
  * Aggregations are the datasource for facets and histograms
  */
@@ -32,7 +42,7 @@ export class Aggregation {
   readonly number_buckets?: number;
   readonly interval?: number;
 
-  constructor(options: Aggregation) {
+  constructor(options: AggregationOptions) {
     this.buckets = options.buckets;
     this.doc_count_error_upper_bound = options.doc_count_error_upper_bound;
     this.sum_other_doc_count = options.sum_other_doc_count;
