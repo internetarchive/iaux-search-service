@@ -67,7 +67,7 @@ export class Aggregation {
    * returned as-is.
    *
    * @param sortType What to sort the buckets on.
-   * Accepted values are `AggregationSortType.COUNT` (descending order) and 
+   * Accepted values are `AggregationSortType.COUNT` (descending order) and
    * `AggregationSortType.ALPHABETICAL` (ascending order).
    */
   @Memoize()
