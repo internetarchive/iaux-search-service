@@ -2,7 +2,7 @@ export { Metadata } from './src/models/metadata';
 export { ItemHit } from './src/models/hit-types/item-hit';
 export { TextHit } from './src/models/hit-types/text-hit';
 export { SearchResult, HitType } from './src/models/hit-types/hit';
-export { Aggregation, Bucket } from './src/models/aggregation';
+export { Aggregation, AggregationSortType, Bucket } from './src/models/aggregation';
 
 export { DateField } from './src/models/metadata-fields/field-types/date';
 
