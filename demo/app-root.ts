@@ -27,6 +27,15 @@ export class AppRoot extends LitElement {
   @query('#debug-info-check')
   private debugCheck!: HTMLInputElement;
 
+  @query('#num-rows')
+  private rowsInput!: HTMLInputElement;
+
+  @query('#num-aggs')
+  private numAggsInput!: HTMLInputElement;
+
+  @query(`input[name='sort']:checked`)
+  private checkedSort!: HTMLInputElement;
+
   @internalProperty()
   private searchResponse?: SearchResponse;
 
@@ -260,15 +269,12 @@ export class AppRoot extends LitElement {
    * Fetch the search hits
    */
   private async fetchSearchResults(query: string, searchType: SearchType) {
-    const checkedSort = this.shadowRoot?.querySelector(
-      `input[name='sort']:checked`
-    ) as HTMLInputElement;
-
     const sortParam =
-      checkedSort?.value === 'none'
+      this.checkedSort?.value === 'none'
         ? []
-        : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
+        : [{ field: 'title', direction: this.checkedSort?.value as SortDirection }];
 
+    const numRows = Number(this.rowsInput?.value);
     const includeDebugging = this.debugCheck?.checked;
 
     const searchParams: SearchParams = {
@@ -305,10 +311,7 @@ export class AppRoot extends LitElement {
         : undefined,
     };
 
-    const numAggsInput = this.shadowRoot?.querySelector(
-      '#num-aggs'
-    ) as HTMLInputElement;
-    const numAggs = Number(numAggsInput?.value);
+    const numAggs = Number(this.numAggsInput?.value);
 
     const searchParams: SearchParams = {
       query,
