@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { SearchResponse } from '../src/responses/search-response';
 import { SearchParams } from '../src/search-params';
 import { ItemHit } from '../src/models/hit-types/item-hit';
 import { TextHit } from '../src/models/hit-types/text-hit';

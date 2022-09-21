@@ -89,7 +89,7 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     // then try json decoding and return a decodingError if it fails
     try {
       const json = await response.json();
-      
+
       if (json['debugging']) {
         this.printDebuggingInfo(json);
       }

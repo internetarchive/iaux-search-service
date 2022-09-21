@@ -66,10 +66,7 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <input
-            type="checkbox"
-            id="debug-info-check"
-          />
+          <input type="checkbox" id="debug-info-check" />
           <label for="debug-info-check">Include debugging info</label>
 
           <fieldset class="search-options">
@@ -272,7 +269,12 @@ export class AppRoot extends LitElement {
     const sortParam =
       this.checkedSort?.value === 'none'
         ? []
-        : [{ field: 'title', direction: this.checkedSort?.value as SortDirection }];
+        : [
+            {
+              field: 'title',
+              direction: this.checkedSort?.value as SortDirection,
+            },
+          ];
 
     const numRows = Number(this.rowsInput?.value);
     const includeDebugging = this.debugCheck?.checked;
