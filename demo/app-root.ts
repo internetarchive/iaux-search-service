@@ -24,6 +24,9 @@ export class AppRoot extends LitElement {
   @query('#search-input')
   private searchInput!: HTMLInputElement;
 
+  @query('#debug-info-check')
+  private debugCheck!: HTMLInputElement;
+
   @internalProperty()
   private searchResponse?: SearchResponse;
 
@@ -53,6 +56,12 @@ export class AppRoot extends LitElement {
           <label for="search-input">Search: </label>
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
+
+          <input
+            type="checkbox"
+            id="debug-info-check"
+          />
+          <label for="debug-info-check">Include debugging info</label>
 
           <fieldset class="search-options">
             <legend>Search type:</legend>
@@ -260,10 +269,7 @@ export class AppRoot extends LitElement {
         ? []
         : [{ field: 'title', direction: checkedSort?.value as SortDirection }];
 
-    const rowsInput = this.shadowRoot?.querySelector(
-      '#num-rows'
-    ) as HTMLInputElement;
-    const numRows = Number(rowsInput?.value);
+    const includeDebugging = this.debugCheck?.checked;
 
     const searchParams: SearchParams = {
       query,
@@ -271,6 +277,7 @@ export class AppRoot extends LitElement {
       fields: ['identifier', 'title'],
       sort: sortParam,
       aggregations: { omit: true },
+      debugging: includeDebugging,
     };
 
     this.loadingSearchResults = true;
