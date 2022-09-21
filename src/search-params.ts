@@ -117,4 +117,9 @@ export interface SearchParams {
    * facet type by default in the sidebar).
    */
   aggregationsSize?: number;
+
+  /**
+   * Whether to include debugging info in the returned PPS response.
+   */
+  debugging?: boolean;
 }

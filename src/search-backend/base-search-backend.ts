@@ -89,6 +89,11 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     // then try json decoding and return a decodingError if it fails
     try {
       const json = await response.json();
+      
+      if (json['debugging']) {
+        this.printDebuggingInfo(json);
+      }
+
       // the advanced search endpoint doesn't return an HTTP Error 400
       // and instead returns an HTTP 200 with an `error` key in the payload
       const error = json['error'];
@@ -122,5 +127,25 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     const error = new SearchServiceError(errorType, message, details);
     const result = { error };
     return result;
+  }
+
+  private printDebuggingInfo(json: Record<string, any>) {
+    const debugInfo = json.debugging?.debugging; // PPS debugging info is doubly-nested, not sure why
+    const messages = debugInfo?.messages;
+    const data = debugInfo?.data;
+
+    console.group('debugging info');
+
+    console.group('messages');
+    for (const message of messages) {
+      console.log(message);
+    }
+    console.groupEnd(); // end messages
+
+    console.group('data');
+    console.log(data);
+    console.groupEnd(); // end data
+
+    console.groupEnd(); // end debugging info
   }
 }
