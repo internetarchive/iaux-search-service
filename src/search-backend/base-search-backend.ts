@@ -134,18 +134,16 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     const messages = debugInfo?.messages;
     const data = debugInfo?.data;
 
-    console.group('debugging info');
-
-    console.group('messages');
+    console.group('Debug messages');
     for (const message of messages) {
       console.log(message);
     }
-    console.groupEnd(); // end messages
+    console.groupEnd();
 
-    console.group('data');
-    console.log(data);
-    console.groupEnd(); // end data
-
-    console.groupEnd(); // end debugging info
+    console.group('Debug data');
+    for (const [key, val] of Object.entries(data)) {
+      console.log(key, val);
+    }
+    console.groupEnd();
   }
 }
