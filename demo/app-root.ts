@@ -1,14 +1,5 @@
-import {
-  css,
-  CSSResult,
-  customElement,
-  html,
-  internalProperty,
-  LitElement,
-  query,
-  TemplateResult,
-} from 'lit-element';
-import { nothing } from 'lit-html';
+import { html, css, LitElement, TemplateResult, CSSResult, nothing } from 'lit';
+import { customElement, query, state } from 'lit/decorators.js';
 import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
@@ -36,16 +27,16 @@ export class AppRoot extends LitElement {
   @query(`input[name='sort']:checked`)
   private checkedSort!: HTMLInputElement;
 
-  @internalProperty()
+  @state()
   private searchResponse?: SearchResponse;
 
-  @internalProperty()
+  @state()
   private aggregationsResponse?: SearchResponse;
 
-  @internalProperty()
+  @state()
   private loadingSearchResults = false;
 
-  @internalProperty()
+  @state()
   private loadingAggregations = false;
 
   private get searchResults(): SearchResult[] | undefined {
