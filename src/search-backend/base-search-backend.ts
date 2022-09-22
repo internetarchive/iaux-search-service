@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchBackendInterface } from './search-backend-interface';
-import { SearchParams } from '../search-params';
-import { Result } from '@internetarchive/result-type';
+import type { SearchParams } from '../search-params';
+import type { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../search-service-error';
-import { SearchParamURLGenerator } from '../search-param-url-generator';
+import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
- * The DefaultSearchBackend performs a `window.fetch` request to archive.org
+ * An abstract base class for search backends.
  */
-export class DefaultSearchBackend implements SearchBackendInterface {
-  private baseUrl: string;
+export abstract class BaseSearchBackend implements SearchBackendInterface {
+  /**
+   * The base URL / host this backend should use for its requests.
+   * Defaults to 'archive.org'.
+   */
+  protected baseUrl: string;
 
-  private includeCredentials: boolean;
+  protected includeCredentials: boolean;
 
-  private requestScope?: string;
+  protected requestScope?: string;
 
-  constructor(options?: {
-    baseUrl?: string;
-    includeCredentials?: boolean;
-    scope?: string;
-  }) {
+  constructor(options?: SearchBackendOptionsInterface) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
 
     if (options?.includeCredentials !== undefined) {
@@ -49,34 +49,16 @@ export class DefaultSearchBackend implements SearchBackendInterface {
   }
 
   /** @inheritdoc */
-  async performSearch(
+  abstract performSearch(
     params: SearchParams
-  ): Promise<Result<any, SearchServiceError>> {
-    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
-      params
-    );
-    const queryAsString = urlSearchParam.toString();
-    const url = `https://${this.baseUrl}/advancedsearch.php?${queryAsString}`;
-    return this.fetchUrl(url);
-  }
+  ): Promise<Result<any, SearchServiceError>>;
 
-  /** @inheritdoc */
-  async fetchMetadata(
-    identifier: string,
-    keypath?: string
-  ): Promise<Result<any, SearchServiceError>> {
-    const path = keypath ? `/${keypath}` : '';
-    const url = `https://${this.baseUrl}/metadata/${identifier}${path}`;
-    // the metadata endpoint doesn't current support credentialed requests
-    // so don't include credentials until that is fixed
-    return this.fetchUrl(url, {
-      requestOptions: {
-        credentials: 'omit',
-      },
-    });
-  }
-
-  private async fetchUrl(
+  /**
+   * Fires a request to the URL (with this backend's options applied) and
+   * asynchronously returns a Result object containing either the raw response
+   * JSON or a SearchServiceError.
+   */
+  protected async fetchUrl(
     url: string,
     options?: {
       requestOptions?: RequestInit;
@@ -107,6 +89,11 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     // then try json decoding and return a decodingError if it fails
     try {
       const json = await response.json();
+
+      if (json['debugging']) {
+        this.printDebuggingInfo(json);
+      }
+
       // the advanced search endpoint doesn't return an HTTP Error 400
       // and instead returns an HTTP 200 with an `error` key in the payload
       const error = json['error'];
@@ -140,5 +127,26 @@ export class DefaultSearchBackend implements SearchBackendInterface {
     const error = new SearchServiceError(errorType, message, details);
     const result = { error };
     return result;
+  }
+
+  /**
+   * Logs PPS debugging info to the console if it is present on the response object
+   */
+  private printDebuggingInfo(json: Record<string, any>) {
+    const debugInfo = json.debugging?.debugging; // PPS debugging info is doubly-nested, not sure why
+    const messages = debugInfo?.messages ?? [];
+    const data = debugInfo?.data ?? {};
+
+    console.group('Debug messages');
+    for (const message of messages) {
+      console.log(message);
+    }
+    console.groupEnd();
+
+    console.group('Debug data');
+    for (const [key, val] of Object.entries(data)) {
+      console.log(key, val);
+    }
+    console.groupEnd();
   }
 }

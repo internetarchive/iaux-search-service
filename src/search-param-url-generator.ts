@@ -25,12 +25,16 @@ export class SearchParamURLGenerator {
    *  }
    * ]
    *
-   * @returns string | undefined}
+   * @returns {string | undefined}
    * @memberof AggregateSearchParams
    */
   static aggregateSearchParamsAsString(
     aggregateSearchParams: AggregateSearchParams
   ): string | undefined {
+    if (aggregateSearchParams.omit) {
+      return 'false';
+    }
+
     if (aggregateSearchParams.advancedParams) {
       const params = aggregateSearchParams.advancedParams.map(param => {
         return {
@@ -47,24 +51,31 @@ export class SearchParamURLGenerator {
   }
 
   static sortParamsAsString(sortParams: SortParam): string {
-    return `${sortParams.field} ${sortParams.direction}`;
+    return `${sortParams.field}:${sortParams.direction}`;
   }
 
   static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
-    params.append('q', searchParams.query);
-    params.append('output', 'json');
+    params.append('user_query', searchParams.query);
 
-    if (searchParams.rows) {
-      params.append('rows', String(searchParams.rows));
+    if (searchParams.pageType) {
+      params.append('page_type', String(searchParams.pageType));
     }
 
-    if (searchParams.page) {
+    if (searchParams.pageTarget) {
+      params.append('page_target', String(searchParams.pageTarget));
+    }
+
+    if (searchParams.rows != null) {
+      params.append('hits_per_page', String(searchParams.rows));
+    }
+
+    if (searchParams.page != null) {
       params.append('page', String(searchParams.page));
     }
 
     if (searchParams.fields) {
-      params.append('fl', searchParams.fields.join(','));
+      params.append('fields', searchParams.fields.join(','));
     }
 
     if (searchParams.sort) {
@@ -78,8 +89,16 @@ export class SearchParamURLGenerator {
     if (aggregations) {
       const aggString = this.aggregateSearchParamsAsString(aggregations);
       if (aggString) {
-        params.append('user_aggs', aggString);
+        params.append('aggregations', aggString);
       }
+    }
+
+    if (searchParams.aggregationsSize != null) {
+      params.append('aggregations_size', String(searchParams.aggregationsSize));
+    }
+
+    if (searchParams.debugging) {
+      params.append('debugging', 'true');
     }
 
     return params;

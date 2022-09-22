@@ -1,36 +1,39 @@
-import { SearchResponse } from './responses/search/search-response';
-import { SearchParams } from './search-params';
-import { MetadataResponse } from './responses/metadata/metadata-response';
-import { DefaultSearchBackend } from './search-backend/default-search-backend';
-import {
-  SearchServiceError,
-  SearchServiceErrorType,
-} from './search-service-error';
-import { SearchServiceInterface } from './search-service-interface';
-import { SearchBackendInterface } from './search-backend/search-backend-interface';
-import { Result } from '@internetarchive/result-type';
+import { SearchResponse } from './responses/search-response';
+import type { SearchParams } from './search-params';
+import type { SearchServiceError } from './search-service-error';
+import type { SearchServiceInterface } from './search-service-interface';
+import type { Result } from '@internetarchive/result-type';
+import { SearchType } from './search-type';
+import type { SearchBackendOptionsInterface } from './search-backend/search-backend-options';
+import type { SearchBackendInterface } from './search-backend/search-backend-interface';
+import { FulltextSearchBackend } from './search-backend/fulltext-search-backend';
+import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
+import { Memoize } from 'typescript-memoize';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
- * the Search Backend and modeling it as a `SearchResponse` or `MetadataResponse`
- * object, depending on the type of response.
+ * the Search Backend and modeling it as a `SearchResponse` object.
  */
 export class SearchService implements SearchServiceInterface {
-  public static default: SearchServiceInterface = new SearchService(
-    new DefaultSearchBackend()
-  );
+  public static default: SearchServiceInterface = new SearchService();
 
-  private searchBackend: SearchBackendInterface;
+  private backendOptions: SearchBackendOptionsInterface;
 
-  constructor(searchBackend: SearchBackendInterface) {
-    this.searchBackend = searchBackend;
+  constructor(backendOptions: SearchBackendOptionsInterface = {}) {
+    this.backendOptions = backendOptions;
   }
 
   /** @inheritdoc */
   async search(
-    params: SearchParams
+    params: SearchParams,
+    searchType: SearchType = SearchType.METADATA
   ): Promise<Result<SearchResponse, SearchServiceError>> {
-    const rawResponse = await this.searchBackend.performSearch(params);
+    const searchBackend = SearchService.getBackendForSearchType(
+      searchType,
+      this.backendOptions
+    );
+
+    const rawResponse = await searchBackend.performSearch(params);
     if (rawResponse.error) {
       return rawResponse;
     }
@@ -39,41 +42,28 @@ export class SearchService implements SearchServiceInterface {
     return { success: modeledResponse };
   }
 
-  /** @inheritdoc */
-  async fetchMetadata(
-    identifier: string
-  ): Promise<Result<MetadataResponse, SearchServiceError>> {
-    const rawResponse = await this.searchBackend.fetchMetadata(identifier);
-    if (rawResponse.error) {
-      return rawResponse;
+  /**
+   * Retrieve a search backend that can handle the given type of search.
+   * @param type The type of search that the backend needs to handle.
+   * @param options Options to pass to the search backend.
+   */
+  @Memoize((type: SearchType, options: SearchBackendOptionsInterface = {}) => {
+    // We can memoize backends based on their params, to avoid constructing redundant backends
+    const { includeCredentials = '', scope = '', baseUrl = '' } = options;
+    return `${type};${includeCredentials};${scope};${baseUrl}`;
+  })
+  static getBackendForSearchType(
+    type: SearchType,
+    options: SearchBackendOptionsInterface = {}
+  ): SearchBackendInterface {
+    switch (type) {
+      //case SearchType.TV: // Will eventually have its own service backend
+      //case SearchType.RADIO: // Will eventually have its own service backend
+      case SearchType.FULLTEXT:
+        return new FulltextSearchBackend(options);
+      case SearchType.METADATA:
+      default:
+        return new MetadataSearchBackend(options);
     }
-
-    if (rawResponse.success?.metadata === undefined) {
-      return {
-        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
-      };
-    }
-
-    const modeledResponse = new MetadataResponse(rawResponse.success);
-    return { success: modeledResponse };
-  }
-
-  /** @inheritdoc */
-  async fetchMetadataValue<T>(
-    identifier: string,
-    keypath: string
-  ): Promise<Result<T, SearchServiceError>> {
-    const result = await this.searchBackend.fetchMetadata(identifier, keypath);
-    if (result.error) {
-      return result;
-    }
-
-    if (result.success?.result === undefined) {
-      return {
-        error: new SearchServiceError(SearchServiceErrorType.itemNotFound),
-      };
-    }
-
-    return { success: result.success.result };
   }
 }

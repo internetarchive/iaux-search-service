@@ -1,20 +1,12 @@
-import {
-  css,
-  CSSResult,
-  customElement,
-  html,
-  internalProperty,
-  LitElement,
-  query,
-  TemplateResult,
-} from 'lit-element';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import { nothing } from 'lit-html';
-import { Metadata } from '../src/models/metadata';
-import { MetadataResponse } from '../src/responses/metadata/metadata-response';
-import { SearchResponse } from '../src/responses/search/search-response';
+import { html, css, LitElement, TemplateResult, CSSResult, nothing } from 'lit';
+import { customElement, query, state } from 'lit/decorators.js';
+import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
+import { SearchResult } from '../src/models/hit-types/hit';
+import { SearchType } from '../src/search-type';
+import { SearchParams, SortDirection } from '../src/search-params';
+import { Aggregation, Bucket } from '../src/models/aggregation';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -23,17 +15,36 @@ export class AppRoot extends LitElement {
   @query('#search-input')
   private searchInput!: HTMLInputElement;
 
-  @query('#metadata-input')
-  private metadataInput!: HTMLInputElement;
+  @query('#debug-info-check')
+  private debugCheck!: HTMLInputElement;
 
-  @internalProperty()
+  @query('#num-rows')
+  private rowsInput!: HTMLInputElement;
+
+  @query('#num-aggs')
+  private numAggsInput!: HTMLInputElement;
+
+  @query(`input[name='sort']:checked`)
+  private checkedSort!: HTMLInputElement;
+
+  @state()
   private searchResponse?: SearchResponse;
 
-  @internalProperty()
-  private metadataResponse?: MetadataResponse;
+  @state()
+  private aggregationsResponse?: SearchResponse;
 
-  private get searchResults(): Metadata[] | undefined {
-    return this.searchResponse?.response.docs;
+  @state()
+  private loadingSearchResults = false;
+
+  @state()
+  private loadingAggregations = false;
+
+  private get searchResults(): SearchResult[] | undefined {
+    return this.searchResponse?.response.results;
+  }
+
+  private get searchAggregations(): Record<string, Aggregation> | undefined {
+    return this.aggregationsResponse?.response.aggregations;
   }
 
   /** @inheritdoc */
@@ -42,27 +53,125 @@ export class AppRoot extends LitElement {
       <fieldset>
         <legend>Search</legend>
         <form>
-          <label>Search</label>
+          <label for="search-input">Search: </label>
           <input type="text" id="search-input" placeholder="Search Term" />
-          <input type="submit" value="Search" @click=${this.search} />
-        </form>
-        <form>
-          <label>Metadata</label>
-          <input type="text" id="metadata-input" placeholder="Identifier" />
-          <input
-            type="submit"
-            value="Get Metadata"
-            @click=${this.getMetadata}
-          />
+          <input type="submit" value="Go" @click=${this.search} />
+
+          <input type="checkbox" id="debug-info-check" />
+          <label for="debug-info-check">Include debugging info</label>
+
+          <fieldset class="search-options">
+            <legend>Search type:</legend>
+            <input
+              type="radio"
+              id="mds"
+              name="search-type"
+              value="mds"
+              checked
+            />
+            <label for="mds"> &nbsp;Metadata </label>
+            <input type="radio" id="fts" name="search-type" value="fts" />
+            <label for="fts"> &nbsp;Full text </label>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Search size:</legend>
+            <div class="field-row">
+              <label for="num-rows">Number of result rows:</label>
+              <input type="number" id="num-rows" value="10" min="0" max="99" />
+            </div>
+            <div class="field-row">
+              <label for="num-aggs">Number of aggregation rows:</label>
+              <input type="number" id="num-aggs" value="6" min="0" max="50" />
+            </div>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Sort by title:</legend>
+            <input
+              type="radio"
+              id="sort-none"
+              name="sort"
+              value="none"
+              checked
+            />
+            <label for="sort-none"> &nbsp;None </label>
+            <input type="radio" id="sort-asc" name="sort" value="asc" />
+            <label for="sort-asc"> &nbsp;Ascending </label>
+            <input type="radio" id="sort-desc" name="sort" value="desc" />
+            <label for="sort-desc"> &nbsp;Descending </label>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Include aggregations for:</legend>
+            <input
+              type="checkbox"
+              id="aggs-subject"
+              name="aggs"
+              value="subject"
+              checked
+            />
+            <label for="aggs-subject">Subject </label>
+            <input
+              type="checkbox"
+              id="aggs-language"
+              name="aggs"
+              value="language"
+              checked
+            />
+            <label for="aggs-language">Language </label>
+            <input
+              type="checkbox"
+              id="aggs-creator"
+              name="aggs"
+              value="creator"
+              checked
+            />
+            <label for="aggs-creator">Creator </label>
+            <input
+              type="checkbox"
+              id="aggs-collection"
+              name="aggs"
+              value="collection"
+              checked
+            />
+            <label for="aggs-collection">Collection </label>
+            <input
+              type="checkbox"
+              id="aggs-mediatype"
+              name="aggs"
+              value="mediatype"
+              checked
+            />
+            <label for="aggs-mediatype">Mediatype </label>
+            <input
+              type="checkbox"
+              id="aggs-year"
+              name="aggs"
+              value="year"
+              checked
+            />
+            <label for="aggs-year"> &nbsp;Year </label>
+          </fieldset>
         </form>
       </fieldset>
 
       ${this.searchResults ? this.resultsTemplate : nothing}
-      ${this.metadataResponse ? this.metadataTemplate : nothing}
     `;
   }
 
   private get resultsTemplate(): TemplateResult {
+    return html`
+      ${this.loadingSearchResults
+        ? html`<h3>Loading search results...</h3>`
+        : this.searchResultsTemplate}
+      ${this.loadingAggregations
+        ? html`<h3>Loading aggregations...</h3>`
+        : this.aggregationsTemplate}
+    `;
+  }
+
+  private get searchResultsTemplate(): TemplateResult {
     return html`
       <h2>Search Results</h2>
       <table>
@@ -70,14 +179,16 @@ export class AppRoot extends LitElement {
           <tr>
             <th>Identifier</th>
             <th>Title</th>
+            ${this.snippetsHeaderTemplate}
           </tr>
         </thead>
         <tbody>
-          ${this.searchResults?.map(metadata => {
+          ${this.searchResults?.map(hit => {
             return html`
               <tr>
-                <td>${metadata.identifier}</td>
-                <td>${metadata.title?.value}</td>
+                <td>${hit.identifier}</td>
+                <td>${hit.title?.value ?? '(Untitled)'}</td>
+                ${this.snippetTemplate(hit)}
               </tr>
             `;
           })}
@@ -86,50 +197,92 @@ export class AppRoot extends LitElement {
     `;
   }
 
-  private get metadataTemplate(): TemplateResult {
-    const rawMetadata = this.metadataResponse?.metadata.rawMetadata;
-    if (!rawMetadata) return html`${nothing}`;
-
+  private get aggregationsTemplate(): TemplateResult {
     return html`
-      <h2>Metadata Response</h2>
-      <table>
-        ${Object.keys(rawMetadata).map(
-          key => html`
-            <tr>
-              <td>${key}</td>
-              <td>${unsafeHTML(rawMetadata[key])}</td>
-            </tr>
-          `
-        )}
-      </table>
+      <div>
+        <h2>Aggregations</h2>
+        ${Object.entries(this.searchAggregations ?? {}).map(([key, agg]) => {
+          return html`
+            <h3>${key}</h3>
+            <p>
+              ${agg.buckets
+                .map((bucket: number | Bucket) => {
+                  if (typeof bucket === 'number') {
+                    return bucket;
+                  } else {
+                    return `${bucket.key} (${bucket.doc_count})`;
+                  }
+                })
+                .join(', ')}
+            </p>
+          `;
+        })}
+      </div>
     `;
   }
 
-  async getMetadata(e: Event): Promise<void> {
-    e.preventDefault();
-    const identifier = this.metadataInput.value;
-    const result = await this.searchService.fetchMetadata(identifier);
-    this.metadataResponse = result?.success;
+  private get snippetsHeaderTemplate(): TemplateResult {
+    return this.searchResults?.some(hit => hit.highlight)
+      ? html`<th>Snippets</th>`
+      : html`${nothing}`;
   }
 
-  async search(e: Event): Promise<void> {
+  private snippetTemplate(hit: SearchResult): TemplateResult {
+    return hit.highlight
+      ? html`<td>${hit.highlight.value}</td>`
+      : html`${nothing}`;
+  }
+
+  /**
+   * Conduct a full search (both hits and aggregations)
+   */
+  private async search(e: Event): Promise<void> {
     e.preventDefault();
     const term = this.searchInput.value;
-    const aggregations = {
-      advancedParams: [
-        {
-          field: 'year',
-          size: 100,
-        },
-      ],
-    };
-    const searchParams = {
-      query: term,
-      rows: 10,
+
+    const checkedSearchType = this.shadowRoot?.querySelector(
+      `input[name='search-type']:checked`
+    ) as HTMLInputElement;
+
+    const searchType =
+      checkedSearchType?.value === 'fts'
+        ? SearchType.FULLTEXT
+        : SearchType.METADATA;
+
+    this.fetchSearchResults(term, searchType);
+    this.fetchAggregations(term, searchType);
+  }
+
+  /**
+   * Fetch the search hits
+   */
+  private async fetchSearchResults(query: string, searchType: SearchType) {
+    const sortParam =
+      this.checkedSort?.value === 'none'
+        ? []
+        : [
+            {
+              field: 'title',
+              direction: this.checkedSort?.value as SortDirection,
+            },
+          ];
+
+    const numRows = Number(this.rowsInput?.value);
+    const includeDebugging = this.debugCheck?.checked;
+
+    const searchParams: SearchParams = {
+      query,
+      rows: numRows,
       fields: ['identifier', 'title'],
-      aggregations,
+      sort: sortParam,
+      aggregations: { omit: true },
+      debugging: includeDebugging,
     };
-    const result = await this.searchService.search(searchParams);
+
+    this.loadingSearchResults = true;
+    const result = await this.searchService.search(searchParams, searchType);
+    this.loadingSearchResults = false;
+
     if (result?.success) {
       this.searchResponse = result?.success;
     } else {
@@ -138,11 +291,49 @@ export class AppRoot extends LitElement {
     }
   }
 
+  /**
+   * Fetch the search aggregations (facets)
+   */
+  private async fetchAggregations(query: string, searchType: SearchType) {
+    const checkedAggs = this.shadowRoot?.querySelectorAll(
+      `input[name='aggs']:checked`
+    );
+    const aggregations = {
+      simpleParams: checkedAggs
+        ? [...checkedAggs].map(elmt => (elmt as HTMLInputElement).value)
+        : undefined,
+    };
+
+    const numAggs = Number(this.numAggsInput?.value);
+
+    const searchParams: SearchParams = {
+      query,
+      rows: 0,
+      aggregations,
+      aggregationsSize: numAggs,
+    };
+
+    this.loadingAggregations = true;
+    const result = await this.searchService.search(searchParams, searchType);
+    this.loadingAggregations = false;
+
+    if (result?.success) {
+      this.aggregationsResponse = result?.success;
+    } else {
+      alert(`Oh noes: ${result?.error?.message}`);
+      console.error('Error searching', result?.error);
+    }
+  }
+
   static get styles(): CSSResult {
     return css`
-      /* th {
-        font-weight: bold;
-      } */
+      .search-options {
+        margin-top: 0.6rem;
+      }
+
+      .field-row {
+        margin: 0.3rem 0;
+      }
     `;
   }
 }

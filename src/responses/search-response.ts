@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchResponseHeader } from './search-response-header';
 import { SearchResponseDetails } from './search-response-details';
+import { SearchRequest } from './search-request';
 
 /**
- * The top-level response model when retrieving a response from the advanced search endpoint.
+ * The top-level response model when retrieving a response from the page production service endpoint.
  *
  * @export
  * @class SearchResponse
@@ -18,7 +19,13 @@ export class SearchResponse {
   rawResponse: Record<string, any>;
 
   /**
-   * The resonse header
+   * The request object returned by the backend, specifying the query parameters and
+   * how the backend interpreted them.
+   */
+  request: SearchRequest;
+
+  /**
+   * The response header
    *
    * @type {SearchResponseHeader}
    * @memberof SearchResponse
@@ -35,7 +42,11 @@ export class SearchResponse {
 
   constructor(json: Record<string, any>) {
     this.rawResponse = json;
-    this.responseHeader = json.responseHeader;
-    this.response = new SearchResponseDetails(json.response);
+    this.request = new SearchRequest(json.request);
+    this.responseHeader = json.response?.header;
+    this.response = new SearchResponseDetails(
+      json.response?.body,
+      json.response?.hit_schema
+    );
   }
 }

@@ -1,7 +1,4 @@
-import {
-  FieldParserInterface,
-  FieldParserRawValue,
-} from '@internetarchive/field-parsers';
+import { FieldParserInterface } from '@internetarchive/field-parsers';
 import { expect } from '@open-wc/testing';
 import { MetadataField } from '../../../src/models/metadata-fields/metadata-field';
 
@@ -88,7 +85,7 @@ describe('Metadata Field', () => {
 
   it('does not add value to values array if parsed value is undefined', () => {
     class MockFloatParser implements FieldParserInterface<number> {
-      parseValue(rawValue: FieldParserRawValue): number | undefined {
+      parseValue(): number | undefined {
         return undefined;
       }
     }

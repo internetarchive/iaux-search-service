@@ -1,159 +1,54 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from '@open-wc/testing';
-
+import sinon from 'sinon';
 import { SearchService } from '../src/search-service';
 import { SearchParams } from '../src/search-params';
 
 import { MockResponseGenerator } from './mock-response-generator';
-import { SearchResponse } from '../src/responses/search/search-response';
-import { MetadataResponse } from '../src/responses/metadata/metadata-response';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../src/search-service-error';
 import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
+import { SearchType } from '../src/search-type';
+import { MetadataSearchBackend } from '../src/search-backend/metadata-search-backend';
+import { FulltextSearchBackend } from '../src/search-backend/fulltext-search-backend';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {
     class MockSearchBackend implements SearchBackendInterface {
-      async fetchMetadata(
-        identifier: string
-      ): Promise<Result<MetadataResponse, SearchServiceError>> {
-        throw new Error('Method not implemented.');
-      }
-
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const responseGenerator = new MockResponseGenerator();
-        const mockResponse = responseGenerator.generateMockSearchResponse(
+        const mockResponse = responseGenerator.generateMockMetadataSearchResponse(
           params
         );
         return { success: mockResponse };
       }
     }
 
+    const backend = new MockSearchBackend();
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => backend;
+
     const query = 'title:foo AND collection:bar';
-    const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
+    const service = new SearchService();
     const result = await service.search({ query });
-    expect(result.success?.responseHeader.params.query).to.equal(query);
-  });
-
-  it('can request metadata when requested', async () => {
-    class MockSearchBackend implements SearchBackendInterface {
-      performSearch(
-        params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
-        throw new Error('Method not implemented.');
-      }
-      async fetchMetadata(
-        identifier: string
-      ): Promise<Result<MetadataResponse, SearchServiceError>> {
-        const responseGenerator = new MockResponseGenerator();
-        const mockResponse = responseGenerator.generateMockMetadataResponse(
-          identifier
-        );
-        return { success: mockResponse };
-      }
-    }
-
-    const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
-    const result = await service.fetchMetadata('foo');
-    expect(result.success?.metadata.identifier).to.equal('foo');
-  });
-
-  describe('requestMetadataValue', async () => {
-    class MockSearchBackend implements SearchBackendInterface {
-      response: any;
-      performSearch(
-        params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
-        throw new Error('Method not implemented.');
-      }
-      async fetchMetadata(
-        identifier: string,
-        keypath?: string
-      ): Promise<Result<any, SearchServiceError>> {
-        return {
-          success: {
-            result: this.response,
-          },
-        };
-      }
-    }
-
-    it('can request a metadata value', async () => {
-      const backend = new MockSearchBackend();
-      const service = new SearchService(backend);
-
-      let expectedResult: any = 'foo';
-      backend.response = expectedResult;
-
-      let result = await service.fetchMetadataValue<typeof expectedResult>(
-        'foo',
-        'metadata'
-      );
-      expect(result.success).to.equal(expectedResult);
-
-      expectedResult = { foo: 'bar' };
-      backend.response = expectedResult;
-
-      result = await service.fetchMetadataValue<typeof expectedResult>(
-        'foo',
-        'metadata'
-      );
-      expect(result.success).to.equal(expectedResult);
-      expect(result.success.foo).to.equal('bar');
-    });
-  });
-
-  it('returns an error result if the item is not found', async () => {
-    class MockSearchBackend implements SearchBackendInterface {
-      performSearch(
-        params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
-        throw new Error('Method not implemented.');
-      }
-      async fetchMetadata(
-        identifier: string
-      ): Promise<Result<MetadataResponse, SearchServiceError>> {
-        // this is unfortunate.. instead of getting an http 404 error,
-        // we get an empty JSON object when an item is not found
-        return { success: {} as any };
-      }
-    }
-
-    const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
-    const result = await service.fetchMetadata('foo');
-    expect(result.error).to.not.equal(undefined);
-    expect(result.error?.type).to.equal(SearchServiceErrorType.itemNotFound);
-
-    const valueResult = await service.fetchMetadataValue('foo', 'metadata');
-    expect(valueResult.error).to.not.equal(undefined);
-    expect(valueResult.error?.type).to.equal(
-      SearchServiceErrorType.itemNotFound
+    expect(result.success?.request.finalizedParameters.user_query).to.equal(
+      query
     );
+
+    SearchService.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend network error if one occurs', async () => {
     class MockSearchBackend implements SearchBackendInterface {
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
-        const error = new SearchServiceError(
-          SearchServiceErrorType.networkError,
-          'network error'
-        );
-        return { error };
-      }
-      async fetchMetadata(
-        identifier: string
-      ): Promise<Result<MetadataResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const error = new SearchServiceError(
           SearchServiceErrorType.networkError,
           'network error'
@@ -163,20 +58,10 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
-    const metadataResult = await service.fetchMetadata('foo');
-    expect(metadataResult.error).to.not.equal(undefined);
-    expect(metadataResult.error?.type).to.equal(
-      SearchServiceErrorType.networkError
-    );
-    expect(metadataResult.error?.message).to.equal('network error');
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => backend;
 
-    const metadataValueResult = await service.fetchMetadataValue('foo', 'bar');
-    expect(metadataValueResult.error).to.not.equal(undefined);
-    expect(metadataValueResult.error?.type).to.equal(
-      SearchServiceErrorType.networkError
-    );
-    expect(metadataValueResult.error?.message).to.equal('network error');
+    const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
@@ -184,22 +69,15 @@ describe('SearchService', () => {
       SearchServiceErrorType.networkError
     );
     expect(searchResult.error?.message).to.equal('network error');
+
+    SearchService.getBackendForSearchType = realFactoryMethod;
   });
 
   it('returns the search backend decoding error if one occurs', async () => {
     class MockSearchBackend implements SearchBackendInterface {
       async performSearch(
         params: SearchParams
-      ): Promise<Result<SearchResponse, SearchServiceError>> {
-        const error = new SearchServiceError(
-          SearchServiceErrorType.decodingError,
-          'decoding error'
-        );
-        return { error };
-      }
-      async fetchMetadata(
-        identifier: string
-      ): Promise<Result<MetadataResponse, SearchServiceError>> {
+      ): Promise<Result<any, SearchServiceError>> {
         const error = new SearchServiceError(
           SearchServiceErrorType.decodingError,
           'decoding error'
@@ -209,13 +87,10 @@ describe('SearchService', () => {
     }
 
     const backend = new MockSearchBackend();
-    const service = new SearchService(backend);
-    const metadataResult = await service.fetchMetadata('foo');
-    expect(metadataResult.error).to.not.equal(undefined);
-    expect(metadataResult.error?.type).to.equal(
-      SearchServiceErrorType.decodingError
-    );
-    expect(metadataResult.error?.message).to.equal('decoding error');
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = () => backend;
+
+    const service = new SearchService();
 
     const searchResult = await service.search({ query: 'boop' });
     expect(searchResult.error).to.not.equal(undefined);
@@ -223,5 +98,58 @@ describe('SearchService', () => {
       SearchServiceErrorType.decodingError
     );
     expect(searchResult.error?.message).to.equal('decoding error');
+
+    SearchService.getBackendForSearchType = realFactoryMethod;
+  });
+
+  it('passes backend options to backend', async () => {
+    class MockSearchBackend implements SearchBackendInterface {
+      async performSearch(
+        params: SearchParams
+      ): Promise<Result<any, SearchServiceError>> {
+        const responseGenerator = new MockResponseGenerator();
+        const mockResponse = responseGenerator.generateMockMetadataSearchResponse(
+          params
+        );
+        return { success: mockResponse };
+      }
+    }
+
+    const backend = new MockSearchBackend();
+    const spy = sinon.spy();
+
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = (...args) => {
+      spy(...args);
+      return backend;
+    };
+
+    const backendOptions = {
+      baseUrl: 'foo.bar',
+      includeCredentials: true,
+      scope: 'baz',
+    };
+
+    const service = new SearchService(backendOptions);
+
+    const params = { query: 'boop' };
+    await service.search(params);
+
+    expect(spy.callCount).to.equal(1);
+    expect(spy.calledWithExactly(params, backendOptions));
+
+    SearchService.getBackendForSearchType = realFactoryMethod;
+  });
+
+  it('factory method gets metadata backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.METADATA)
+    ).to.be.instanceOf(MetadataSearchBackend);
+  });
+
+  it('factory method gets fulltext backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.FULLTEXT)
+    ).to.be.instanceOf(FulltextSearchBackend);
   });
 });

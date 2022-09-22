@@ -260,7 +260,7 @@ export class Metadata {
   }
 
   @Memoize() get noindex(): BooleanField | undefined {
-    return this.rawMetadata?.noindex
+    return this.rawMetadata?.noindex != null
       ? new BooleanField(this.rawMetadata.noindex)
       : undefined;
   }
@@ -346,12 +346,6 @@ export class Metadata {
   @Memoize() get scanner(): StringField | undefined {
     return this.rawMetadata?.scanner
       ? new StringField(this.rawMetadata.scanner)
-      : undefined;
-  }
-
-  @Memoize() get snippets(): StringField | undefined {
-    return this.rawMetadata?.snippets
-      ? new StringField(this.rawMetadata.snippets)
       : undefined;
   }
 

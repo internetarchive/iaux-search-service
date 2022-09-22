@@ -27,7 +27,7 @@ describe('SearchParams', () => {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected = 'q=title%3Afoo+AND+collection%3Abar&output=json';
+    const expected = 'user_query=title%3Afoo+AND+collection%3Abar';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -43,7 +43,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&fl=identifier%2Cfoo%2Cbar';
+      'user_query=title%3Afoo+AND+collection%3Abar&fields=identifier%2Cfoo%2Cbar';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -63,7 +63,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&fl=identifier%2Cfoo%2Cbar&sort=downloads+desc';
+      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads%3Adesc';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -84,7 +84,55 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&rows=53&page=27&sort=downloads+desc%2Cfoo+asc';
+      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&sort=downloads%3Adesc%2Cfoo%3Aasc';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with a page_type', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      pageType: 'foo',
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with a page_type and page_target', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      pageType: 'foo',
+      pageTarget: 'bar',
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo&page_target=bar';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with aggregations omitted', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params = {
+      query,
+      aggregations: {
+        omit: true,
+      },
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=false';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -111,7 +159,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -129,7 +177,26 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=year%2Ccollection%2Csubject';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with an aggregations_size param', async () => {
+    const query = 'title:foo AND collection:bar';
+    const aggregations = {
+      simpleParams: ['year', 'collection', 'subject'],
+    };
+    const params = {
+      query,
+      aggregations,
+      aggregationsSize: 3,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected =
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject&aggregations_size=3';
     expect(queryAsString).to.equal(expected);
   });
 
@@ -157,7 +224,7 @@ describe('SearchParams', () => {
     );
     const queryAsString = urlSearchParam.toString();
     const expected =
-      'q=title%3Afoo+AND+collection%3Abar&output=json&user_aggs=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
+      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
 });
