@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from '@open-wc/testing';
-
+import sinon from 'sinon';
 import { SearchService } from '../src/search-service';
 import { SearchParams } from '../src/search-params';
 
 import { MockResponseGenerator } from './mock-response-generator';
-import { SearchResponse } from '../src/responses/search-response';
 import { Result } from '@internetarchive/result-type';
 import {
   SearchServiceError,
@@ -99,6 +98,45 @@ describe('SearchService', () => {
       SearchServiceErrorType.decodingError
     );
     expect(searchResult.error?.message).to.equal('decoding error');
+
+    SearchService.getBackendForSearchType = realFactoryMethod;
+  });
+
+  it('passes backend options to backend', async () => {
+    class MockSearchBackend implements SearchBackendInterface {
+      async performSearch(
+        params: SearchParams
+      ): Promise<Result<any, SearchServiceError>> {
+        const responseGenerator = new MockResponseGenerator();
+        const mockResponse = responseGenerator.generateMockMetadataSearchResponse(
+          params
+        );
+        return { success: mockResponse };
+      }
+    }
+
+    const backend = new MockSearchBackend();
+    const spy = sinon.spy();
+
+    const realFactoryMethod = SearchService.getBackendForSearchType;
+    SearchService.getBackendForSearchType = (...args) => {
+      spy(...args);
+      return backend;
+    };
+
+    const backendOptions = {
+      baseUrl: 'https://foo.bar',
+      includeCredentials: true,
+      scope: 'baz',
+    };
+
+    const service = new SearchService(backendOptions);
+
+    const params = { query: 'boop' };
+    await service.search(params);
+
+    expect(spy.callCount).to.equal(1);
+    expect(spy.calledWithExactly(params, backendOptions));
 
     SearchService.getBackendForSearchType = realFactoryMethod;
   });

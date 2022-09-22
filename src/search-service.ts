@@ -17,12 +17,21 @@ import { Memoize } from 'typescript-memoize';
 export class SearchService implements SearchServiceInterface {
   public static default: SearchServiceInterface = new SearchService();
 
+  private backendOptions: SearchBackendOptionsInterface;
+
+  constructor(backendOptions: SearchBackendOptionsInterface = {}) {
+    this.backendOptions = backendOptions;
+  }
+
   /** @inheritdoc */
   async search(
     params: SearchParams,
     searchType: SearchType = SearchType.METADATA
   ): Promise<Result<SearchResponse, SearchServiceError>> {
-    const searchBackend = SearchService.getBackendForSearchType(searchType);
+    const searchBackend = SearchService.getBackendForSearchType(
+      searchType,
+      this.backendOptions
+    );
 
     const rawResponse = await searchBackend.performSearch(params);
     if (rawResponse.error) {
