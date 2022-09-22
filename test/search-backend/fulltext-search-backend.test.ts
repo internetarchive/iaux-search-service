@@ -9,91 +9,70 @@ import {
 } from '../../src/search-service-error';
 
 describe('FulltextSearchBackend', () => {
-  it('can perform a search', async () => {
-    const fetchBackup = window.fetch;
-    window.fetch = (): Promise<Response> => {
-      return new Promise(resolve => {
+  describe('basic fetch behavior', () => {
+    let fetchBackup: typeof window.fetch;
+    let urlCalled: RequestInfo | URL;
+    let urlConfig: RequestInit | undefined;
+
+    beforeEach(() => {
+      fetchBackup = window.fetch;
+      urlCalled = '';
+      urlConfig = undefined;
+
+      window.fetch = (
+        url: RequestInfo | URL,
+        config?: RequestInit
+      ): Promise<Response> => {
+        urlCalled = url;
+        urlConfig = config;
         const response = new Response('{ "foo": "bar" }');
-        resolve(response);
+        return new Promise(resolve => resolve(response));
+      };
+    });
+
+    afterEach(() => {
+      window.fetch = fetchBackup;
+    });
+
+    it('can perform a search', async () => {
+      const backend = new FulltextSearchBackend();
+      const params = { query: 'foo' };
+      const result = await backend.performSearch(params);
+
+      expect(result.success?.foo).to.equal('bar');
+    });
+
+    it('sets the fts service backend', async () => {
+      const backend = new FulltextSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      expect(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        new URL(urlCalled!.toString()).searchParams.get('service_backend')
+      ).to.equal('fts');
+    });
+
+    it('uses the provided service path', async () => {
+      const backend = new FulltextSearchBackend({
+        baseUrl: 'foo.bar',
+        servicePath: '/baz',
       });
-    };
+      await backend.performSearch({ query: 'boop' });
 
-    const backend = new FulltextSearchBackend();
-    const params = { query: 'foo' };
-    const result = await backend.performSearch(params);
-    expect(result.success?.foo).to.equal('bar');
-    window.fetch = fetchBackup;
-  });
-
-  it('sets the fts service backend', async () => {
-    const fetchBackup = window.fetch;
-    let urlCalled: RequestInfo | URL;
-    let urlConfig: RequestInit | undefined;
-    window.fetch = (
-      url: RequestInfo | URL,
-      config?: RequestInit
-    ): Promise<Response> => {
-      urlCalled = url;
-      urlConfig = config;
-      const response = new Response('boop');
-      return new Promise(resolve => resolve(response));
-    };
-
-    const backend = new FulltextSearchBackend();
-    await backend.performSearch({ query: 'foo' });
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      new URL(urlCalled!.toString()).searchParams.get('service_backend')
-    ).to.equal('fts');
-    window.fetch = fetchBackup;
-  });
-
-  it('uses the provided service path', async () => {
-    const fetchBackup = window.fetch;
-    let urlCalled: RequestInfo | URL;
-    let urlConfig: RequestInit | undefined;
-    window.fetch = (
-      url: RequestInfo | URL,
-      config?: RequestInit
-    ): Promise<Response> => {
-      urlCalled = url;
-      urlConfig = config;
-      const response = new Response('boop');
-      return new Promise(resolve => resolve(response));
-    };
-
-    const backend = new FulltextSearchBackend({
-      baseUrl: 'foo.bar',
-      servicePath: '/baz',
+      expect(urlCalled!.toString()).to.satisfy((url: string) =>
+        url.startsWith('https://foo.bar/baz')
+      );
     });
-    await backend.performSearch({ query: 'boop' });
-    expect(urlCalled!.toString()).to.satisfy((url: string) =>
-      url.startsWith('https://foo.bar/baz')
-    );
-    window.fetch = fetchBackup;
-  });
 
-  it('includes credentials for search endpoint if requested', async () => {
-    const fetchBackup = window.fetch;
-    let urlCalled: RequestInfo | URL;
-    let urlConfig: RequestInit | undefined;
-    window.fetch = (
-      url: RequestInfo | URL,
-      config?: RequestInit
-    ): Promise<Response> => {
-      urlCalled = url;
-      urlConfig = config;
-      const response = new Response('boop');
-      return new Promise(resolve => resolve(response));
-    };
+    it('includes credentials for search endpoint if requested', async () => {
+      const backend = new FulltextSearchBackend({
+        scope: 'foo',
+        includeCredentials: true,
+      });
+      await backend.performSearch({ query: 'foo' });
 
-    const backend = new FulltextSearchBackend({
-      scope: 'foo',
-      includeCredentials: true,
+      expect(urlConfig?.credentials).to.equal('include');
     });
-    await backend.performSearch({ query: 'foo' });
-    expect(urlConfig?.credentials).to.equal('include');
-    window.fetch = fetchBackup;
   });
 
   it('returns a network error result upon fetch errors', async () => {
