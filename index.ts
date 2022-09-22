@@ -38,6 +38,7 @@ export { FulltextSearchBackend } from './src/search-backend/fulltext-search-back
 
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
+export { SearchBackendOptionsInterface } from './src/search-backend/search-backend-options';
 export { SearchType } from './src/search-type';
 export {
   SearchParams,
