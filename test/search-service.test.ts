@@ -125,7 +125,7 @@ describe('SearchService', () => {
     };
 
     const backendOptions = {
-      baseUrl: 'https://foo.bar',
+      baseUrl: 'foo.bar',
       includeCredentials: true,
       scope: 'baz',
     };

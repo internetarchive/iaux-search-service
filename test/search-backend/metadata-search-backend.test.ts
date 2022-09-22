@@ -48,6 +48,31 @@ describe('MetadataSearchBackend', () => {
     window.fetch = fetchBackup;
   });
 
+  it('uses the provided service path', async () => {
+    const fetchBackup = window.fetch;
+    let urlCalled: RequestInfo | URL;
+    let urlConfig: RequestInit | undefined;
+    window.fetch = (
+      url: RequestInfo | URL,
+      config?: RequestInit
+    ): Promise<Response> => {
+      urlCalled = url;
+      urlConfig = config;
+      const response = new Response('boop');
+      return new Promise(resolve => resolve(response));
+    };
+
+    const backend = new MetadataSearchBackend({
+      baseUrl: 'foo.bar',
+      servicePath: '/baz',
+    });
+    await backend.performSearch({ query: 'boop' });
+    expect(urlCalled!.toString()).to.satisfy((url: string) =>
+      url.startsWith('https://foo.bar/baz')
+    );
+    window.fetch = fetchBackup;
+  });
+
   it('includes credentials for search endpoint if requested', async () => {
     const fetchBackup = window.fetch;
     let urlCalled: RequestInfo | URL;
