@@ -71,7 +71,7 @@ export class Aggregation {
    * returned as-is.
    *
    * @param sortType What to sort the buckets on.
-   * Accepted values are 
+   * Accepted values are
    *  - `AggregationSortType.COUNT` (descending order)
    *  - `AggregationSortType.ALPHABETICAL` (ascending order)
    *  - `AggregationSortType.NUMERIC` (ascending order)
