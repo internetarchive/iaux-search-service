@@ -95,7 +95,7 @@ export class Aggregation {
           return collator.compare(a.key.toString(), b.key.toString());
         });
       case AggregationSortType.NUMERIC: // Ascending
-        return bucketsClone.sort((a, b) => Number(a) - Number(b));
+        return bucketsClone.sort((a, b) => Number(a.key) - Number(b.key));
       case AggregationSortType.COUNT: // Descending
       default:
         // Sorted by count by default
