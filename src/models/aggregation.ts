@@ -20,6 +20,10 @@ export enum AggregationSortType {
    * Sort ascending alphabetically by key
    */
   ALPHABETICAL,
+  /**
+   * Sort ascending numerically by key
+   */
+  NUMERIC,
 }
 
 export interface AggregationOptions {
@@ -67,30 +71,35 @@ export class Aggregation {
    * returned as-is.
    *
    * @param sortType What to sort the buckets on.
-   * Accepted values are `AggregationSortType.COUNT` (descending order) and
-   * `AggregationSortType.ALPHABETICAL` (ascending order).
+   * Accepted values are 
+   *  - `AggregationSortType.COUNT` (descending order)
+   *  - `AggregationSortType.ALPHABETICAL` (ascending order)
+   *  - `AggregationSortType.NUMERIC` (ascending order)
    */
   @Memoize()
   getSortedBuckets(sortType?: AggregationSortType): Bucket[] | number[] {
-    // Don't apply sorts to numeric buckets.
+    // Don't apply sorts to purely numeric buckets (i.e., year_histogram).
     // Assumption here is that all the buckets have the same type as the
     // first bucket (which should be true in principle).
     if (typeof this.buckets[0] === 'number') {
       return [...(this.buckets as number[])];
     }
 
-    // Default locale & collation options
+    // Default locale options
     const collator = new Intl.Collator();
 
+    const bucketsClone = [...(this.buckets as Bucket[])];
     switch (sortType) {
-      case AggregationSortType.ALPHABETICAL:
-        return [...(this.buckets as Bucket[])].sort((a, b) => {
+      case AggregationSortType.ALPHABETICAL: // Ascending
+        return bucketsClone.sort((a, b) => {
           return collator.compare(a.key.toString(), b.key.toString());
         });
-      case AggregationSortType.COUNT:
+      case AggregationSortType.NUMERIC: // Ascending
+        return bucketsClone.sort((a, b) => Number(a) - Number(b));
+      case AggregationSortType.COUNT: // Descending
       default:
         // Sorted by count by default
-        return [...(this.buckets as Bucket[])];
+        return bucketsClone;
     }
   }
 }
