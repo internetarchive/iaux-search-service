@@ -97,8 +97,9 @@ export class Aggregation {
       case AggregationSortType.NUMERIC: // Ascending
         return bucketsClone.sort((a, b) => Number(a.key) - Number(b.key));
       case AggregationSortType.COUNT: // Descending
+        return bucketsClone.sort((a, b) => b.doc_count - a.doc_count);
       default:
-        // Sorted by count by default
+        // Default from PPS should be sorted by count
         return bucketsClone;
     }
   }
