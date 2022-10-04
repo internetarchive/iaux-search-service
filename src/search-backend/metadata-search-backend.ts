@@ -12,9 +12,7 @@ import type { SearchBackendOptionsInterface } from './search-backend-options';
 export class MetadataSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
-  constructor(
-    options?: SearchBackendOptionsInterface
-  ) {
+  constructor(options?: SearchBackendOptionsInterface) {
     super(options);
     this.servicePath =
       options?.servicePath ?? '/services/search/beta/page_production';
