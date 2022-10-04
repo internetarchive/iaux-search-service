@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from '@open-wc/testing';
 import Sinon from 'sinon';
 import { MetadataSearchBackend } from '../../src/search-backend/metadata-search-backend';
@@ -72,6 +73,32 @@ describe('MetadataSearchBackend', () => {
       await backend.performSearch({ query: 'foo' });
 
       expect(urlConfig?.credentials).to.equal('include');
+    });
+
+    it('can enable debugging by default on all searches', async () => {
+      const backend = new MetadataSearchBackend({
+        baseUrl: 'foo.bar',
+        servicePath: '/baz',
+        debuggingEnabled: true,
+      });
+      await backend.performSearch({ query: 'boop' });
+
+      expect(urlCalled!.toString()).to.equal(
+        'https://foo.bar/baz/?service_backend=metadata&user_query=boop&debugging=true'
+      );
+    });
+
+    it('can disable default debugging on individual searches', async () => {
+      const backend = new MetadataSearchBackend({
+        baseUrl: 'foo.bar',
+        servicePath: '/baz',
+        debuggingEnabled: true,
+      });
+      await backend.performSearch({ query: 'boop', debugging: false });
+
+      expect(urlCalled!.toString()).to.equal(
+        'https://foo.bar/baz/?service_backend=metadata&user_query=boop'
+      );
     });
   });
 
