@@ -7,6 +7,7 @@ export interface SearchBackendOptionsInterface {
    * Defaults to 'archive.org'.
    */
   baseUrl?: string;
+  servicePath?: string;
   includeCredentials?: boolean;
   scope?: string;
   debuggingEnabled?: boolean;

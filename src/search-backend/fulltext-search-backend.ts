@@ -13,9 +13,7 @@ export class FulltextSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
   constructor(
-    options?: SearchBackendOptionsInterface & {
-      servicePath?: string;
-    }
+    options?: SearchBackendOptionsInterface
   ) {
     super(options);
     this.servicePath =
