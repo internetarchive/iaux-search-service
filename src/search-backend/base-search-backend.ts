@@ -22,8 +22,11 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
 
   protected requestScope?: string;
 
+  protected debuggingEnabled?: boolean;
+
   constructor(options?: SearchBackendOptionsInterface) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
+    this.debuggingEnabled = options?.debuggingEnabled ?? false;
 
     if (options?.includeCredentials !== undefined) {
       this.includeCredentials = options.includeCredentials;

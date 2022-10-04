@@ -9,4 +9,5 @@ export interface SearchBackendOptionsInterface {
   baseUrl?: string;
   includeCredentials?: boolean;
   scope?: string;
+  debuggingEnabled?: boolean;
 }

@@ -26,6 +26,10 @@ export class MetadataSearchBackend extends BaseSearchBackend {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
+    if (this.debuggingEnabled && params.debugging == null) {
+      params.debugging = true;
+    }
+
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
