@@ -7,11 +7,10 @@ import { SearchResult } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
 import { SearchParams, SortDirection } from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
+import { SearchBackendOptionsInterface } from '../src/search-backend/search-backend-options';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
-  private searchService: SearchServiceInterface = SearchService.default;
-
   @query('#search-input')
   private searchInput!: HTMLInputElement;
 
@@ -28,6 +27,9 @@ export class AppRoot extends LitElement {
   private checkedSort!: HTMLInputElement;
 
   @state()
+  private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
+
+  @state()
   private searchResponse?: SearchResponse;
 
   @state()
@@ -39,12 +41,25 @@ export class AppRoot extends LitElement {
   @state()
   private loadingAggregations = false;
 
+  private searchService: SearchServiceInterface = new SearchService(
+    this.searchServiceUrlOptions
+  );
+
   private get searchResults(): SearchResult[] | undefined {
     return this.searchResponse?.response.results;
   }
 
   private get searchAggregations(): Record<string, Aggregation> | undefined {
     return this.aggregationsResponse?.response.aggregations;
+  }
+
+  private initSearchServiceUrlOptions() {
+    const params = new URL(window.location.href).searchParams;
+    return {
+      baseUrl: params.get('search_base_url') ?? undefined,
+      servicePath: params.get('search_service_path') ?? undefined,
+      debuggingEnabled: !!params.get('debugging') ?? undefined,
+    };
   }
 
   /** @inheritdoc */
@@ -57,7 +72,11 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <input type="checkbox" id="debug-info-check" />
+          <input
+            type="checkbox"
+            id="debug-info-check"
+            ?checked=${this.searchServiceUrlOptions?.debuggingEnabled}
+          />
           <label for="debug-info-check">Include debugging info</label>
 
           <fieldset class="search-options">
@@ -305,12 +324,14 @@ export class AppRoot extends LitElement {
     };
 
     const numAggs = Number(this.numAggsInput?.value);
+    const includeDebugging = this.debugCheck?.checked;
 
     const searchParams: SearchParams = {
       query,
       rows: 0,
       aggregations,
       aggregationsSize: numAggs,
+      debugging: includeDebugging,
     };
 
     this.loadingAggregations = true;
