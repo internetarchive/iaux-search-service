@@ -137,8 +137,8 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
    */
   private printDebuggingInfo(json: Record<string, any>) {
     const debugInfo = json.debugging;
-    const messages = debugInfo?.messages ?? [];
-    const data = debugInfo?.data ?? {};
+    const messages = debugInfo.messages ?? [];
+    const data = debugInfo.data ?? {};
 
     console.group('Debug messages');
     for (const message of messages) {
