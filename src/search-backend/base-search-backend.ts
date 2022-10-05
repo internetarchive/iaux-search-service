@@ -136,7 +136,7 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
    * Logs PPS debugging info to the console if it is present on the response object
    */
   private printDebuggingInfo(json: Record<string, any>) {
-    const debugInfo = json.debugging?.debugging; // PPS debugging info is doubly-nested, not sure why
+    const debugInfo = json.debugging;
     const messages = debugInfo?.messages ?? [];
     const data = debugInfo?.data ?? {};
 
