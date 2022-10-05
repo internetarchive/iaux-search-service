@@ -125,11 +125,9 @@ describe('FulltextSearchBackend', () => {
       return new Response(
         JSON.stringify({
           debugging: {
-            debugging: {
-              messages: ['boop'],
-              data: {
-                bar: 'baz',
-              },
+            messages: ['boop'],
+            data: {
+              bar: 'baz',
             },
           },
         })
