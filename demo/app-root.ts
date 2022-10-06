@@ -26,6 +26,9 @@ export class AppRoot extends LitElement {
   @query(`input[name='sort']:checked`)
   private checkedSort!: HTMLInputElement;
 
+  @query('#aggs-default')
+  private defaultAggregationsCheckbox!: HTMLInputElement;
+
   @state()
   private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
 
@@ -40,6 +43,9 @@ export class AppRoot extends LitElement {
 
   @state()
   private loadingAggregations = false;
+
+  @state()
+  private defaultAggregationsChecked = true;
 
   private searchService: SearchServiceInterface = new SearchService(
     this.searchServiceUrlOptions
@@ -125,42 +131,18 @@ export class AppRoot extends LitElement {
             <legend>Include aggregations for:</legend>
             <input
               type="checkbox"
-              id="aggs-subject"
-              name="aggs"
-              value="subject"
+              id="aggs-default"
               checked
+              @change=${this.toggleDefaultAggregations}
             />
-            <label for="aggs-subject">Subject </label>
-            <input
-              type="checkbox"
-              id="aggs-language"
-              name="aggs"
-              value="language"
-              checked
-            />
-            <label for="aggs-language">Language </label>
-            <input
-              type="checkbox"
-              id="aggs-creator"
-              name="aggs"
-              value="creator"
-              checked
-            />
-            <label for="aggs-creator">Creator </label>
-            <input
-              type="checkbox"
-              id="aggs-collection"
-              name="aggs"
-              value="collection"
-              checked
-            />
-            <label for="aggs-collection">Collection </label>
+            <label for="aggs-default">Default (all) </label>
             <input
               type="checkbox"
               id="aggs-mediatype"
               name="aggs"
               value="mediatype"
               checked
+              ?disabled=${this.defaultAggregationsChecked}
             />
             <label for="aggs-mediatype">Mediatype </label>
             <input
@@ -169,8 +151,54 @@ export class AppRoot extends LitElement {
               name="aggs"
               value="year"
               checked
+              ?disabled=${this.defaultAggregationsChecked}
             />
-            <label for="aggs-year"> &nbsp;Year </label>
+            <label for="aggs-year">Year </label>
+            <input
+              type="checkbox"
+              id="aggs-subject"
+              name="aggs"
+              value="subject"
+              checked
+              ?disabled=${this.defaultAggregationsChecked}
+            />
+            <label for="aggs-subject">Subject </label>
+            <input
+              type="checkbox"
+              id="aggs-language"
+              name="aggs"
+              value="language"
+              checked
+              ?disabled=${this.defaultAggregationsChecked}
+            />
+            <label for="aggs-language">Language </label>
+            <input
+              type="checkbox"
+              id="aggs-creator"
+              name="aggs"
+              value="creator"
+              checked
+              ?disabled=${this.defaultAggregationsChecked}
+            />
+            <label for="aggs-creator">Creator </label>
+            <input
+              type="checkbox"
+              id="aggs-collection"
+              name="aggs"
+              value="collection"
+              checked
+              ?disabled=${this.defaultAggregationsChecked}
+            />
+            <label for="aggs-collection">Collection </label>
+            <input
+              type="checkbox"
+              id="aggs-lending"
+              name="aggs"
+              value="lending___status"
+              checked
+              ?disabled=${this.defaultAggregationsChecked}
+            />
+            <label for="aggs-lending">Lending </label>
           </fieldset>
         </form>
       </fieldset>
@@ -252,6 +280,10 @@ export class AppRoot extends LitElement {
       : html`${nothing}`;
   }
 
+  private toggleDefaultAggregations(e: Event) {
+    this.defaultAggregationsChecked = this.defaultAggregationsCheckbox?.checked;
+  }
+
   /**
    * Conduct a full search (both hits and aggregations)
    */
@@ -276,15 +308,12 @@ export class AppRoot extends LitElement {
    * Fetch the search hits
    */
   private async fetchSearchResults(query: string, searchType: SearchType) {
-    const sortParam =
-      this.checkedSort?.value === 'none'
-        ? []
-        : [
-            {
-              field: 'title',
-              direction: this.checkedSort?.value as SortDirection,
-            },
-          ];
+    const sortParam = this.checkedSort?.value === 'none'
+      ? undefined
+      : [{
+        field: 'title',
+        direction: this.checkedSort?.value as SortDirection,
+      }];
 
     const numRows = Number(this.rowsInput?.value);
     const includeDebugging = this.debugCheck?.checked;
@@ -329,10 +358,13 @@ export class AppRoot extends LitElement {
     const searchParams: SearchParams = {
       query,
       rows: 0,
-      aggregations,
       aggregationsSize: numAggs,
       debugging: includeDebugging,
     };
+
+    if (!this.defaultAggregationsChecked) {
+      searchParams.aggregations = aggregations;
+    }
 
     this.loadingAggregations = true;
     const result = await this.searchService.search(searchParams, searchType);
