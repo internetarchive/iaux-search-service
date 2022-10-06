@@ -19,3 +19,8 @@
 /_site/
 /dist/
 /out-tsc/
+/build/
+ghpages
+dist
+dist-ssr
+*.local
