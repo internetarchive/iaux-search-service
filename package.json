@@ -26,7 +26,7 @@
     "codecov": "npx codecov",
     "ghpages:build": "rimraf ghpages && npm run prepare",
     "ghpages:publish": "npm run ghpages:prepare -e $(git branch --show-current)",
-    "ghpages:prepare": "npm run ghpages:build && touch ghpages/.nojekyll && yarn run ghpages:generate",
+    "ghpages:prepare": "npm run ghpages:build && touch ghpages/.nojekyll && npm run ghpages:generate",
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
   },
   "devDependencies": {
