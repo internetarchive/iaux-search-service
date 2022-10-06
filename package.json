@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/search-service",
-  "version": "0.4.0",
+  "version": "0.4.1-alpha.2",
   "description": "A search service for the Internet Archive",
   "license": "AGPL-3.0-only",
   "main": "dist/index.js",
@@ -23,7 +23,11 @@
     "circular": "madge --circular --extensions ts .",
     "test": "tsc && npm run lint && npm run circular && web-test-runner --coverage",
     "test:watch": "web-test-runner --watch",
-    "codecov": "npx codecov"
+    "codecov": "npx codecov",
+    "ghpages:build": "rimraf ghpages && npm run prepare",
+    "ghpages:publish": "npm run ghpages:prepare -e $(git branch --show-current)",
+    "ghpages:prepare": "npm run ghpages:build && touch ghpages/.nojekyll && yarn run ghpages:generate",
+    "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
   },
   "devDependencies": {
     "@open-wc/eslint-config": "^4.2.0",
@@ -41,6 +45,7 @@
     "lit": "^2.2.2",
     "madge": "^3.12.0",
     "prettier": "^2.0.4",
+    "rimraf": "^3.0.2",
     "sinon": "^12.0.1",
     "tslib": "^1.14.1",
     "typedoc": "^0.20.29",
