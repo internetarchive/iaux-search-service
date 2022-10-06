@@ -24,7 +24,7 @@
     "test": "tsc && npm run lint && npm run circular && web-test-runner --coverage",
     "test:watch": "web-test-runner --watch",
     "codecov": "npx codecov",
-    "ghpages:build": "rimraf ghpages && npm run prepare",
+    "ghpages:build": "rimraf ghpages && npm run prepare && vite build",
     "ghpages:publish": "npm run ghpages:prepare -e $(git branch --show-current)",
     "ghpages:prepare": "npm run ghpages:build && touch ghpages/.nojekyll && npm run ghpages:generate",
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
@@ -49,7 +49,8 @@
     "sinon": "^12.0.1",
     "tslib": "^1.14.1",
     "typedoc": "^0.20.29",
-    "typescript": "^4.2.2"
+    "typescript": "^4.2.2",
+    "vite": "^2.9.13"
   },
   "eslintConfig": {
     "extends": [
