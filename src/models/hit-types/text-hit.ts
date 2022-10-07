@@ -61,7 +61,7 @@ export class TextHit {
 
   /** Optional. */
   @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
-    return this.rawMetadata?.fields?.avg_rating
+    return this.rawMetadata?.fields?.avg_rating != null
       ? new NumberField(this.rawMetadata.fields.avg_rating)
       : undefined;
   }
@@ -112,7 +112,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get downloads(): typeof Metadata.prototype.downloads {
-    return this.rawMetadata?.fields?.downloads
+    return this.rawMetadata?.fields?.downloads != null
       ? new NumberField(this.rawMetadata.fields.downloads)
       : undefined;
   }
@@ -130,7 +130,7 @@ export class TextHit {
   }
 
   @Memoize() get file_creation_mtime(): NumberField | undefined {
-    return this.rawMetadata?.fields?.file_creation_mtime
+    return this.rawMetadata?.fields?.file_creation_mtime != null
       ? new NumberField(this.rawMetadata.fields.file_creation_mtime)
       : undefined;
   }
@@ -153,7 +153,7 @@ export class TextHit {
 
   /** Optional. */
   @Memoize() get page_num(): NumberField | undefined {
-    return this.rawMetadata?.fields?.page_num
+    return this.rawMetadata?.fields?.page_num != null
       ? new NumberField(this.rawMetadata.fields.page_num)
       : undefined;
   }
@@ -219,7 +219,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get year(): NumberField | undefined {
-    return this.rawMetadata?.fields?.year
+    return this.rawMetadata?.fields?.year != null
       ? new NumberField(this.rawMetadata.fields.year)
       : undefined;
   }
