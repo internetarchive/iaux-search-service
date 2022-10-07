@@ -47,6 +47,9 @@ export class AppRoot extends LitElement {
   @state()
   private defaultAggregationsChecked = true;
 
+  @state()
+  private fullSearchResultsShown = false;
+
   private searchService: SearchServiceInterface = new SearchService(
     this.searchServiceUrlOptions
   );
@@ -211,14 +214,14 @@ export class AppRoot extends LitElement {
     return html`
       ${this.loadingSearchResults
         ? html`<h3>Loading search results...</h3>`
-        : this.searchResultsTemplate}
+        : [this.minimalSearchResultsTemplate, this.fullSearchResultsTemplate]}
       ${this.loadingAggregations
         ? html`<h3>Loading aggregations...</h3>`
         : this.aggregationsTemplate}
     `;
   }
 
-  private get searchResultsTemplate(): TemplateResult {
+  private get minimalSearchResultsTemplate(): TemplateResult {
     return html`
       <h2>Search Results</h2>
       <table>
@@ -241,6 +244,20 @@ export class AppRoot extends LitElement {
           })}
         </tbody>
       </table>
+    `;
+  }
+
+  private get fullSearchResultsTemplate(): TemplateResult {
+    return html`
+      <button @click=${this.toggleFullSearchResults}>
+        ${this.fullSearchResultsShown ? 'Hide' : 'Show'} all search results
+      </button>
+      ${this.fullSearchResultsShown
+        ? html`<pre>
+          ${JSON.stringify(this.searchResults, null, 2)}
+        </pre
+          >`
+        : nothing}
     `;
   }
 
@@ -284,6 +301,10 @@ export class AppRoot extends LitElement {
     this.defaultAggregationsChecked = this.defaultAggregationsCheckbox?.checked;
   }
 
+  private toggleFullSearchResults() {
+    this.fullSearchResultsShown = !this.fullSearchResultsShown;
+  }
+
   /**
    * Conduct a full search (both hits and aggregations)
    */
@@ -324,7 +345,6 @@ export class AppRoot extends LitElement {
     const searchParams: SearchParams = {
       query,
       rows: numRows,
-      fields: ['identifier', 'title'],
       sort: sortParam,
       aggregations: { omit: true },
       debugging: includeDebugging,
