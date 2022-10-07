@@ -33,6 +33,10 @@ describe('TextHit', () => {
         title: 'foo-title',
         creator: ['foo-creator'],
         subject: ['foo-subject1', 'foo-subject2'],
+        addeddate: '1904-01-01T00:00:00Z',
+        avg_rating: 3,
+        issue: 'foo-issue',
+        source: 'foo-source',
         date: '1904-01-01T00:00:00Z',
         publicdate: '2006-10-11T08:19:20Z',
         downloads: 1234,
@@ -58,13 +62,20 @@ describe('TextHit', () => {
       const fieldName = key as Exclude<keyof typeof json.fields, 'identifier'>;
 
       if (Array.isArray(json.fields[fieldName])) {
-        expect(hit[fieldName]?.values).to.deep.equal(json.fields[fieldName]);
+        expect(hit[fieldName]?.values).to.deep.equal(
+          json.fields[fieldName],
+          fieldName
+        );
       } else if (hit[fieldName] instanceof DateField) {
         expect(hit[fieldName]?.value).to.deep.equal(
-          DateParser.shared.parseValue(json.fields[fieldName].toString())
+          DateParser.shared.parseValue(json.fields[fieldName].toString()),
+          fieldName
         );
       } else {
-        expect(hit[fieldName]?.value).to.equal(json.fields[fieldName]);
+        expect(hit[fieldName]?.value).to.equal(
+          json.fields[fieldName],
+          fieldName
+        );
       }
     }
 
