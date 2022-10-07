@@ -38,6 +38,20 @@ export class ItemHit {
     return this.rawMetadata?.fields?.identifier;
   }
 
+  /** Optional. */
+  @Memoize() get addeddate(): typeof Metadata.prototype.addeddate {
+    return this.rawMetadata?.fields?.addeddate
+      ? new DateField(this.rawMetadata.fields.addeddate)
+      : undefined;
+  }
+
+  /** Optional. */
+  @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
+    return this.rawMetadata?.fields?.avg_rating
+      ? new NumberField(this.rawMetadata.fields.avg_rating)
+      : undefined;
+  }
+
   /**
    * May be a superset of metadata collection field.
    * Multivalued.
@@ -130,6 +144,26 @@ export class ItemHit {
   @Memoize() get indexflag(): StringField | undefined {
     return this.rawMetadata?.fields?.indexflag
       ? new StringField(this.rawMetadata.fields.indexflag)
+      : undefined;
+  }
+
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get issue(): typeof Metadata.prototype.issue {
+    return this.rawMetadata?.fields?.issue
+      ? new StringField(this.rawMetadata.fields.issue)
+      : undefined;
+  }
+
+  /**
+   * Computed during document construction.
+   * Optional.
+   */
+  @Memoize() get item_count(): typeof Metadata.prototype.item_count {
+    return this.rawMetadata?.fields?.item_count
+      ? new NumberField(this.rawMetadata.fields.item_count)
       : undefined;
   }
 
@@ -241,6 +275,16 @@ export class ItemHit {
   @Memoize() get num_reviews(): typeof Metadata.prototype.num_reviews {
     return this.rawMetadata?.fields?.num_reviews
       ? new NumberField(this.rawMetadata.fields.num_reviews)
+      : undefined;
+  }
+
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get source(): typeof Metadata.prototype.source {
+    return this.rawMetadata?.fields?.source
+      ? new StringField(this.rawMetadata.fields.source)
       : undefined;
   }
 

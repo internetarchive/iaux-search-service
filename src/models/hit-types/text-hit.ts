@@ -49,6 +49,23 @@ export class TextHit {
       : undefined;
   }
 
+  /**
+   * May be stale in FTS.
+   * Optional.
+   */
+  @Memoize() get addeddate(): typeof Metadata.prototype.addeddate {
+    return this.rawMetadata?.fields?.addeddate
+      ? new DateField(this.rawMetadata.fields.addeddate)
+      : undefined;
+  }
+
+  /** Optional. */
+  @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
+    return this.rawMetadata?.fields?.avg_rating
+      ? new NumberField(this.rawMetadata.fields.avg_rating)
+      : undefined;
+  }
+
   /** Multivalued. */
   @Memoize() get collection(): typeof Metadata.prototype.collection {
     return this.rawMetadata?.fields?.collection
@@ -118,6 +135,16 @@ export class TextHit {
       : undefined;
   }
 
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get issue(): typeof Metadata.prototype.issue {
+    return this.rawMetadata?.fields?.issue
+      ? new StringField(this.rawMetadata.fields.issue)
+      : undefined;
+  }
+
   @Memoize() get mediatype(): typeof Metadata.prototype.mediatype {
     return this.rawMetadata?.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
@@ -151,6 +178,16 @@ export class TextHit {
   @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
+      : undefined;
+  }
+
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get source(): typeof Metadata.prototype.source {
+    return this.rawMetadata?.fields?.source
+      ? new StringField(this.rawMetadata.fields.source)
       : undefined;
   }
 
