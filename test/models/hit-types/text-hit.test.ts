@@ -3,6 +3,34 @@ import { expect } from '@open-wc/testing';
 import { TextHit } from '../../../src/models/hit-types/text-hit';
 import { DateField } from '../../../src/models/metadata-fields/field-types/date';
 
+const fieldNames: (keyof TextHit)[] = [
+  'identifier',
+  'addeddate',
+  'avg_rating',
+  'collection',
+  'created_on',
+  'creator',
+  'date',
+  'description',
+  'downloads',
+  'filename',
+  'file_basename',
+  'file_creation_mtime',
+  'highlight',
+  'issue',
+  'mediatype',
+  'page_num',
+  'publicdate',
+  'result_in_subfile',
+  'reviewdate',
+  'source',
+  'subject',
+  'title',
+  'updated_on',
+  'year',
+  '__href__',
+];
+
 describe('TextHit', () => {
   it('constructs basic text hit', () => {
     const hit = new TextHit({ fields: {} });
@@ -10,13 +38,18 @@ describe('TextHit', () => {
     expect(hit.creator).to.be.undefined;
   });
 
-  it('handles incomplete data without throwing', () => {
+  it('handles missing data gracefully', () => {
     const hit = new TextHit({});
-    expect(hit.creator).to.be.undefined;
-    expect(hit.date).to.be.undefined;
-    expect(hit.description).to.be.undefined;
-    expect(hit.subject).to.be.undefined;
-    expect(hit.title).to.be.undefined;
+    for (const key of fieldNames) {
+      expect(hit[key]).to.be.undefined;
+    }
+  });
+
+  it('handles incomplete field data gracefully', () => {
+    const hit = new TextHit({ fields: {} });
+    for (const key of fieldNames) {
+      expect(hit[key]).to.be.undefined;
+    }
   });
 
   it('constructs text hit with all fields', () => {
@@ -38,6 +71,7 @@ describe('TextHit', () => {
         issue: 'foo-issue',
         source: 'foo-source',
         date: '1904-01-01T00:00:00Z',
+        reviewdate: '1904-01-01T00:00:00Z',
         publicdate: '2006-10-11T08:19:20Z',
         downloads: 1234,
         collection: ['foo-collection'],
@@ -80,5 +114,31 @@ describe('TextHit', () => {
     }
 
     expect(hit.highlight?.values).to.deep.equal(json.highlight.text);
+  });
+
+  it('correctly parses falsey boolean/numeric fields', () => {
+    const json = {
+      fields: {
+        identifier: 'foo',
+        result_in_subfile: false,
+        file_creation_mtime: 0,
+        page_num: 0,
+        avg_rating: 0,
+        downloads: 0,
+        year: 0,
+      },
+      highlight: {
+        text: [],
+      },
+      _score: 0,
+    };
+
+    const hit = new TextHit(json);
+    expect(hit.result_in_subfile?.value).to.be.false;
+    expect(hit.file_creation_mtime?.value).to.equal(0);
+    expect(hit.page_num?.value).to.equal(0);
+    expect(hit.avg_rating?.value).to.equal(0);
+    expect(hit.downloads?.value).to.equal(0);
+    expect(hit.year?.value).to.equal(0);
   });
 });
