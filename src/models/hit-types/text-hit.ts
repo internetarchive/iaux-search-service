@@ -49,6 +49,23 @@ export class TextHit {
       : undefined;
   }
 
+  /**
+   * May be stale in FTS.
+   * Optional.
+   */
+  @Memoize() get addeddate(): typeof Metadata.prototype.addeddate {
+    return this.rawMetadata?.fields?.addeddate
+      ? new DateField(this.rawMetadata.fields.addeddate)
+      : undefined;
+  }
+
+  /** Optional. */
+  @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
+    return this.rawMetadata?.fields?.avg_rating != null
+      ? new NumberField(this.rawMetadata.fields.avg_rating)
+      : undefined;
+  }
+
   /** Multivalued. */
   @Memoize() get collection(): typeof Metadata.prototype.collection {
     return this.rawMetadata?.fields?.collection
@@ -95,7 +112,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get downloads(): typeof Metadata.prototype.downloads {
-    return this.rawMetadata?.fields?.downloads
+    return this.rawMetadata?.fields?.downloads != null
       ? new NumberField(this.rawMetadata.fields.downloads)
       : undefined;
   }
@@ -113,8 +130,18 @@ export class TextHit {
   }
 
   @Memoize() get file_creation_mtime(): NumberField | undefined {
-    return this.rawMetadata?.fields?.file_creation_mtime
+    return this.rawMetadata?.fields?.file_creation_mtime != null
       ? new NumberField(this.rawMetadata.fields.file_creation_mtime)
+      : undefined;
+  }
+
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get issue(): typeof Metadata.prototype.issue {
+    return this.rawMetadata?.fields?.issue
+      ? new StringField(this.rawMetadata.fields.issue)
       : undefined;
   }
 
@@ -126,7 +153,7 @@ export class TextHit {
 
   /** Optional. */
   @Memoize() get page_num(): NumberField | undefined {
-    return this.rawMetadata?.fields?.page_num
+    return this.rawMetadata?.fields?.page_num != null
       ? new NumberField(this.rawMetadata.fields.page_num)
       : undefined;
   }
@@ -151,6 +178,16 @@ export class TextHit {
   @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
+      : undefined;
+  }
+
+  /**
+   * Format varies.
+   * Optional.
+   */
+  @Memoize() get source(): typeof Metadata.prototype.source {
+    return this.rawMetadata?.fields?.source
+      ? new StringField(this.rawMetadata.fields.source)
       : undefined;
   }
 
@@ -182,7 +219,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get year(): NumberField | undefined {
-    return this.rawMetadata?.fields?.year
+    return this.rawMetadata?.fields?.year != null
       ? new NumberField(this.rawMetadata.fields.year)
       : undefined;
   }
