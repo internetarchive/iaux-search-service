@@ -280,7 +280,7 @@ export class AppRoot extends LitElement {
       : html`${nothing}`;
   }
 
-  private toggleDefaultAggregations(e: Event) {
+  private toggleDefaultAggregations() {
     this.defaultAggregationsChecked = this.defaultAggregationsCheckbox?.checked;
   }
 
