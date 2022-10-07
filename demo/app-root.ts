@@ -308,12 +308,15 @@ export class AppRoot extends LitElement {
    * Fetch the search hits
    */
   private async fetchSearchResults(query: string, searchType: SearchType) {
-    const sortParam = this.checkedSort?.value === 'none'
-      ? undefined
-      : [{
-        field: 'title',
-        direction: this.checkedSort?.value as SortDirection,
-      }];
+    const sortParam =
+      this.checkedSort?.value === 'none'
+        ? undefined
+        : [
+            {
+              field: 'title',
+              direction: this.checkedSort?.value as SortDirection,
+            },
+          ];
 
     const numRows = Number(this.rowsInput?.value);
     const includeDebugging = this.debugCheck?.checked;
