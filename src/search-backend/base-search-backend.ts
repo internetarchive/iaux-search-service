@@ -140,6 +140,10 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     const messages = debugInfo.messages ?? [];
     const data = debugInfo.data ?? {};
 
+    console.log('***** BEGIN DEBUGGING *****');
+    console.log('Full response:');
+    console.log(JSON.stringify(json, null, 2));
+
     console.group('Debug messages');
     for (const message of messages) {
       console.log(message);
@@ -151,5 +155,6 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
       console.log(key, val);
     }
     console.groupEnd();
+    console.log('***** END DEBUGGING *****');
   }
 }
