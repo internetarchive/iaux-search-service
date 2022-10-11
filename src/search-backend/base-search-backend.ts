@@ -22,8 +22,11 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
 
   protected requestScope?: string;
 
+  protected debuggingEnabled?: boolean;
+
   constructor(options?: SearchBackendOptionsInterface) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
+    this.debuggingEnabled = options?.debuggingEnabled ?? false;
 
     if (options?.includeCredentials !== undefined) {
       this.includeCredentials = options.includeCredentials;
@@ -133,9 +136,13 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
    * Logs PPS debugging info to the console if it is present on the response object
    */
   private printDebuggingInfo(json: Record<string, any>) {
-    const debugInfo = json.debugging?.debugging; // PPS debugging info is doubly-nested, not sure why
-    const messages = debugInfo?.messages ?? [];
-    const data = debugInfo?.data ?? {};
+    const debugInfo = json.debugging;
+    const messages = debugInfo.messages ?? [];
+    const data = debugInfo.data ?? {};
+
+    console.log('***** BEGIN DEBUGGING *****');
+    console.log('Full response:');
+    console.log(JSON.stringify(json, null, 2));
 
     console.group('Debug messages');
     for (const message of messages) {
@@ -148,5 +155,6 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
       console.log(key, val);
     }
     console.groupEnd();
+    console.log('***** END DEBUGGING *****');
   }
 }

@@ -227,4 +227,18 @@ describe('SearchParams', () => {
       'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
     expect(queryAsString).to.equal(expected);
   });
+
+  it('properly generates a URLSearchParam with debugging enabled', async () => {
+    const query = 'title:foo';
+    const params = {
+      query,
+      debugging: true,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected = 'user_query=title%3Afoo&debugging=true';
+    expect(queryAsString).to.equal(expected);
+  });
 });

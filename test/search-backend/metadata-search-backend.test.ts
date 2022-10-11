@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from '@open-wc/testing';
 import Sinon from 'sinon';
 import { MetadataSearchBackend } from '../../src/search-backend/metadata-search-backend';
@@ -73,6 +74,32 @@ describe('MetadataSearchBackend', () => {
 
       expect(urlConfig?.credentials).to.equal('include');
     });
+
+    it('can enable debugging by default on all searches', async () => {
+      const backend = new MetadataSearchBackend({
+        baseUrl: 'foo.bar',
+        servicePath: '/baz',
+        debuggingEnabled: true,
+      });
+      await backend.performSearch({ query: 'boop' });
+
+      expect(urlCalled!.toString()).to.equal(
+        'https://foo.bar/baz/?service_backend=metadata&user_query=boop&debugging=true'
+      );
+    });
+
+    it('can disable default debugging on individual searches', async () => {
+      const backend = new MetadataSearchBackend({
+        baseUrl: 'foo.bar',
+        servicePath: '/baz',
+        debuggingEnabled: true,
+      });
+      await backend.performSearch({ query: 'boop', debugging: false });
+
+      expect(urlCalled!.toString()).to.equal(
+        'https://foo.bar/baz/?service_backend=metadata&user_query=boop'
+      );
+    });
   });
 
   it('returns a network error result upon fetch errors', async () => {
@@ -98,11 +125,9 @@ describe('MetadataSearchBackend', () => {
       return new Response(
         JSON.stringify({
           debugging: {
-            debugging: {
-              messages: ['boop'],
-              data: {
-                bar: 'baz',
-              },
+            messages: ['boop'],
+            data: {
+              bar: 'baz',
             },
           },
         })

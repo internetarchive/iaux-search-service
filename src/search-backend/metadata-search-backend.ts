@@ -12,11 +12,7 @@ import type { SearchBackendOptionsInterface } from './search-backend-options';
 export class MetadataSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
-  constructor(
-    options?: SearchBackendOptionsInterface & {
-      servicePath?: string;
-    }
-  ) {
+  constructor(options?: SearchBackendOptionsInterface) {
     super(options);
     this.servicePath =
       options?.servicePath ?? '/services/search/beta/page_production';
@@ -26,6 +22,10 @@ export class MetadataSearchBackend extends BaseSearchBackend {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
+    if (this.debuggingEnabled && params.debugging === undefined) {
+      params.debugging = true;
+    }
+
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
