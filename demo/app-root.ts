@@ -106,11 +106,11 @@ export class AppRoot extends LitElement {
             <legend>Search size:</legend>
             <div class="field-row">
               <label for="num-rows">Number of result rows:</label>
-              <input type="number" id="num-rows" value="10" min="0" max="99" />
+              <input type="number" id="num-rows" value="10" min="0" max="999" />
             </div>
             <div class="field-row">
-              <label for="num-aggs">Number of aggregation rows:</label>
-              <input type="number" id="num-aggs" value="6" min="0" max="50" />
+              <label for="num-aggs">Number of aggregation buckets:</label>
+              <input type="number" id="num-aggs" value="6" min="0" max="999" />
             </div>
           </fieldset>
 
