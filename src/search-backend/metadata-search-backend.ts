@@ -22,7 +22,7 @@ export class MetadataSearchBackend extends BaseSearchBackend {
   async performSearch(
     params: SearchParams
   ): Promise<Result<any, SearchServiceError>> {
-    if (this.debuggingEnabled && params.debugging == null) {
+    if (this.debuggingEnabled && params.debugging === undefined) {
       params.debugging = true;
     }
 
