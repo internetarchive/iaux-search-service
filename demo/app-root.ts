@@ -8,6 +8,7 @@ import { SearchType } from '../src/search-type';
 import { SearchParams, SortDirection } from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
 import { SearchBackendOptionsInterface } from '../src/search-backend/search-backend-options';
+import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -43,6 +44,12 @@ export class AppRoot extends LitElement {
 
   @state()
   private loadingAggregations = false;
+
+  @state()
+  private lastSearchParams?: string;
+
+  @state()
+  private lastAggregationParams?: string;
 
   @state()
   private defaultAggregationsChecked = true;
@@ -212,6 +219,18 @@ export class AppRoot extends LitElement {
 
   private get resultsTemplate(): TemplateResult {
     return html`
+      ${this.lastSearchParams
+        ? html`<div>
+            Last search params:
+            <pre>${this.lastSearchParams}</pre>
+          </div>`
+        : nothing}
+      ${this.lastAggregationParams
+        ? html`<div>
+            Last aggregation params:
+            <pre>${this.lastAggregationParams}</pre>
+          </div>`
+        : nothing}
       ${this.loadingSearchResults
         ? html`<h3>Loading search results...</h3>`
         : [this.minimalSearchResultsTemplate, this.fullSearchResultsTemplate]}
@@ -348,6 +367,7 @@ export class AppRoot extends LitElement {
       sort: sortParam,
       aggregations: { omit: true },
       debugging: includeDebugging,
+      uid: 'demo',
     };
 
     this.loadingSearchResults = true;
@@ -356,6 +376,9 @@ export class AppRoot extends LitElement {
 
     if (result?.success) {
       this.searchResponse = result?.success;
+      this.lastSearchParams = SearchParamURLGenerator.generateURLSearchParams(
+        searchParams
+      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -383,6 +406,7 @@ export class AppRoot extends LitElement {
       rows: 0,
       aggregationsSize: numAggs,
       debugging: includeDebugging,
+      uid: 'demo',
     };
 
     if (!this.defaultAggregationsChecked) {
@@ -395,6 +419,9 @@ export class AppRoot extends LitElement {
 
     if (result?.success) {
       this.aggregationsResponse = result?.success;
+      this.lastAggregationParams = SearchParamURLGenerator.generateURLSearchParams(
+        searchParams
+      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -409,6 +436,10 @@ export class AppRoot extends LitElement {
 
       .field-row {
         margin: 0.3rem 0;
+      }
+
+      fieldset {
+        margin-bottom: 0.5rem;
       }
     `;
   }
