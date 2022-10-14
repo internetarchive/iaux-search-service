@@ -101,6 +101,14 @@ export class SearchParamURLGenerator {
       params.append('debugging', 'true');
     }
 
+    if (searchParams.uid) {
+      params.append('uid', searchParams.uid);
+    }
+
+    if (searchParams.includeClientUrl !== false) {
+      params.append('client_url', window.location.href);
+    }
+
     return params;
   }
 }

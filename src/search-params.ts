@@ -122,4 +122,17 @@ export interface SearchParams {
    * Whether to include debugging info in the returned PPS response.
    */
   debugging?: boolean;
+
+  /**
+   * A unique request ID to pass to the service.
+   * Will be returned unmodified in the response, for ease of tracking responses,
+   * e.g., to quickly determine whether a given response has obsolete data.
+   */
+  uid?: string;
+
+  /**
+   * Whether to include the client URL in the request (used for PPS debugging).
+   * Defaults to true.
+   */
+  includeClientUrl?: boolean;
 }
