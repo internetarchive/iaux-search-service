@@ -27,8 +27,9 @@ describe('SearchParams', () => {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected = 'user_query=title%3Afoo+AND+collection%3Abar';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
   });
 
   it('properly generates a URLSearchParam with a query and fields', async () => {
@@ -37,18 +38,18 @@ describe('SearchParams', () => {
     const params = {
       query,
       fields,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&fields=identifier%2Cfoo%2Cbar';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('fields')).to.equal('identifier,foo,bar');
   });
 
-  it('properly generates a URLSearchParam with a query, sort, row, start, and fields', async () => {
+  it('properly generates a URLSearchParam with a query, sort, rows, page, and fields', async () => {
     const query = 'title:foo AND collection:bar';
     const fields = ['identifier', 'foo', 'bar'];
     const sort: SortParam[] = [{ field: 'downloads', direction: 'desc' }];
@@ -58,15 +59,18 @@ describe('SearchParams', () => {
       rows: 53,
       page: 27,
       fields,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&fields=identifier%2Cfoo%2Cbar&sort=downloads%3Adesc';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('hits_per_page')).to.equal('53');
+    expect(queryParams.get('page')).to.equal('27');
+    expect(queryParams.get('fields')).to.equal('identifier,foo,bar');
+    expect(queryParams.get('sort')).to.equal('downloads:desc');
   });
 
   it('properly generates a URLSearchParam multiple sort params', async () => {
@@ -80,15 +84,17 @@ describe('SearchParams', () => {
       sort,
       rows: 53,
       page: 27,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&hits_per_page=53&page=27&sort=downloads%3Adesc%2Cfoo%3Aasc';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('hits_per_page')).to.equal('53');
+    expect(queryParams.get('page')).to.equal('27');
+    expect(queryParams.get('sort')).to.equal('downloads:desc,foo:asc');
   });
 
   it('properly generates a URLSearchParam with a page_type', async () => {
@@ -96,15 +102,15 @@ describe('SearchParams', () => {
     const params = {
       query,
       pageType: 'foo',
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('page_type')).to.equal('foo');
   });
 
   it('properly generates a URLSearchParam with a page_type and page_target', async () => {
@@ -113,15 +119,16 @@ describe('SearchParams', () => {
       query,
       pageType: 'foo',
       pageTarget: 'bar',
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&page_type=foo&page_target=bar';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('page_type')).to.equal('foo');
+    expect(queryParams.get('page_target')).to.equal('bar');
   });
 
   it('properly generates a URLSearchParam with aggregations omitted', async () => {
@@ -131,15 +138,15 @@ describe('SearchParams', () => {
       aggregations: {
         omit: true,
       },
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=false';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('aggregations')).to.equal('false');
   });
 
   it('properly generates a URLSearchParam with advanced aggregations', async () => {
@@ -159,15 +166,18 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+
+    const expectedAggregationsParam =
+      '[{"terms":{"field":"foo","size":10}},{"terms":{"field":"bar","size":7}}]';
+    expect(queryParams.get('aggregations')).to.equal(expectedAggregationsParam);
   });
 
   it('properly generates a URLSearchParam with simple aggregations', async () => {
@@ -178,15 +188,15 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('aggregations')).to.equal('year,collection,subject');
   });
 
   it('properly generates a URLSearchParam with an aggregations_size param', async () => {
@@ -198,15 +208,16 @@ describe('SearchParams', () => {
       query,
       aggregations,
       aggregationsSize: 3,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=year%2Ccollection%2Csubject&aggregations_size=3';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('aggregations')).to.equal('year,collection,subject');
+    expect(queryParams.get('aggregations_size')).to.equal('3');
   });
 
   it('advanced aggregations take precedence if both simple and advanced provided', async () => {
@@ -227,15 +238,18 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected =
-      'user_query=title%3Afoo+AND+collection%3Abar&aggregations=%5B%7B%22terms%22%3A%7B%22field%22%3A%22foo%22%2C%22size%22%3A10%7D%7D%2C%7B%22terms%22%3A%7B%22field%22%3A%22bar%22%2C%22size%22%3A7%7D%7D%5D';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+
+    const expectedAggregationsParam =
+      '[{"terms":{"field":"foo","size":10}},{"terms":{"field":"bar","size":7}}]';
+    expect(queryParams.get('aggregations')).to.equal(expectedAggregationsParam);
   });
 
   it('properly generates a URLSearchParam with debugging enabled', async () => {
@@ -243,29 +257,31 @@ describe('SearchParams', () => {
     const params = {
       query,
       debugging: true,
-      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected = 'user_query=title%3Afoo&debugging=true';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal('title:foo');
+    expect(queryParams.get('debugging')).to.equal('true');
   });
 
   it('properly generates a URLSearchParam with a uid', async () => {
     const query = 'title:foo';
     const params = {
       query,
-      uid: 'foobar',
-      includeClientUrl: false,
+      uid: 'boop',
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expected = 'user_query=title%3Afoo&uid=foobar';
-    expect(queryAsString).to.equal(expected);
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('uid')).to.equal('boop');
   });
 
   it('properly generates a URLSearchParam with the client url by default', async () => {
@@ -277,9 +293,12 @@ describe('SearchParams', () => {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const expectedPrefix = 'user_query=title%3Afoo&client_url=http';
-    expect(queryAsString).to.satisfy((str: string) =>
-      str.startsWith(expectedPrefix)
-    );
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+
+    // Don't rely on exact web-test-runner URLs, just verify the param was added and is a valid URL
+    expect(queryParams.get('client_url')).to.exist;
+    expect(new URL(queryParams.get('client_url')!)).not.to.throw;
   });
 });
