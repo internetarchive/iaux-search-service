@@ -81,7 +81,7 @@ describe('MetadataSearchBackend', () => {
         servicePath: '/baz',
         debuggingEnabled: true,
       });
-      await backend.performSearch({ query: 'boop' });
+      await backend.performSearch({ query: 'boop', includeClientUrl: false });
 
       expect(urlCalled!.toString()).to.equal(
         'https://foo.bar/baz/?service_backend=metadata&user_query=boop&debugging=true'
@@ -94,7 +94,11 @@ describe('MetadataSearchBackend', () => {
         servicePath: '/baz',
         debuggingEnabled: true,
       });
-      await backend.performSearch({ query: 'boop', debugging: false });
+      await backend.performSearch({
+        query: 'boop',
+        debugging: false,
+        includeClientUrl: false,
+      });
 
       expect(urlCalled!.toString()).to.equal(
         'https://foo.bar/baz/?service_backend=metadata&user_query=boop'

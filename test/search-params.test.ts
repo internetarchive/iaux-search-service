@@ -22,7 +22,7 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = { query };
+    const params = { query, includeClientUrl: false };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
@@ -37,6 +37,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       fields,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -57,6 +58,7 @@ describe('SearchParams', () => {
       rows: 53,
       page: 27,
       fields,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -78,6 +80,7 @@ describe('SearchParams', () => {
       sort,
       rows: 53,
       page: 27,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -93,6 +96,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       pageType: 'foo',
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -109,6 +113,7 @@ describe('SearchParams', () => {
       query,
       pageType: 'foo',
       pageTarget: 'bar',
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -126,6 +131,7 @@ describe('SearchParams', () => {
       aggregations: {
         omit: true,
       },
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -153,6 +159,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -171,6 +178,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -190,6 +198,7 @@ describe('SearchParams', () => {
       query,
       aggregations,
       aggregationsSize: 3,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -218,6 +227,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       aggregations,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -233,6 +243,7 @@ describe('SearchParams', () => {
     const params = {
       query,
       debugging: true,
+      includeClientUrl: false,
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -240,5 +251,35 @@ describe('SearchParams', () => {
     const queryAsString = urlSearchParam.toString();
     const expected = 'user_query=title%3Afoo&debugging=true';
     expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with a uid', async () => {
+    const query = 'title:foo';
+    const params = {
+      query,
+      uid: 'foobar',
+      includeClientUrl: false,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expected = 'user_query=title%3Afoo&uid=foobar';
+    expect(queryAsString).to.equal(expected);
+  });
+
+  it('properly generates a URLSearchParam with the client url by default', async () => {
+    const query = 'title:foo';
+    const params = {
+      query,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const expectedPrefix = 'user_query=title%3Afoo&client_url=http';
+    expect(queryAsString).to.satisfy((str: string) =>
+      str.startsWith(expectedPrefix)
+    );
   });
 });
