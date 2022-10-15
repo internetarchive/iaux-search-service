@@ -97,12 +97,11 @@ describe('FulltextSearchBackend', () => {
       await backend.performSearch({
         query: 'boop',
         debugging: false,
-        includeClientUrl: false,
       });
 
-      expect(urlCalled!.toString()).to.equal(
-        'https://foo.bar/baz/?service_backend=fts&user_query=boop'
-      );
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('user_query')).to.equal('boop');
+      expect(queryParams.get('debugging')).to.be.null;
     });
   });
 
