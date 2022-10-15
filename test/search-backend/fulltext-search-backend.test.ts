@@ -81,11 +81,11 @@ describe('FulltextSearchBackend', () => {
         servicePath: '/baz',
         debuggingEnabled: true,
       });
-      await backend.performSearch({ query: 'boop', includeClientUrl: false });
+      await backend.performSearch({ query: 'boop' });
 
-      expect(urlCalled!.toString()).to.equal(
-        'https://foo.bar/baz/?service_backend=fts&user_query=boop&debugging=true'
-      );
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('user_query')).to.equal('boop');
+      expect(queryParams.get('debugging')).to.equal('true');
     });
 
     it('can disable default debugging on individual searches', async () => {
