@@ -22,7 +22,7 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with just a query', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = { query, includeClientUrl: false };
+    const params = { query };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
     );
