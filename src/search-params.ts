@@ -131,8 +131,13 @@ export interface SearchParams {
   uid?: string;
 
   /**
-   * Whether to include the client URL in the request (used for PPS debugging).
-   * Defaults to true.
+   * Whether to include the client URL in the request.
+   * This is useful for PPS debugging as it allows the backend folks to compare
+   * any PPS response issues with the client URLs that generated them,
+   * especially for issues related to parameter parsing & normalization.
+   * 
+   * This defaults to true, as these should be sent on every request unless
+   * there is a specific need not to include them for certain request types.
    */
   includeClientUrl?: boolean;
 }
