@@ -299,6 +299,43 @@ describe('SearchParams', () => {
 
     // Don't rely on exact web-test-runner URLs, just verify the param was added and is a valid URL
     expect(queryParams.get('client_url')).to.exist;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(new URL(queryParams.get('client_url')!)).not.to.throw;
+  });
+
+  it('does not include client url when includeClientURL=false', async () => {
+    const query = 'title:foo';
+    const params = {
+      query,
+      includeClientUrl: false,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('client_url')).to.be.null;
+  });
+
+  it('does include client url when includeClientURL=true', async () => {
+    const query = 'title:foo';
+    const params = {
+      query,
+      includeClientUrl: true,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+
+    // Don't rely on exact web-test-runner URLs, just verify the param was added and is a valid URL
+    expect(queryParams.get('client_url')).to.exist;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(new URL(queryParams.get('client_url')!)).not.to.throw;
   });
 });
