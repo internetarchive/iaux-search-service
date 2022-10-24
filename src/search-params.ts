@@ -137,7 +137,10 @@ export interface SearchParams {
    * especially for issues related to parameter parsing & normalization.
    *
    * This defaults to true, as these should be sent on every request unless
-   * there is a specific need not to include them for certain request types.
+   * there is a specific need not to include them for certain request types. Thus:
+   *  * `includeClientUrl: undefined` causes `client_url` param to be included in the request, by default.
+   *  * `includeClientUrl: true` causes `client_url` param to be included, explicitly.
+   *  * `includeClientUrl: false` causes `client_url` param to _not_ be included in the request.
    */
   includeClientUrl?: boolean;
 }
