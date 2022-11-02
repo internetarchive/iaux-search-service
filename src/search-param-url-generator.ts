@@ -74,11 +74,11 @@ export class SearchParamURLGenerator {
       params.append('page', String(searchParams.page));
     }
 
-    if (searchParams.fields) {
+    if (searchParams.fields && searchParams.fields.length > 0) {
       params.append('fields', searchParams.fields.join(','));
     }
 
-    if (searchParams.sort) {
+    if (searchParams.sort && searchParams.sort.length > 0) {
       const sortStrings = searchParams.sort.map(sort =>
         this.sortParamsAsString(sort)
       );
