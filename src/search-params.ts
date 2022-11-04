@@ -48,6 +48,16 @@ export interface SortParam {
   direction: SortDirection;
 }
 
+export interface FilterParam {
+  key: string,
+  include: boolean,
+  exclude: boolean,
+  gt: number,
+  gte: number,
+  lt: number,
+  lte: number,
+}
+
 /**
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
@@ -104,6 +114,26 @@ export interface SearchParams {
    * the defaults.
    */
   fields?: string[];
+
+  /**
+   * An array of filter params that can be used to narrow the result set.
+   * Each filter param is an object with a string `key` identifying what
+   * attribute to filter on (e.g., `'year'`, `'subject'`, etc.) and one or more
+   * additional properties identifying what filter to apply. The filters
+   * allowed are:
+   * - `include` (string, results must include the given value for this `key`)
+   * - `exclude` (string, results must exclude the given value for this `key`)
+   * - `gt` (number, results must have a value for `key` greater than the given value)
+   * - `gte` (number, as above but greater than _or equal_)
+   * - `lt` (number, results must have a value for `key` less than the given value)
+   * - `lte` (number, as above but less than _or equal_)
+   * 
+   * So a filter like `{ key: 'creator', include: 'Cicero' }` will produce
+   * search results that include `Cicero` as a creator, and a filter like
+   * `{ key: 'year', gte: 2000, lte: 2005 }` will produce search results whose
+   * `year` field is between 2000 and 2005 (inclusive).
+   */
+  filters?: FilterParam[];
 
   /**
    * An object specifying which aggregation types should be returned with
