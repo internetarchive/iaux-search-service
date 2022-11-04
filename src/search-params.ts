@@ -48,14 +48,55 @@ export interface SortParam {
   direction: SortDirection;
 }
 
+/**
+ * A parameter specifying what filters to apply to the returned hits for a specific field.
+ * This filter may represent a selected/hidden facet, a value range (e.g., date picker),
+ * or some other type of restriction on the results.
+ */
 export interface FilterParam {
-  key: string,
-  include: boolean,
-  exclude: boolean,
-  gt: number,
-  gte: number,
-  lt: number,
-  lte: number,
+  /**
+   * (Optional) One or more values for the current field, which all results must include _at least one of_.
+   * 
+   * For instance, `{ field: 'subject', include: ['baseball', 'basketball'] }` specifies that only results
+   * that contain _either_ `baseball` _or_ `basketball` as a subject should be returned.
+   */
+  include?: string[],
+
+  /**
+   * (Optional) One or more values for the current field which must _not_ be included in _any_ of the results.
+   * 
+   * For instance, `{ field: 'subject', exclude: ['baseball', 'basketball'] }` specifies that only results
+   * that contain _neither_ `baseball` _nor_ `basketball` as a subject should be returned.
+   */
+  exclude?: string[],
+
+  /**
+   * (Optional) A strict lower bound on numeric values for the current field.
+   * All returned hits must have a `field` value greater than the one specified here.
+   * This only makes sense for numeric fields.
+   */
+  gt?: number,
+
+  /**
+   * (Optional) A non-strict lower bound on numeric values for the current field.
+   * All returned hits must have a `field` value greater than or equal to the one specified here.
+   * This only makes sense for numeric fields.
+   */
+  gte?: number,
+
+  /**
+   * (Optional) A strict upper bound on numeric values for the current field.
+   * All returned hits must have a `field` value less than the one specified here.
+   * This only makes sense for numeric fields.
+   */
+  lt?: number,
+
+  /**
+   * (Optional) A non-strict upper bound on numeric values for the current field.
+   * All returned hits must have a `field` value less than or equal to the one specified here.
+   * This only makes sense for numeric fields.
+   */
+  lte?: number,
 }
 
 /**
@@ -116,24 +157,24 @@ export interface SearchParams {
   fields?: string[];
 
   /**
-   * An array of filter params that can be used to narrow the result set.
-   * Each filter param is an object with a string `key` identifying what
-   * attribute to filter on (e.g., `'year'`, `'subject'`, etc.) and one or more
-   * additional properties identifying what filter to apply. The filters
-   * allowed are:
-   * - `include` (string, results must include the given value for this `key`)
-   * - `exclude` (string, results must exclude the given value for this `key`)
-   * - `gt` (number, results must have a value for `key` greater than the given value)
+   * A map from field names to filter params that can be used to narrow the result set.
+   * The keys identify what field to filter on (e.g., `'year'`, `'subject'`, etc.),
+   * and the values provide one or more constraints to apply to that field.
+   * 
+   * The constraints allowed are:
+   * - `include` (string[], results must include at least one of the given values for this field)
+   * - `exclude` (string[], results must *not* include *any* of the given values for this field)
+   * - `gt` (number, results must have a value greater than the given one for this field)
    * - `gte` (number, as above but greater than _or equal_)
-   * - `lt` (number, results must have a value for `key` less than the given value)
+   * - `lt` (number, results must have a value less than the given one for this field)
    * - `lte` (number, as above but less than _or equal_)
    * 
-   * So a filter like `{ key: 'creator', include: 'Cicero' }` will produce
-   * search results that include `Cicero` as a creator, and a filter like
-   * `{ key: 'year', gte: 2000, lte: 2005 }` will produce search results whose
+   * So filters like `{ creator: { include: ['Cicero'] } }` will produce
+   * search results that all include `Cicero` as a creator, while filters like
+   * `{ year: { gte: 2000, lte: 2005 } }` will produce search results whose
    * `year` field is between 2000 and 2005 (inclusive).
    */
-  filters?: FilterParam[];
+  filters?: Record<string, FilterParam>;
 
   /**
    * An object specifying which aggregation types should be returned with
