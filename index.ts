@@ -46,6 +46,8 @@ export {
   SortDirection,
   AggregateSearchParams,
   AggregateSearchParam,
-  FilterParam,
+  FilterMap,
+  FieldFilter,
+  FilterConstraint,
 } from './src/search-params';
 export { SearchServiceError } from './src/search-service-error';
