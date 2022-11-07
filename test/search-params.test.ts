@@ -1,7 +1,11 @@
 import { expect } from '@open-wc/testing';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 
-import { SortParam } from '../src/search-params';
+import {
+  FilterConstraint,
+  SearchParams,
+  SortParam,
+} from '../src/search-params';
 
 describe('SearchParams', () => {
   it('can be instantiated with just a query', async () => {
@@ -250,6 +254,78 @@ describe('SearchParams', () => {
     const expectedAggregationsParam =
       '[{"terms":{"field":"foo","size":10}},{"terms":{"field":"bar","size":7}}]';
     expect(queryParams.get('aggregations')).to.equal(expectedAggregationsParam);
+  });
+
+  it('properly generates a URLSearchParam with simple filter map', async () => {
+    const query = 'title:foo';
+    const params: SearchParams = {
+      query,
+      filters: {
+        subject: {
+          foo: FilterConstraint.INCLUDE,
+        },
+      },
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal('title:foo');
+    expect(queryParams.get('filter_map')).to.equal('{"subject":{"foo":"inc"}}');
+  });
+
+  it('properly generates a URLSearchParam with complex filter map', async () => {
+    const query = 'title:foo';
+    const params: SearchParams = {
+      query,
+      filters: {
+        subject: {
+          foo: FilterConstraint.INCLUDE,
+          bar: FilterConstraint.EXCLUDE,
+        },
+        year: {
+          1950: FilterConstraint.GREATER_OR_EQUAL,
+          2000: FilterConstraint.LESS_OR_EQUAL,
+          1980: FilterConstraint.EXCLUDE,
+          1990: FilterConstraint.EXCLUDE,
+        },
+      },
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal('title:foo');
+    expect(queryParams.get('filter_map')).to.equal(
+      '{"subject":{"foo":"inc","bar":"exc"},"year":{"1950":"gte","1980":"exc","1990":"exc","2000":"lte"}}'
+    );
+  });
+
+  it('properly generates a URLSearchParam with gt/lt pairs', async () => {
+    const query = 'title:foo';
+    const params: SearchParams = {
+      query,
+      filters: {
+        year: {
+          1950: FilterConstraint.GREATER_THAN,
+          2000: FilterConstraint.LESS_THAN,
+        },
+      },
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal('title:foo');
+    expect(queryParams.get('filter_map')).to.equal(
+      '{"year":{"1950":"gt","2000":"lt"}}'
+    );
   });
 
   it('properly generates a URLSearchParam with debugging enabled', async () => {

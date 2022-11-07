@@ -49,14 +49,14 @@ export interface SortParam {
 }
 
 /**
- * Enumerates the possible contraints that may be imposed on search results 
+ * Enumerates the possible contraints that may be imposed on search results
  * by filter params.
  */
 export enum FilterConstraint {
   /**
    * Specifies that all results must include _at least one of_ the values constrained
    * with INCLUDE for this field.
-   * 
+   *
    * For instance, `{ subject: { baseball: INCLUDE, basketball: INCLUDE } }` specifies
    * that only results containing _either_ `baseball` _or_ `basketball` as a subject
    * should be returned.
@@ -65,7 +65,7 @@ export enum FilterConstraint {
 
   /**
    * Specifies that all results must _not_ include the given value for this field.
-   * 
+   *
    * For instance, `{ subject: { baseball: EXCLUDE, basketball: EXCLUDE } }` specifies
    * that only results containing _neither_ `baseball` _nor_ `basketball` as a subject
    * should be returned.
@@ -76,7 +76,7 @@ export enum FilterConstraint {
    * Imposes a strict lower bound on numeric values for the current field.
    * All returned hits must have a value for this field that is greater than the one
    * specified by this filter.
-   * 
+   *
    * This only makes sense for numeric fields like `year`.
    */
   GREATER_THAN = 'gt',
@@ -85,7 +85,7 @@ export enum FilterConstraint {
    * Imposes a non-strict lower bound on numeric values for the current field.
    * All returned hits must have a value for this field that is greater than or equal
    * to the one specified by this filter.
-   * 
+   *
    * This only makes sense for numeric fields like `year`.
    */
   GREATER_OR_EQUAL = 'gte',
@@ -94,7 +94,7 @@ export enum FilterConstraint {
    * Imposes a strict upper bound on numeric values for the current field.
    * All returned hits must have a value for this field that is less than the one
    * specified by this filter.
-   * 
+   *
    * This only makes sense for numeric fields like `year`.
    */
   LESS_THAN = 'lt',
@@ -103,15 +103,15 @@ export enum FilterConstraint {
    * Imposes a non-strict upper bound on numeric values for the current field.
    * All returned hits must have a value for this field that is less than or equal
    * to the one specified by this filter.
-   * 
+   *
    * This only makes sense for numeric fields like `year`.
    */
   LESS_OR_EQUAL = 'lte',
-};
+}
 
 /**
  * A filter mapping a field value to the type of constraint that it should impose on results.
- * 
+ *
  * Some examples (where the values are members of `FilterConstraint`):
  * - `{ 'puppies': INCLUDE }`
  * - `{ '1950': GREATER_OR_EQUAL, '1970': LESS_OR_EQUAL }`
@@ -121,10 +121,10 @@ export type FieldFilter = Record<string, FilterConstraint>;
 /**
  * A map of fields (e.g., 'year', 'subject', ...) to the filters that should be
  * applied to them when retrieving search results.
- * 
+ *
  * These filters may represent selected/hidden facets, value ranges (e.g., date picker),
  * or other types of restrictions on the result set.
- * 
+ *
  * An example of a valid FilterMap:
  * ```
  * {
@@ -205,7 +205,7 @@ export interface SearchParams {
    * A map from field names to filters that can be used to shape the result set.
    * The keys identify what field to filter on (e.g., `'year'`, `'subject'`, etc.),
    * and the values identify what filters to apply for that field.
-   * 
+   *
    * The constraints allowed are the members of `FilterContraint`:
    * - `INCLUDE` (at least one of these values must be present)
    * - `EXCLUDE` (none of these values may be present)
@@ -213,7 +213,7 @@ export interface SearchParams {
    * - `GREATER_OR_EQUAL` (result values must be greater than or equal to than the one specified)
    * - `LESS_THAN` (result values must be strictly less than the one specified)
    * - `LESS_OR_EQUAL` (result values must be less than or equal to the one specified)
-   * 
+   *
    * So filters like `{ creator: { 'Cicero': INCLUDE } }` will produce
    * search results that all include `Cicero` as a creator, while filters like
    * `{ year: { '2000': GREATER_THAN, '2005': LESS_THAN } }` will produce search results whose

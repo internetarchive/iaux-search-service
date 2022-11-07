@@ -1,6 +1,5 @@
 import {
   AggregateSearchParams,
-  FieldFilter,
   FilterMap,
   SearchParams,
   SortParam,
@@ -87,7 +86,8 @@ export class SearchParamURLGenerator {
 
     if (searchParams.filters && Object.keys(searchParams.filters).length > 0) {
       const filterMapString = this.filterParamsAsString(searchParams.filters);
-      if (filterMapString && filterMapString !== '{}') { // Don't send an empty map
+      if (filterMapString && filterMapString !== '{}') {
+        // Don't send an empty map
         params.append('filter_map', filterMapString);
       }
     }
