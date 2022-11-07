@@ -101,6 +101,40 @@ describe('SearchParams', () => {
     expect(queryParams.get('sort')).to.equal('downloads:desc,foo:asc');
   });
 
+  it('does not include fields param in URL for empty fields array', async () => {
+    const query = 'title:foo AND collection:bar';
+    const fields: string[] = [];
+    const params = {
+      query,
+      fields,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('fields')).to.be.null;
+  });
+
+  it('does not include sort param in URL for empty sort array', async () => {
+    const query = 'title:foo AND collection:bar';
+    const sort: SortParam[] = [];
+    const params = {
+      query,
+      sort,
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('sort')).to.be.null;
+  });
+
   it('properly generates a URLSearchParam with a page_type', async () => {
     const query = 'title:foo AND collection:bar';
     const params = {
