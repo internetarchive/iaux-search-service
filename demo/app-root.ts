@@ -213,24 +213,27 @@ export class AppRoot extends LitElement {
         </form>
       </fieldset>
 
-      ${this.searchResults ? this.resultsTemplate : nothing}
+      ${this.searchResults || this.loadingSearchResults ? this.resultsTemplate : nothing}
     `;
   }
 
   private get resultsTemplate(): TemplateResult {
     return html`
-      ${this.lastSearchParams
-        ? html`<div>
-            Last search params:
-            <pre>${this.lastSearchParams}</pre>
-          </div>`
-        : nothing}
-      ${this.lastAggregationParams
-        ? html`<div>
-            Last aggregation params:
-            <pre>${this.lastAggregationParams}</pre>
-          </div>`
-        : nothing}
+      <details>
+        <summary>PPS URL params</summary>
+        ${this.lastSearchParams
+          ? html`<div>
+              Last search params:
+              <pre>${this.lastSearchParams}</pre>
+            </div>`
+          : nothing}
+        ${this.lastAggregationParams
+          ? html`<div>
+              Last aggregation params:
+              <pre>${this.lastAggregationParams}</pre>
+            </div>`
+          : nothing}
+      </details>
       ${this.loadingSearchResults
         ? html`<h3>Loading search results...</h3>`
         : [this.minimalSearchResultsTemplate, this.fullSearchResultsTemplate]}
@@ -370,15 +373,16 @@ export class AppRoot extends LitElement {
       uid: 'demo',
     };
 
+    this.lastSearchParams = SearchParamURLGenerator.generateURLSearchParams(
+      searchParams
+    ).toString();
+
     this.loadingSearchResults = true;
     const result = await this.searchService.search(searchParams, searchType);
     this.loadingSearchResults = false;
 
     if (result?.success) {
       this.searchResponse = result?.success;
-      this.lastSearchParams = SearchParamURLGenerator.generateURLSearchParams(
-        searchParams
-      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -413,15 +417,16 @@ export class AppRoot extends LitElement {
       searchParams.aggregations = aggregations;
     }
 
+    this.lastAggregationParams = SearchParamURLGenerator.generateURLSearchParams(
+      searchParams
+    ).toString();
+
     this.loadingAggregations = true;
     const result = await this.searchService.search(searchParams, searchType);
     this.loadingAggregations = false;
 
     if (result?.success) {
       this.aggregationsResponse = result?.success;
-      this.lastAggregationParams = SearchParamURLGenerator.generateURLSearchParams(
-        searchParams
-      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -430,6 +435,10 @@ export class AppRoot extends LitElement {
 
   static get styles(): CSSResult {
     return css`
+      :host {
+        font-size: 1.3rem;
+      }
+
       .search-options {
         margin-top: 0.6rem;
       }
