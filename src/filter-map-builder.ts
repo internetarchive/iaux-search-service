@@ -61,6 +61,24 @@ const NUMERIC_CONSTRAINTS = [
   }
 
   /**
+   * Removes any filter currently associated with the given field and value.
+   * @param field The field to remove a filter for
+   * @param value The value to remove the filter for
+   */
+  removeFilter(field: string, value: string): this {
+    if (this.filterMap[field]) {
+      delete this.filterMap[field][value];
+
+      // If there are no remaining filters for this field, delete the whole field object.
+      if (Object.keys(this.filterMap[field]).length === 0) {
+        delete this.filterMap[field];
+      }
+    }
+
+    return this;
+  }
+
+  /**
    * Initializes the filter map under construction to have filters exactly equal to the given one.
    * This will overwrite *all* existing filters already added to the builder.
    * @param map The FilterMap to set this builder's state to.
