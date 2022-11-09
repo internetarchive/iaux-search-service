@@ -1,14 +1,18 @@
 import { html, css, LitElement, TemplateResult, CSSResult, nothing } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { map } from 'lit/directives/map.js';
 import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { SearchResult } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
-import { SearchParams, SortDirection } from '../src/search-params';
+import { FilterConstraint, FilterMap, SearchParams, SortDirection } from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
 import { SearchBackendOptionsInterface } from '../src/search-backend/search-backend-options';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
+import { FilterMapBuilder } from '../src/filter-map-builder';
+
+type SingleFilter = { field: string, value: string, constraint: FilterConstraint };
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -32,6 +36,9 @@ export class AppRoot extends LitElement {
 
   @state()
   private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
+
+  @state()
+  private filterMap: FilterMap = {};
 
   @state()
   private searchResponse?: SearchResponse;
@@ -129,18 +136,48 @@ export class AppRoot extends LitElement {
 
           <fieldset class="search-options">
             <legend>Sort by title:</legend>
-            <input
-              type="radio"
-              id="sort-none"
-              name="sort"
-              value="none"
-              checked
-            />
-            <label for="sort-none"> &nbsp;None </label>
-            <input type="radio" id="sort-asc" name="sort" value="asc" />
-            <label for="sort-asc"> &nbsp;Ascending </label>
-            <input type="radio" id="sort-desc" name="sort" value="desc" />
-            <label for="sort-desc"> &nbsp;Descending </label>
+            <span class="input-with-label">
+              <input
+                type="radio"
+                id="sort-none"
+                name="sort"
+                value="none"
+                checked
+              />
+              <label for="sort-none"> &nbsp;None </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="sort-asc" name="sort" value="asc" />
+              <label for="sort-asc"> &nbsp;Ascending </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="sort-desc" name="sort" value="desc" />
+              <label for="sort-desc"> &nbsp;Descending </label>
+            </span>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Filters:</legend>
+            <select id="filter-field" @change=${this.filterFieldChanged}>
+              <option value="mediatype">Mediatype</option>
+              <option value="year" data-numeric="true">Year</option>
+              <option value="subject">Subject</option>
+              <option value="language">Language</option>
+              <option value="creator">Creator</option>
+              <option value="collection">Collection</option>
+              <option value="lending___status">Lending status</option>
+            </select>
+            <select id="filter-constraint">
+              <option value="inc">includes</option>
+              <option value="exc">excludes</option>
+              <option value="gt" data-numeric="true" hidden>&gt;</option>
+              <option value="gte" data-numeric="true" hidden>&gt;=</option>
+              <option value="lt" data-numeric="true" hidden>&lt;</option>
+              <option value="lte" data-numeric="true" hidden>&lt;=</option>
+            </select>
+            <input type="text" id="filter-value">
+            <button type="button" @click=${this.addFilterClicked}>Add filter</button>
+            <div id="applied-filters">${this.appliedFiltersTemplate}</div>
           </fieldset>
 
           <fieldset class="search-options">
@@ -221,6 +258,80 @@ export class AppRoot extends LitElement {
 
       ${this.searchResults || this.loadingSearchResults ? this.resultsTemplate : nothing}
     `;
+  }
+
+  private filterFieldChanged(e: Event) {
+    const target = e.target as HTMLSelectElement;
+    const fieldIsNumeric = !!target.selectedOptions[0].dataset.numeric;
+    const constraints = (this.shadowRoot?.querySelectorAll('#filter-constraint option') ?? []) as HTMLOptionElement[];
+    for (const constraint of constraints) {
+      constraint.toggleAttribute('hidden', !fieldIsNumeric && !!constraint.dataset.numeric);
+    }
+  }
+
+  private addFilterClicked() {
+    const filterFieldInput = this.shadowRoot?.getElementById('filter-field') as HTMLSelectElement | null;
+    const filterField = filterFieldInput?.selectedOptions[0]?.value;
+
+    const filterConstraintInput = this.shadowRoot?.getElementById('filter-constraint') as HTMLSelectElement | null;
+    const filterConstraint = filterConstraintInput?.selectedOptions[0]?.value as FilterConstraint;
+
+    const filterValueInput = this.shadowRoot?.getElementById('filter-value') as HTMLInputElement | null;
+    const filterValue = filterValueInput?.value;
+
+    if (!filterField || !filterConstraint || !filterValue) {
+      return;
+    }
+
+    this.filterMap = new FilterMapBuilder()
+      .setFilterMap(this.filterMap)
+      .addFilter(filterField, filterValue, filterConstraint)
+      .build();
+
+    if (filterValueInput) filterValueInput.value = '';
+  }
+
+  private removeFilterClicked(e: Event) {
+    const target = e.target as HTMLButtonElement;
+    const { field, value } = target.dataset;
+
+    if (field && value) {
+      this.filterMap = {...this.filterMap};
+      delete this.filterMap[field][value];
+
+      if (Object.keys(this.filterMap[field]).length === 0) {
+        delete this.filterMap[field];
+      }
+    }
+  }
+
+  private get appliedFiltersTemplate() {
+    const filtersArray: SingleFilter[] = [];
+    for (const [field, filters] of Object.entries(this.filterMap)) {
+      for (const [value, constraint] of Object.entries(filters)) {
+        filtersArray.push({ field, value, constraint });
+      }
+    }
+
+    if (filtersArray.length === 0) return html`<span>(no filters applied)</span>`;
+
+    const readableConstraints: Record<FilterConstraint, string> = {
+      'inc': 'includes',
+      'exc': 'excludes',
+      'gt': '>',
+      'gte': '>=',
+      'lt': '<',
+      'lte': '<=',
+    };
+
+    return map(filtersArray, ({ field, value, constraint }) => {
+      return html`
+        <span class="filter">
+          <span class="filter-text">'${field}' ${readableConstraints[constraint]} '${value}'</span><!--
+       --><button type="button" class="remove-filter" data-field=${field} data-value=${value} @click=${this.removeFilterClicked}>x</button>
+        </span>
+      `;
+    });
   }
 
   private get resultsTemplate(): TemplateResult {
@@ -374,14 +485,15 @@ export class AppRoot extends LitElement {
       query,
       rows: numRows,
       sort: sortParam,
+      filters: this.filterMap,
       aggregations: { omit: true },
       debugging: includeDebugging,
       uid: 'demo',
     };
 
-    this.lastSearchParams = SearchParamURLGenerator.generateURLSearchParams(
+    this.lastSearchParams = decodeURIComponent(SearchParamURLGenerator.generateURLSearchParams(
       searchParams
-    ).toString();
+    ).toString());
 
     this.loadingSearchResults = true;
     const result = await this.searchService.search(searchParams, searchType);
@@ -414,6 +526,7 @@ export class AppRoot extends LitElement {
     const searchParams: SearchParams = {
       query,
       rows: 0,
+      filters: this.filterMap,
       aggregationsSize: numAggs,
       debugging: includeDebugging,
       uid: 'demo',
@@ -423,9 +536,9 @@ export class AppRoot extends LitElement {
       searchParams.aggregations = aggregations;
     }
 
-    this.lastAggregationParams = SearchParamURLGenerator.generateURLSearchParams(
+    this.lastAggregationParams = decodeURIComponent(SearchParamURLGenerator.generateURLSearchParams(
       searchParams
-    ).toString();
+    ).toString());
 
     this.loadingAggregations = true;
     const result = await this.searchService.search(searchParams, searchType);
@@ -455,6 +568,36 @@ export class AppRoot extends LitElement {
 
       fieldset {
         margin-bottom: 0.5rem;
+      }
+
+      #applied-filters {
+        margin-top: 6px;
+      }
+
+      .filter {
+        display: inline-block;
+        margin-bottom: 3px;
+        font-size: 1.1rem;
+        font-family: sans-serif;
+      }
+
+      .filter-text {
+        padding: 3px 3px 3px 6px;
+        border-radius: 3px 0 0 3px;
+        background: #ccc;
+      }
+
+      .remove-filter {
+        all: unset;
+        padding: 3px 6px;
+        border-radius: 0 3px 3px 0;
+        background: #ccc;
+      }
+      .remove-filter:hover {
+        background: #999;
+      }
+      .remove-filter:active {
+        background: #888;
       }
 
       .input-with-label {
