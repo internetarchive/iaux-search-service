@@ -106,8 +106,8 @@ export class FilterMapBuilder {
   }
 
   /**
-   *
-   * @returns A FilterMap that includes the filters applied to
+   * Produces a `FilterMap` including all the filters that have been applied to
+   * this builder.
    */
   build(): FilterMap {
     return this.filterMap;
