@@ -50,4 +50,5 @@ export {
   FieldFilter,
   FilterConstraint,
 } from './src/search-params';
+export { FilterMapBuilder } from './src/filter-map-builder';
 export { SearchServiceError } from './src/search-service-error';
