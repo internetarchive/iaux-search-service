@@ -1,16 +1,16 @@
-import { FilterConstraint, FilterMap } from "./search-params";
+import { FilterConstraint, FilterMap } from './search-params';
 
 const NUMERIC_CONSTRAINTS = [
   FilterConstraint.GREATER_OR_EQUAL,
   FilterConstraint.GREATER_THAN,
   FilterConstraint.LESS_OR_EQUAL,
-  FilterConstraint.LESS_THAN
+  FilterConstraint.LESS_THAN,
 ];
 
 /**
  * A utility class for building filter maps
  */
- export class FilterMapBuilder {
+export class FilterMapBuilder {
   private filterMap: FilterMap = {};
 
   /**
@@ -25,7 +25,7 @@ const NUMERIC_CONSTRAINTS = [
     if (!this.filterMap[field]) {
       this.filterMap[field] = {};
     }
-    
+
     // Edge case for numeric fields (i.e., year)
     // Logically it would be valid for excluded values to overlap with gt/gte/lt/lte values.
     // For instance, specifying 1950 <= year <= 2000, but also excluding year = 1950.
@@ -41,7 +41,10 @@ const NUMERIC_CONSTRAINTS = [
         // lte and exclude on the same value -> lt
         this.filterMap[field][value] = FilterConstraint.LESS_THAN;
         return this;
-      } else if (currentConstraint === FilterConstraint.GREATER_THAN || currentConstraint === FilterConstraint.LESS_THAN) {
+      } else if (
+        currentConstraint === FilterConstraint.GREATER_THAN ||
+        currentConstraint === FilterConstraint.LESS_THAN
+      ) {
         // gt/lt and exclude -> no additional filter
         return this;
       }
@@ -84,7 +87,7 @@ const NUMERIC_CONSTRAINTS = [
    * @param map The FilterMap to set this builder's state to.
    */
   setFilterMap(map: FilterMap): this {
-    this.filterMap = {...map};
+    this.filterMap = { ...map };
     return this;
   }
 
@@ -103,8 +106,8 @@ const NUMERIC_CONSTRAINTS = [
   }
 
   /**
-   * 
-   * @returns A FilterMap that includes the filters applied to 
+   *
+   * @returns A FilterMap that includes the filters applied to
    */
   build(): FilterMap {
     return this.filterMap;

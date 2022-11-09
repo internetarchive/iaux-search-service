@@ -6,13 +6,22 @@ import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { SearchResult } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
-import { FilterConstraint, FilterMap, SearchParams, SortDirection } from '../src/search-params';
+import {
+  FilterConstraint,
+  FilterMap,
+  SearchParams,
+  SortDirection,
+} from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
 import { SearchBackendOptionsInterface } from '../src/search-backend/search-backend-options';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 import { FilterMapBuilder } from '../src/filter-map-builder';
 
-type SingleFilter = { field: string, value: string, constraint: FilterConstraint };
+type SingleFilter = {
+  field: string;
+  value: string;
+  constraint: FilterConstraint;
+};
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -175,8 +184,10 @@ export class AppRoot extends LitElement {
               <option value="lt" data-numeric="true" hidden>&lt;</option>
               <option value="lte" data-numeric="true" hidden>&lt;=</option>
             </select>
-            <input type="text" id="filter-value">
-            <button type="button" @click=${this.addFilterClicked}>Add filter</button>
+            <input type="text" id="filter-value" />
+            <button type="button" @click=${this.addFilterClicked}>
+              Add filter
+            </button>
             <div id="applied-filters">${this.appliedFiltersTemplate}</div>
           </fieldset>
 
@@ -256,27 +267,41 @@ export class AppRoot extends LitElement {
         </form>
       </fieldset>
 
-      ${this.searchResults || this.loadingSearchResults ? this.resultsTemplate : nothing}
+      ${this.searchResults || this.loadingSearchResults
+        ? this.resultsTemplate
+        : nothing}
     `;
   }
 
   private filterFieldChanged(e: Event) {
     const target = e.target as HTMLSelectElement;
     const fieldIsNumeric = !!target.selectedOptions[0].dataset.numeric;
-    const constraints = (this.shadowRoot?.querySelectorAll('#filter-constraint option') ?? []) as HTMLOptionElement[];
+    const constraints = (this.shadowRoot?.querySelectorAll(
+      '#filter-constraint option'
+    ) ?? []) as HTMLOptionElement[];
     for (const constraint of constraints) {
-      constraint.toggleAttribute('hidden', !fieldIsNumeric && !!constraint.dataset.numeric);
+      constraint.toggleAttribute(
+        'hidden',
+        !fieldIsNumeric && !!constraint.dataset.numeric
+      );
     }
   }
 
   private addFilterClicked() {
-    const filterFieldInput = this.shadowRoot?.getElementById('filter-field') as HTMLSelectElement | null;
+    const filterFieldInput = this.shadowRoot?.getElementById(
+      'filter-field'
+    ) as HTMLSelectElement | null;
     const filterField = filterFieldInput?.selectedOptions[0]?.value;
 
-    const filterConstraintInput = this.shadowRoot?.getElementById('filter-constraint') as HTMLSelectElement | null;
-    const filterConstraint = filterConstraintInput?.selectedOptions[0]?.value as FilterConstraint;
+    const filterConstraintInput = this.shadowRoot?.getElementById(
+      'filter-constraint'
+    ) as HTMLSelectElement | null;
+    const filterConstraint = filterConstraintInput?.selectedOptions[0]
+      ?.value as FilterConstraint;
 
-    const filterValueInput = this.shadowRoot?.getElementById('filter-value') as HTMLInputElement | null;
+    const filterValueInput = this.shadowRoot?.getElementById(
+      'filter-value'
+    ) as HTMLInputElement | null;
     const filterValue = filterValueInput?.value;
 
     if (!filterField || !filterConstraint || !filterValue) {
@@ -296,7 +321,7 @@ export class AppRoot extends LitElement {
     const { field, value } = target.dataset;
 
     if (field && value) {
-      this.filterMap = {...this.filterMap};
+      this.filterMap = { ...this.filterMap };
       delete this.filterMap[field][value];
 
       if (Object.keys(this.filterMap[field]).length === 0) {
@@ -313,22 +338,33 @@ export class AppRoot extends LitElement {
       }
     }
 
-    if (filtersArray.length === 0) return html`<span>(no filters applied)</span>`;
+    if (filtersArray.length === 0)
+      return html`<span>(no filters applied)</span>`;
 
     const readableConstraints: Record<FilterConstraint, string> = {
-      'inc': 'includes',
-      'exc': 'excludes',
-      'gt': '>',
-      'gte': '>=',
-      'lt': '<',
-      'lte': '<=',
+      inc: 'includes',
+      exc: 'excludes',
+      gt: '>',
+      gte: '>=',
+      lt: '<',
+      lte: '<=',
     };
 
     return map(filtersArray, ({ field, value, constraint }) => {
       return html`
         <span class="filter">
-          <span class="filter-text">'${field}' ${readableConstraints[constraint]} '${value}'</span><!--
-       --><button type="button" class="remove-filter" data-field=${field} data-value=${value} @click=${this.removeFilterClicked}>x</button>
+          <span class="filter-text"
+            >'${field}' ${readableConstraints[constraint]} '${value}'</span
+          ><!--
+       --><button
+            type="button"
+            class="remove-filter"
+            data-field=${field}
+            data-value=${value}
+            @click=${this.removeFilterClicked}
+          >
+            x
+          </button>
         </span>
       `;
     });
@@ -491,9 +527,9 @@ export class AppRoot extends LitElement {
       uid: 'demo',
     };
 
-    this.lastSearchParams = decodeURIComponent(SearchParamURLGenerator.generateURLSearchParams(
-      searchParams
-    ).toString());
+    this.lastSearchParams = decodeURIComponent(
+      SearchParamURLGenerator.generateURLSearchParams(searchParams).toString()
+    );
 
     this.loadingSearchResults = true;
     const result = await this.searchService.search(searchParams, searchType);
@@ -536,9 +572,9 @@ export class AppRoot extends LitElement {
       searchParams.aggregations = aggregations;
     }
 
-    this.lastAggregationParams = decodeURIComponent(SearchParamURLGenerator.generateURLSearchParams(
-      searchParams
-    ).toString());
+    this.lastAggregationParams = decodeURIComponent(
+      SearchParamURLGenerator.generateURLSearchParams(searchParams).toString()
+    );
 
     this.loadingAggregations = true;
     const result = await this.searchService.search(searchParams, searchType);
