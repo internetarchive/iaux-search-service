@@ -88,25 +88,31 @@ export class AppRoot extends LitElement {
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <input
-            type="checkbox"
-            id="debug-info-check"
-            ?checked=${this.searchServiceUrlOptions?.debuggingEnabled}
-          />
-          <label for="debug-info-check">Include debugging info</label>
+          <span class="input-with-label">
+            <input
+              type="checkbox"
+              id="debug-info-check"
+              ?checked=${this.searchServiceUrlOptions?.debuggingEnabled}
+            />
+            <label for="debug-info-check">Include debugging info</label>
+          </span>
 
           <fieldset class="search-options">
             <legend>Search type:</legend>
-            <input
-              type="radio"
-              id="mds"
-              name="search-type"
-              value="mds"
-              checked
-            />
-            <label for="mds"> &nbsp;Metadata </label>
-            <input type="radio" id="fts" name="search-type" value="fts" />
-            <label for="fts"> &nbsp;Full text </label>
+            <span class="input-with-label">
+              <input
+                type="radio"
+                id="mds"
+                name="search-type"
+                value="mds"
+                checked
+              />
+              <label for="mds"> &nbsp;Metadata </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="fts" name="search-type" value="fts" />
+              <label for="fts"> &nbsp;Full text </label>
+            </span>
           </fieldset>
 
           <fieldset class="search-options">
@@ -449,6 +455,12 @@ export class AppRoot extends LitElement {
 
       fieldset {
         margin-bottom: 0.5rem;
+      }
+
+      .input-with-label {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
       }
     `;
   }
