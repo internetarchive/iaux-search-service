@@ -40,6 +40,15 @@ export class AppRoot extends LitElement {
   @query(`input[name='sort']:checked`)
   private checkedSort!: HTMLInputElement;
 
+  @query('#filter-field')
+  private filterFieldInput!: HTMLSelectElement;
+
+  @query('#filter-constraint')
+  private filterConstraintInput!: HTMLSelectElement;
+
+  @query('#filter-value')
+  private filterValueInput!: HTMLInputElement;
+
   @query('#aggs-default')
   private defaultAggregationsCheckbox!: HTMLInputElement;
 
@@ -288,21 +297,10 @@ export class AppRoot extends LitElement {
   }
 
   private addFilterClicked() {
-    const filterFieldInput = this.shadowRoot?.getElementById(
-      'filter-field'
-    ) as HTMLSelectElement | null;
-    const filterField = filterFieldInput?.selectedOptions[0]?.value;
-
-    const filterConstraintInput = this.shadowRoot?.getElementById(
-      'filter-constraint'
-    ) as HTMLSelectElement | null;
-    const filterConstraint = filterConstraintInput?.selectedOptions[0]
-      ?.value as FilterConstraint;
-
-    const filterValueInput = this.shadowRoot?.getElementById(
-      'filter-value'
-    ) as HTMLInputElement | null;
-    const filterValue = filterValueInput?.value;
+    const filterField = this.filterFieldInput.selectedOptions[0].value;
+    const filterValue = this.filterValueInput.value;
+    const filterConstraint = this.filterConstraintInput.selectedOptions[0]
+      .value as FilterConstraint;
 
     if (!filterField || !filterConstraint || !filterValue) {
       return;
@@ -313,7 +311,7 @@ export class AppRoot extends LitElement {
       .addFilter(filterField, filterValue, filterConstraint)
       .build();
 
-    if (filterValueInput) filterValueInput.value = '';
+    this.filterValueInput.value = '';
   }
 
   private removeFilterClicked(e: Event) {
@@ -628,6 +626,7 @@ export class AppRoot extends LitElement {
         padding: 3px 6px;
         border-radius: 0 3px 3px 0;
         background: #ccc;
+        cursor: pointer;
       }
       .remove-filter:hover {
         background: #999;
