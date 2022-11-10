@@ -107,9 +107,9 @@ export class AppRoot extends LitElement {
   render(): TemplateResult {
     return html`
       <fieldset>
-        <legend>Search</legend>
+        <legend>Search options</legend>
         <form>
-          <label for="search-input">Search: </label>
+          <label for="search-input">Query: </label>
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
@@ -202,76 +202,22 @@ export class AppRoot extends LitElement {
 
           <fieldset class="search-options">
             <legend>Include aggregations for:</legend>
-            <input
-              type="checkbox"
-              id="aggs-default"
-              checked
-              @change=${this.toggleDefaultAggregations}
-            />
-            <label for="aggs-default">Default (all) </label>
-            <input
-              type="checkbox"
-              id="aggs-mediatype"
-              name="aggs"
-              value="mediatype"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-mediatype">Mediatype </label>
-            <input
-              type="checkbox"
-              id="aggs-year"
-              name="aggs"
-              value="year"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-year">Year </label>
-            <input
-              type="checkbox"
-              id="aggs-subject"
-              name="aggs"
-              value="subject"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-subject">Subject </label>
-            <input
-              type="checkbox"
-              id="aggs-language"
-              name="aggs"
-              value="language"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-language">Language </label>
-            <input
-              type="checkbox"
-              id="aggs-creator"
-              name="aggs"
-              value="creator"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-creator">Creator </label>
-            <input
-              type="checkbox"
-              id="aggs-collection"
-              name="aggs"
-              value="collection"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-collection">Collection </label>
-            <input
-              type="checkbox"
-              id="aggs-lending"
-              name="aggs"
-              value="lending___status"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-lending">Lending </label>
+            <span class="input-with-label">
+              <input
+                type="checkbox"
+                id="aggs-default"
+                checked
+                @change=${this.toggleDefaultAggregations}
+              />
+              <label for="aggs-default">Default (all) </label>
+            </span>
+            ${this.aggregationCheckboxTemplate('mediatype', 'Mediatype')}
+            ${this.aggregationCheckboxTemplate('year', 'Year')}
+            ${this.aggregationCheckboxTemplate('subject', 'Subject')}
+            ${this.aggregationCheckboxTemplate('language', 'Language')}
+            ${this.aggregationCheckboxTemplate('creator', 'Creator')}
+            ${this.aggregationCheckboxTemplate('collection', 'Collection')}
+            ${this.aggregationCheckboxTemplate('lending___status', 'Lending')}
           </fieldset>
         </form>
       </fieldset>
@@ -366,6 +312,23 @@ export class AppRoot extends LitElement {
         </span>
       `;
     });
+  }
+
+  private aggregationCheckboxTemplate(value: string, label?: string) {
+    const id = `aggs-${value}`;
+    return html`
+      <span class="input-with-label">
+        <input
+          type="checkbox"
+          id=${id}
+          name="aggs"
+          value=${value}
+          checked
+          ?disabled=${this.defaultAggregationsChecked}
+        />
+        <label for=${id}>${label} </label>
+      </span>
+    `;
   }
 
   private get resultsTemplate(): TemplateResult {
@@ -602,6 +565,10 @@ export class AppRoot extends LitElement {
 
       fieldset {
         margin-bottom: 0.5rem;
+      }
+
+      #search-input {
+        min-width: 220px;
       }
 
       #applied-filters {
