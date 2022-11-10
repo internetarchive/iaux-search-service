@@ -78,6 +78,8 @@ export enum FilterConstraint {
    * specified by this filter.
    *
    * This only makes sense for numeric fields like `year`.
+   * Note that `GREATER_THAN` is not supported by the FTS engine, for which it is
+   * coerced to `GREATER_OR_EQUAL`.
    */
   GREATER_THAN = 'gt',
 
@@ -96,6 +98,8 @@ export enum FilterConstraint {
    * specified by this filter.
    *
    * This only makes sense for numeric fields like `year`.
+   * Note that `LESS_THAN` is not supported by the FTS engine, for which it is
+   * coerced to `LESS_OR_EQUAL`.
    */
   LESS_THAN = 'lt',
 
