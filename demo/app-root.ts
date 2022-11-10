@@ -314,7 +314,7 @@ export class AppRoot extends LitElement {
     });
   }
 
-  private aggregationCheckboxTemplate(value: string, label?: string) {
+  private aggregationCheckboxTemplate(value: string, label: string) {
     const id = `aggs-${value}`;
     return html`
       <span class="input-with-label">
