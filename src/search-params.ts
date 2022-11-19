@@ -114,13 +114,15 @@ export enum FilterConstraint {
 }
 
 /**
- * A filter mapping a field value to the type of constraint that it should impose on results.
+ * A filter mapping a field value to the type of constraint(s) that it should impose on results.
+ * Multiple constraints for the same value may be provided as an array.
  *
- * Some examples (where the values are members of `FilterConstraint`):
+ * Some examples (where the property values are members of `FilterConstraint`):
  * - `{ 'puppies': INCLUDE }`
  * - `{ '1950': GREATER_OR_EQUAL, '1970': LESS_OR_EQUAL }`
+ * - `{ '1950': [ GREATER_OR_EQUAL, EXCLUDE ] }`
  */
-export type FieldFilter = Record<string, FilterConstraint>;
+export type FieldFilter = Record<string, FilterConstraint | FilterConstraint[]>;
 
 /**
  * A map of fields (e.g., 'year', 'subject', ...) to the filters that should be

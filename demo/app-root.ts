@@ -262,15 +262,13 @@ export class AppRoot extends LitElement {
 
   private removeFilterClicked(e: Event) {
     const target = e.target as HTMLButtonElement;
-    const { field, value } = target.dataset;
+    const { field, value, constraint } = target.dataset;
 
-    if (field && value) {
-      this.filterMap = { ...this.filterMap };
-      delete this.filterMap[field][value];
-
-      if (Object.keys(this.filterMap[field]).length === 0) {
-        delete this.filterMap[field];
-      }
+    if (field && value && constraint) {
+      this.filterMap = new FilterMapBuilder()
+        .setFilterMap(this.filterMap)
+        .removeSingleFilter(field, value, constraint as FilterConstraint)
+        .build();
     }
   }
 
@@ -278,7 +276,14 @@ export class AppRoot extends LitElement {
     const filtersArray: SingleFilter[] = [];
     for (const [field, filters] of Object.entries(this.filterMap)) {
       for (const [value, constraint] of Object.entries(filters)) {
-        filtersArray.push({ field, value, constraint });
+        // The constraint may be either a single item or an array
+        if (Array.isArray(constraint)) {
+          for (const subConstraint of constraint) {
+            filtersArray.push({ field, value, constraint: subConstraint });
+          }
+        } else {
+          filtersArray.push({ field, value, constraint });
+        }
       }
     }
 
@@ -305,6 +310,7 @@ export class AppRoot extends LitElement {
             class="remove-filter"
             data-field=${field}
             data-value=${value}
+            data-constraint=${constraint}
             @click=${this.removeFilterClicked}
           >
             x

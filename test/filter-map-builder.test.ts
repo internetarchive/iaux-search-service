@@ -25,6 +25,17 @@ describe('filter map builder', () => {
     });
   });
 
+  it('can add multiple constraints for one value', () => {
+    const builder = new FilterMapBuilder();
+    builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
+    expect(builder.build()).to.deep.equal({ foo: { bar: 'inc' } });
+
+    builder.addFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
+    expect(builder.build()).to.deep.equal({
+      foo: { bar: ['inc', 'gte'] },
+    });
+  });
+
   it('can remove filters', () => {
     const builder = new FilterMapBuilder();
     builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
@@ -35,19 +46,53 @@ describe('filter map builder', () => {
       baz: { boop: 'exc' },
     });
 
-    builder.removeFilter('foo', 'bar');
+    builder.removeFilters('foo', 'bar');
     expect(builder.build()).to.deep.equal({
       foo: { beep: 'gt' },
       baz: { boop: 'exc' },
     });
 
-    builder.removeFilter('foo', 'beep');
+    builder.removeFilters('foo', 'beep');
     expect(builder.build()).to.deep.equal({ baz: { boop: 'exc' } });
 
-    builder.removeFilter('not', 'exist');
+    builder.removeFilters('not', 'exist');
     expect(builder.build()).to.deep.equal({ baz: { boop: 'exc' } });
 
-    builder.removeFilter('baz', 'boop');
+    builder.removeFilters('baz', 'boop');
+    expect(builder.build()).to.deep.equal({});
+  });
+
+  it('can remove single filters by constraint type', () => {
+    const builder = new FilterMapBuilder();
+    builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
+    builder.addFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
+    builder.addFilter('baz', 'boop', FilterConstraint.EXCLUDE);
+    expect(builder.build()).to.deep.equal({
+      foo: { bar: ['inc', 'gte'] },
+      baz: { boop: 'exc' },
+    });
+
+    builder.removeSingleFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
+    expect(builder.build()).to.deep.equal({
+      foo: { bar: 'inc' },
+      baz: { boop: 'exc' },
+    });
+
+    builder.removeSingleFilter('foo', 'bar', FilterConstraint.EXCLUDE);
+    expect(builder.build()).to.deep.equal({
+      foo: { bar: 'inc' },
+      baz: { boop: 'exc' },
+    });
+
+    builder.removeSingleFilter('foo', 'bar', FilterConstraint.INCLUDE);
+    expect(builder.build()).to.deep.equal({
+      baz: { boop: 'exc' },
+    });
+
+    builder.removeSingleFilter('baz', 'boop', FilterConstraint.EXCLUDE);
+    expect(builder.build()).to.deep.equal({});
+
+    builder.removeSingleFilter('not', 'exist', FilterConstraint.INCLUDE);
     expect(builder.build()).to.deep.equal({});
   });
 
@@ -76,17 +121,20 @@ describe('filter map builder', () => {
         bar: FilterConstraint.INCLUDE,
       },
       baz: {
-        boop: FilterConstraint.EXCLUDE,
+        boop: [FilterConstraint.EXCLUDE, FilterConstraint.LESS_OR_EQUAL],
       },
     };
 
+    builder.addFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
     builder.addFilter('foo', 'beep', FilterConstraint.LESS_OR_EQUAL);
-    expect(builder.build()).to.deep.equal({ foo: { beep: 'lte' } });
+    expect(builder.build()).to.deep.equal({
+      foo: { bar: 'gte', beep: 'lte' },
+    });
 
     builder.mergeFilterMap(filterMap);
     expect(builder.build()).to.deep.equal({
-      foo: { bar: 'inc', beep: 'lte' },
-      baz: { boop: 'exc' },
+      foo: { bar: ['gte', 'inc'], beep: 'lte' },
+      baz: { boop: ['exc', 'lte'] },
     });
   });
 });
