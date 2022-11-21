@@ -2,6 +2,29 @@ import { expect } from '@open-wc/testing';
 import { FilterMapBuilder } from '../src/filter-map-builder';
 import { FilterConstraint, FilterMap } from '../src/search-params';
 
+/**
+ * Creates a filter map builder with the following structure:
+ * ```
+ * {
+ *   'foo': {
+ *     'bar': [INCLUDE, GREATER_OR_EQUAL],
+ *     'beep': GREATER_THAN,
+ *   },
+ *   'baz': {
+ *     'boop': EXCLUDE
+ *   },
+ * }
+ * ```
+ */
+const getComplexFilterMapBuilder = (): FilterMapBuilder => {
+  const builder = new FilterMapBuilder();
+  builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
+  builder.addFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
+  builder.addFilter('baz', 'boop', FilterConstraint.EXCLUDE);
+  builder.addFilter('foo', 'beep', FilterConstraint.GREATER_THAN);
+  return builder;
+};
+
 describe('filter map builder', () => {
   it('initializes with empty filter map', () => {
     expect(new FilterMapBuilder().build()).to.deep.equal({});
@@ -37,15 +60,7 @@ describe('filter map builder', () => {
   });
 
   it('can remove filters', () => {
-    const builder = new FilterMapBuilder();
-    builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
-    builder.addFilter('baz', 'boop', FilterConstraint.EXCLUDE);
-    builder.addFilter('foo', 'beep', FilterConstraint.GREATER_THAN);
-    expect(builder.build()).to.deep.equal({
-      foo: { bar: 'inc', beep: 'gt' },
-      baz: { boop: 'exc' },
-    });
-
+    const builder = getComplexFilterMapBuilder();
     builder.removeFilters('foo', 'bar');
     expect(builder.build()).to.deep.equal({
       foo: { beep: 'gt' },
@@ -63,32 +78,26 @@ describe('filter map builder', () => {
   });
 
   it('can remove single filters by constraint type', () => {
-    const builder = new FilterMapBuilder();
-    builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
-    builder.addFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
-    builder.addFilter('baz', 'boop', FilterConstraint.EXCLUDE);
-    expect(builder.build()).to.deep.equal({
-      foo: { bar: ['inc', 'gte'] },
-      baz: { boop: 'exc' },
-    });
-
+    const builder = getComplexFilterMapBuilder();
     builder.removeSingleFilter('foo', 'bar', FilterConstraint.GREATER_OR_EQUAL);
     expect(builder.build()).to.deep.equal({
-      foo: { bar: 'inc' },
+      foo: { bar: 'inc', beep: 'gt' },
       baz: { boop: 'exc' },
     });
 
     builder.removeSingleFilter('foo', 'bar', FilterConstraint.EXCLUDE);
     expect(builder.build()).to.deep.equal({
-      foo: { bar: 'inc' },
+      foo: { bar: 'inc', beep: 'gt' },
       baz: { boop: 'exc' },
     });
 
     builder.removeSingleFilter('foo', 'bar', FilterConstraint.INCLUDE);
     expect(builder.build()).to.deep.equal({
+      foo: { beep: 'gt' },
       baz: { boop: 'exc' },
     });
 
+    builder.removeSingleFilter('foo', 'beep', FilterConstraint.GREATER_THAN);
     builder.removeSingleFilter('baz', 'boop', FilterConstraint.EXCLUDE);
     expect(builder.build()).to.deep.equal({});
 
