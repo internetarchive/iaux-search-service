@@ -1,5 +1,6 @@
 import {
   AggregateSearchParams,
+  FilterMap,
   SearchParams,
   SortParam,
 } from './search-params';
@@ -54,6 +55,11 @@ export class SearchParamURLGenerator {
     return `${sortParams.field}:${sortParams.direction}`;
   }
 
+  static filterParamsAsString(filters: FilterMap): string {
+    // FilterMap already has the correct shape, we just need to stringify it
+    return JSON.stringify(filters);
+  }
+
   static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
     params.append('user_query', searchParams.query);
@@ -74,11 +80,19 @@ export class SearchParamURLGenerator {
       params.append('page', String(searchParams.page));
     }
 
-    if (searchParams.fields) {
+    if (searchParams.fields && searchParams.fields.length > 0) {
       params.append('fields', searchParams.fields.join(','));
     }
 
-    if (searchParams.sort) {
+    if (searchParams.filters && Object.keys(searchParams.filters).length > 0) {
+      const filterMapString = this.filterParamsAsString(searchParams.filters);
+      if (filterMapString && filterMapString !== '{}') {
+        // Don't send an empty map
+        params.append('filter_map', filterMapString);
+      }
+    }
+
+    if (searchParams.sort && searchParams.sort.length > 0) {
       const sortStrings = searchParams.sort.map(sort =>
         this.sortParamsAsString(sort)
       );

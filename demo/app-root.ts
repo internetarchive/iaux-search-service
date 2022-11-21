@@ -1,14 +1,27 @@
 import { html, css, LitElement, TemplateResult, CSSResult, nothing } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { map } from 'lit/directives/map.js';
 import { SearchResponse } from '../src/responses/search-response';
 import { SearchService } from '../src/search-service';
 import { SearchServiceInterface } from '../src/search-service-interface';
 import { SearchResult } from '../src/models/hit-types/hit';
 import { SearchType } from '../src/search-type';
-import { SearchParams, SortDirection } from '../src/search-params';
+import {
+  FilterConstraint,
+  FilterMap,
+  SearchParams,
+  SortDirection,
+} from '../src/search-params';
 import { Aggregation, Bucket } from '../src/models/aggregation';
 import { SearchBackendOptionsInterface } from '../src/search-backend/search-backend-options';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
+import { FilterMapBuilder } from '../src/filter-map-builder';
+
+type SingleFilter = {
+  field: string;
+  value: string;
+  constraint: FilterConstraint;
+};
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -27,11 +40,23 @@ export class AppRoot extends LitElement {
   @query(`input[name='sort']:checked`)
   private checkedSort!: HTMLInputElement;
 
+  @query('#filter-field')
+  private filterFieldInput!: HTMLSelectElement;
+
+  @query('#filter-constraint')
+  private filterConstraintInput!: HTMLSelectElement;
+
+  @query('#filter-value')
+  private filterValueInput!: HTMLInputElement;
+
   @query('#aggs-default')
   private defaultAggregationsCheckbox!: HTMLInputElement;
 
   @state()
   private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
+
+  @state()
+  private filterMap: FilterMap = {};
 
   @state()
   private searchResponse?: SearchResponse;
@@ -82,31 +107,37 @@ export class AppRoot extends LitElement {
   render(): TemplateResult {
     return html`
       <fieldset>
-        <legend>Search</legend>
+        <legend>Search options</legend>
         <form>
-          <label for="search-input">Search: </label>
+          <label for="search-input">Query: </label>
           <input type="text" id="search-input" placeholder="Search Term" />
           <input type="submit" value="Go" @click=${this.search} />
 
-          <input
-            type="checkbox"
-            id="debug-info-check"
-            ?checked=${this.searchServiceUrlOptions?.debuggingEnabled}
-          />
-          <label for="debug-info-check">Include debugging info</label>
+          <span class="input-with-label">
+            <input
+              type="checkbox"
+              id="debug-info-check"
+              ?checked=${this.searchServiceUrlOptions?.debuggingEnabled}
+            />
+            <label for="debug-info-check">Include debugging info</label>
+          </span>
 
           <fieldset class="search-options">
             <legend>Search type:</legend>
-            <input
-              type="radio"
-              id="mds"
-              name="search-type"
-              value="mds"
-              checked
-            />
-            <label for="mds"> &nbsp;Metadata </label>
-            <input type="radio" id="fts" name="search-type" value="fts" />
-            <label for="fts"> &nbsp;Full text </label>
+            <span class="input-with-label">
+              <input
+                type="radio"
+                id="mds"
+                name="search-type"
+                value="mds"
+                checked
+              />
+              <label for="mds"> &nbsp;Metadata </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="fts" name="search-type" value="fts" />
+              <label for="fts"> &nbsp;Full text </label>
+            </span>
           </fieldset>
 
           <fieldset class="search-options">
@@ -123,114 +154,206 @@ export class AppRoot extends LitElement {
 
           <fieldset class="search-options">
             <legend>Sort by title:</legend>
-            <input
-              type="radio"
-              id="sort-none"
-              name="sort"
-              value="none"
-              checked
-            />
-            <label for="sort-none"> &nbsp;None </label>
-            <input type="radio" id="sort-asc" name="sort" value="asc" />
-            <label for="sort-asc"> &nbsp;Ascending </label>
-            <input type="radio" id="sort-desc" name="sort" value="desc" />
-            <label for="sort-desc"> &nbsp;Descending </label>
+            <span class="input-with-label">
+              <input
+                type="radio"
+                id="sort-none"
+                name="sort"
+                value="none"
+                checked
+              />
+              <label for="sort-none"> &nbsp;None </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="sort-asc" name="sort" value="asc" />
+              <label for="sort-asc"> &nbsp;Ascending </label>
+            </span>
+            <span class="input-with-label">
+              <input type="radio" id="sort-desc" name="sort" value="desc" />
+              <label for="sort-desc"> &nbsp;Descending </label>
+            </span>
+          </fieldset>
+
+          <fieldset class="search-options">
+            <legend>Filters:</legend>
+            <select id="filter-field" @change=${this.filterFieldChanged}>
+              <option value="mediatype">Mediatype</option>
+              <option value="year" data-numeric="true">Year</option>
+              <option value="subject">Subject</option>
+              <option value="language">Language</option>
+              <option value="creator">Creator</option>
+              <option value="collection">Collection</option>
+              <option value="lending___status">Lending status</option>
+            </select>
+            <select id="filter-constraint">
+              <option value="inc">includes</option>
+              <option value="exc">excludes</option>
+              <option value="gt" data-numeric="true" hidden>&gt;</option>
+              <option value="gte" data-numeric="true" hidden>&gt;=</option>
+              <option value="lt" data-numeric="true" hidden>&lt;</option>
+              <option value="lte" data-numeric="true" hidden>&lt;=</option>
+            </select>
+            <input type="text" id="filter-value" />
+            <button type="button" @click=${this.addFilterClicked}>
+              Add filter
+            </button>
+            <div id="applied-filters">${this.appliedFiltersTemplate}</div>
           </fieldset>
 
           <fieldset class="search-options">
             <legend>Include aggregations for:</legend>
-            <input
-              type="checkbox"
-              id="aggs-default"
-              checked
-              @change=${this.toggleDefaultAggregations}
-            />
-            <label for="aggs-default">Default (all) </label>
-            <input
-              type="checkbox"
-              id="aggs-mediatype"
-              name="aggs"
-              value="mediatype"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-mediatype">Mediatype </label>
-            <input
-              type="checkbox"
-              id="aggs-year"
-              name="aggs"
-              value="year"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-year">Year </label>
-            <input
-              type="checkbox"
-              id="aggs-subject"
-              name="aggs"
-              value="subject"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-subject">Subject </label>
-            <input
-              type="checkbox"
-              id="aggs-language"
-              name="aggs"
-              value="language"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-language">Language </label>
-            <input
-              type="checkbox"
-              id="aggs-creator"
-              name="aggs"
-              value="creator"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-creator">Creator </label>
-            <input
-              type="checkbox"
-              id="aggs-collection"
-              name="aggs"
-              value="collection"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-collection">Collection </label>
-            <input
-              type="checkbox"
-              id="aggs-lending"
-              name="aggs"
-              value="lending___status"
-              checked
-              ?disabled=${this.defaultAggregationsChecked}
-            />
-            <label for="aggs-lending">Lending </label>
+            <span class="input-with-label">
+              <input
+                type="checkbox"
+                id="aggs-default"
+                checked
+                @change=${this.toggleDefaultAggregations}
+              />
+              <label for="aggs-default">Default (all) </label>
+            </span>
+            ${this.aggregationCheckboxTemplate('mediatype', 'Mediatype')}
+            ${this.aggregationCheckboxTemplate('year', 'Year')}
+            ${this.aggregationCheckboxTemplate('subject', 'Subject')}
+            ${this.aggregationCheckboxTemplate('language', 'Language')}
+            ${this.aggregationCheckboxTemplate('creator', 'Creator')}
+            ${this.aggregationCheckboxTemplate('collection', 'Collection')}
+            ${this.aggregationCheckboxTemplate('lending___status', 'Lending')}
           </fieldset>
         </form>
       </fieldset>
 
-      ${this.searchResults ? this.resultsTemplate : nothing}
+      ${this.searchResults || this.loadingSearchResults
+        ? this.resultsTemplate
+        : nothing}
+    `;
+  }
+
+  private filterFieldChanged(e: Event) {
+    const target = e.target as HTMLSelectElement;
+    const fieldIsNumeric = !!target.selectedOptions[0].dataset.numeric;
+    const constraints = (this.shadowRoot?.querySelectorAll(
+      '#filter-constraint option'
+    ) ?? []) as HTMLOptionElement[];
+    for (const constraint of constraints) {
+      constraint.toggleAttribute(
+        'hidden',
+        !fieldIsNumeric && !!constraint.dataset.numeric
+      );
+    }
+  }
+
+  private addFilterClicked() {
+    const filterField = this.filterFieldInput.selectedOptions[0].value;
+    const filterValue = this.filterValueInput.value;
+    const filterConstraint = this.filterConstraintInput.selectedOptions[0]
+      .value as FilterConstraint;
+
+    if (!filterField || !filterConstraint || !filterValue) {
+      return;
+    }
+
+    this.filterMap = new FilterMapBuilder()
+      .setFilterMap(this.filterMap)
+      .addFilter(filterField, filterValue, filterConstraint)
+      .build();
+
+    this.filterValueInput.value = '';
+  }
+
+  private removeFilterClicked(e: Event) {
+    const target = e.target as HTMLButtonElement;
+    const { field, value, constraint } = target.dataset;
+
+    if (field && value && constraint) {
+      this.filterMap = new FilterMapBuilder()
+        .setFilterMap(this.filterMap)
+        .removeSingleFilter(field, value, constraint as FilterConstraint)
+        .build();
+    }
+  }
+
+  private get appliedFiltersTemplate() {
+    const filtersArray: SingleFilter[] = [];
+    for (const [field, filters] of Object.entries(this.filterMap)) {
+      for (const [value, constraint] of Object.entries(filters)) {
+        // The constraint may be either a single item or an array
+        if (Array.isArray(constraint)) {
+          for (const subConstraint of constraint) {
+            filtersArray.push({ field, value, constraint: subConstraint });
+          }
+        } else {
+          filtersArray.push({ field, value, constraint });
+        }
+      }
+    }
+
+    if (filtersArray.length === 0)
+      return html`<span>(no filters applied)</span>`;
+
+    const readableConstraints: Record<FilterConstraint, string> = {
+      inc: 'includes',
+      exc: 'excludes',
+      gt: '>',
+      gte: '>=',
+      lt: '<',
+      lte: '<=',
+    };
+
+    return map(filtersArray, ({ field, value, constraint }) => {
+      return html`
+        <span class="filter">
+          <span class="filter-text"
+            >'${field}' ${readableConstraints[constraint]} '${value}'</span
+          ><!--
+       --><button
+            type="button"
+            class="remove-filter"
+            data-field=${field}
+            data-value=${value}
+            data-constraint=${constraint}
+            @click=${this.removeFilterClicked}
+          >
+            x
+          </button>
+        </span>
+      `;
+    });
+  }
+
+  private aggregationCheckboxTemplate(value: string, label: string) {
+    const id = `aggs-${value}`;
+    return html`
+      <span class="input-with-label">
+        <input
+          type="checkbox"
+          id=${id}
+          name="aggs"
+          value=${value}
+          checked
+          ?disabled=${this.defaultAggregationsChecked}
+        />
+        <label for=${id}>${label} </label>
+      </span>
     `;
   }
 
   private get resultsTemplate(): TemplateResult {
     return html`
-      ${this.lastSearchParams
-        ? html`<div>
-            Last search params:
-            <pre>${this.lastSearchParams}</pre>
-          </div>`
-        : nothing}
-      ${this.lastAggregationParams
-        ? html`<div>
-            Last aggregation params:
-            <pre>${this.lastAggregationParams}</pre>
-          </div>`
-        : nothing}
+      <details>
+        <summary>PPS URL params</summary>
+        ${this.lastSearchParams
+          ? html`<div>
+              Last search params:
+              <pre>${this.lastSearchParams}</pre>
+            </div>`
+          : nothing}
+        ${this.lastAggregationParams
+          ? html`<div>
+              Last aggregation params:
+              <pre>${this.lastAggregationParams}</pre>
+            </div>`
+          : nothing}
+      </details>
       ${this.loadingSearchResults
         ? html`<h3>Loading search results...</h3>`
         : [this.minimalSearchResultsTemplate, this.fullSearchResultsTemplate]}
@@ -365,10 +488,15 @@ export class AppRoot extends LitElement {
       query,
       rows: numRows,
       sort: sortParam,
+      filters: this.filterMap,
       aggregations: { omit: true },
       debugging: includeDebugging,
       uid: 'demo',
     };
+
+    this.lastSearchParams = decodeURIComponent(
+      SearchParamURLGenerator.generateURLSearchParams(searchParams).toString()
+    );
 
     this.loadingSearchResults = true;
     const result = await this.searchService.search(searchParams, searchType);
@@ -376,9 +504,6 @@ export class AppRoot extends LitElement {
 
     if (result?.success) {
       this.searchResponse = result?.success;
-      this.lastSearchParams = SearchParamURLGenerator.generateURLSearchParams(
-        searchParams
-      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -404,6 +529,7 @@ export class AppRoot extends LitElement {
     const searchParams: SearchParams = {
       query,
       rows: 0,
+      filters: this.filterMap,
       aggregationsSize: numAggs,
       debugging: includeDebugging,
       uid: 'demo',
@@ -413,15 +539,16 @@ export class AppRoot extends LitElement {
       searchParams.aggregations = aggregations;
     }
 
+    this.lastAggregationParams = decodeURIComponent(
+      SearchParamURLGenerator.generateURLSearchParams(searchParams).toString()
+    );
+
     this.loadingAggregations = true;
     const result = await this.searchService.search(searchParams, searchType);
     this.loadingAggregations = false;
 
     if (result?.success) {
       this.aggregationsResponse = result?.success;
-      this.lastAggregationParams = SearchParamURLGenerator.generateURLSearchParams(
-        searchParams
-      ).toString();
     } else {
       alert(`Oh noes: ${result?.error?.message}`);
       console.error('Error searching', result?.error);
@@ -430,6 +557,10 @@ export class AppRoot extends LitElement {
 
   static get styles(): CSSResult {
     return css`
+      :host {
+        font-size: 1.3rem;
+      }
+
       .search-options {
         margin-top: 0.6rem;
       }
@@ -440,6 +571,47 @@ export class AppRoot extends LitElement {
 
       fieldset {
         margin-bottom: 0.5rem;
+      }
+
+      #search-input {
+        min-width: 220px;
+      }
+
+      #applied-filters {
+        margin-top: 6px;
+      }
+
+      .filter {
+        display: inline-block;
+        margin-bottom: 3px;
+        font-size: 1.1rem;
+        font-family: sans-serif;
+      }
+
+      .filter-text {
+        padding: 3px 3px 3px 6px;
+        border-radius: 3px 0 0 3px;
+        background: #ccc;
+      }
+
+      .remove-filter {
+        all: unset;
+        padding: 3px 6px;
+        border-radius: 0 3px 3px 0;
+        background: #ccc;
+        cursor: pointer;
+      }
+      .remove-filter:hover {
+        background: #999;
+      }
+      .remove-filter:active {
+        background: #888;
+      }
+
+      .input-with-label {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
       }
     `;
   }

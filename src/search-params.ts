@@ -49,6 +49,108 @@ export interface SortParam {
 }
 
 /**
+ * Enumerates the possible contraints that may be imposed on search results
+ * by filter params.
+ */
+export enum FilterConstraint {
+  /**
+   * Specifies that all results must include _at least one of_ the values constrained
+   * with INCLUDE for this field.
+   *
+   * For instance, `{ subject: { baseball: INCLUDE, basketball: INCLUDE } }` specifies
+   * that only results containing _either_ `baseball` _or_ `basketball` as a subject
+   * should be returned.
+   */
+  INCLUDE = 'inc',
+
+  /**
+   * Specifies that all results must _not_ include the given value for this field.
+   *
+   * For instance, `{ subject: { baseball: EXCLUDE, basketball: EXCLUDE } }` specifies
+   * that only results containing _neither_ `baseball` _nor_ `basketball` as a subject
+   * should be returned.
+   */
+  EXCLUDE = 'exc',
+
+  /**
+   * Imposes a strict lower bound on numeric values for the current field.
+   * All returned hits must have a value for this field that is greater than the one
+   * specified by this filter.
+   *
+   * This only makes sense for numeric fields like `year`.
+   * Note that `GREATER_THAN` is not supported by the FTS engine, for which it is
+   * coerced to `GREATER_OR_EQUAL`.
+   */
+  GREATER_THAN = 'gt',
+
+  /**
+   * Imposes a non-strict lower bound on numeric values for the current field.
+   * All returned hits must have a value for this field that is greater than or equal
+   * to the one specified by this filter.
+   *
+   * This only makes sense for numeric fields like `year`.
+   */
+  GREATER_OR_EQUAL = 'gte',
+
+  /**
+   * Imposes a strict upper bound on numeric values for the current field.
+   * All returned hits must have a value for this field that is less than the one
+   * specified by this filter.
+   *
+   * This only makes sense for numeric fields like `year`.
+   * Note that `LESS_THAN` is not supported by the FTS engine, for which it is
+   * coerced to `LESS_OR_EQUAL`.
+   */
+  LESS_THAN = 'lt',
+
+  /**
+   * Imposes a non-strict upper bound on numeric values for the current field.
+   * All returned hits must have a value for this field that is less than or equal
+   * to the one specified by this filter.
+   *
+   * This only makes sense for numeric fields like `year`.
+   */
+  LESS_OR_EQUAL = 'lte',
+}
+
+/**
+ * A filter mapping a field value to the type of constraint(s) that it should impose on results.
+ * Multiple constraints for the same value may be provided as an array.
+ *
+ * Some examples (where the property values are members of `FilterConstraint`):
+ * - `{ 'puppies': INCLUDE }`
+ * - `{ '1950': GREATER_OR_EQUAL, '1970': LESS_OR_EQUAL }`
+ * - `{ '1950': [ GREATER_OR_EQUAL, EXCLUDE ] }`
+ */
+export type FieldFilter = Record<string, FilterConstraint | FilterConstraint[]>;
+
+/**
+ * A map of fields (e.g., 'year', 'subject', ...) to the filters that should be
+ * applied to them when retrieving search results.
+ *
+ * These filters may represent selected/hidden facets, value ranges (e.g., date picker),
+ * or other types of restrictions on the result set.
+ *
+ * An example of a valid FilterMap:
+ * ```
+ * {
+ *   'subject': {
+ *     'dogs': INCLUDE,
+ *     'puppies': EXCLUDE,
+ *   },
+ *   'year': {
+ *     '1990': GREATER_OR_EQUAL,
+ *     '2010': LESS_OR_EQUAL,
+ *     '2003': EXCLUDE,
+ *     '2004': EXCLUDE,
+ *   },
+ *   // ...
+ * }
+ * ```
+ */
+export type FilterMap = Record<string, FieldFilter>;
+
+/**
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
  *
@@ -104,6 +206,26 @@ export interface SearchParams {
    * the defaults.
    */
   fields?: string[];
+
+  /**
+   * A map from field names to filters that can be used to shape the result set.
+   * The keys identify what field to filter on (e.g., `'year'`, `'subject'`, etc.),
+   * and the values identify what filters to apply for that field.
+   *
+   * The constraints allowed are the members of `FilterContraint`:
+   * - `INCLUDE` (at least one of these values must be present)
+   * - `EXCLUDE` (none of these values may be present)
+   * - `GREATER_THAN` (result values must be strictly greater than the one specified)
+   * - `GREATER_OR_EQUAL` (result values must be greater than or equal to than the one specified)
+   * - `LESS_THAN` (result values must be strictly less than the one specified)
+   * - `LESS_OR_EQUAL` (result values must be less than or equal to the one specified)
+   *
+   * So filters like `{ creator: { 'Cicero': INCLUDE } }` will produce
+   * search results that all include `Cicero` as a creator, while filters like
+   * `{ year: { '2000': GREATER_THAN, '2005': LESS_THAN } }` will produce search results whose
+   * `year` field is between 2000 and 2005 (exclusive).
+   */
+  filters?: FilterMap;
 
   /**
    * An object specifying which aggregation types should be returned with
