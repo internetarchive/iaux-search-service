@@ -67,11 +67,7 @@ export class FilterMapBuilder {
       delete this.filterMap[field][value];
     }
 
-    // If there are no remaining filters for this field, delete the whole field object.
-    if (Object.keys(this.filterMap[field]).length === 0) {
-      delete this.filterMap[field];
-    }
-
+    this.deleteFieldIfEmpty(field);
     return this;
   }
 
@@ -84,13 +80,16 @@ export class FilterMapBuilder {
     if (!this.filterMap[field]) return this;
 
     delete this.filterMap[field][value];
+    this.deleteFieldIfEmpty(field);
+    return this;
+  }
 
-    // If there are no remaining filters for this field, delete the whole field object.
-    if (Object.keys(this.filterMap[field]).length === 0) {
+  /** If there are no remaining filters for this field, deletes the whole field object. */
+  private deleteFieldIfEmpty(field: string): void {
+    const filters = this.filterMap[field];
+    if (filters && Object.keys(filters).length === 0) {
       delete this.filterMap[field];
     }
-
-    return this;
   }
 
   /**
