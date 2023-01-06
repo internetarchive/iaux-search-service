@@ -31,6 +31,8 @@ const fieldNames: (keyof ItemHit)[] = [
   'noindex',
   'num_favorites',
   'num_reviews',
+  'publicdate',
+  'reviewdate',
   'source',
   'subject',
   'title',
@@ -126,6 +128,8 @@ describe('ItemHit', () => {
     expect(hit.noindex?.value).to.be.undefined;
     expect(hit.num_favorites?.value).to.be.undefined;
     expect(hit.num_reviews?.value).to.be.undefined;
+    expect(hit.publicdate?.value).to.be.undefined;
+    expect(hit.reviewdate?.value).to.be.undefined;
     expect(hit.source?.value).to.be.undefined;
     expect(hit.type?.value).to.be.undefined;
     expect(hit.volume?.value).to.be.undefined;
@@ -165,6 +169,8 @@ describe('ItemHit', () => {
         noindex: true,
         num_favorites: 126,
         num_reviews: 127,
+        publicdate: '2011-07-20T00:00:00Z',
+        reviewdate: '2011-07-20T00:00:00Z',
         source: 'foo-source',
         type: 'foo-type',
         volume: 'foo-volume',
