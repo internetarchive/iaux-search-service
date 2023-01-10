@@ -279,6 +279,20 @@ export class ItemHit {
       : undefined;
   }
 
+  /** Optional. */
+  @Memoize() get publicdate(): typeof Metadata.prototype.publicdate {
+    return this.rawMetadata?.fields?.publicdate
+      ? new DateField(this.rawMetadata.fields.publicdate)
+      : undefined;
+  }
+
+  /** Optional. */
+  @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
+    return this.rawMetadata?.fields?.reviewdate
+      ? new DateField(this.rawMetadata.fields.reviewdate)
+      : undefined;
+  }
+
   /**
    * Format varies.
    * Optional.
