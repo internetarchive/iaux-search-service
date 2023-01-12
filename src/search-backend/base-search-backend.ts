@@ -93,19 +93,18 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     try {
       const json = await response.json();
 
-      if (json['debugging']) {
+      if (json.debugging) {
         this.printDebuggingInfo(json);
       }
 
-      // the advanced search endpoint doesn't return an HTTP Error 400
-      // and instead returns an HTTP 200 with an `error` key in the payload
-      const error = json['error'];
+      // The PPS relays search engine errors with an `error` key in
+      // the response section of the payload.
+      const error = json.response?.error;
       if (error) {
-        const forensics = json['forensics'];
         return this.getErrorResult(
           SearchServiceErrorType.searchEngineError,
-          error,
-          forensics
+          error.message,
+          error.forensics
         );
       } else {
         // success
