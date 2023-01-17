@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/internetarchive/iaux-search-service/branch/master/graph/badge.svg?token=008OPP4BS1)](https://codecov.io/gh/internetarchive/iaux-search-service)
+
 # Internet Archive Search Service
 
 A service for searching the Internet Archive.
