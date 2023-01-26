@@ -49,8 +49,13 @@ export class SearchService implements SearchServiceInterface {
    */
   @Memoize((type: SearchType, options: SearchBackendOptionsInterface = {}) => {
     // We can memoize backends based on their params, to avoid constructing redundant backends
-    const { includeCredentials = '', scope = '', baseUrl = '' } = options;
-    return `${type};${includeCredentials};${scope};${baseUrl}`;
+    const {
+      includeCredentials = false,
+      verbose = false,
+      scope = '',
+      baseUrl = '',
+    } = options;
+    return `${type};${includeCredentials};${verbose};${scope};${baseUrl}`;
   })
   static getBackendForSearchType(
     type: SearchType,
