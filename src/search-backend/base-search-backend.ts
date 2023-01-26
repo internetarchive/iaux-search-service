@@ -186,8 +186,10 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
         });
       }
 
-      console.log(`\n\n***** RESPONSE RECEIVED *****`);
+      console.log(`***** RESPONSE RECEIVED *****`);
+      console.groupCollapsed('Response');
       console.log(JSON.stringify(clonedResponse, null, 2));
+      console.groupEnd();
     } catch (err) {
       console.error('Error printing search response:', err);
     }

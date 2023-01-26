@@ -76,13 +76,18 @@ describe('FulltextSearchBackend', () => {
     });
 
     it('includes scope param from URL if not provided', async () => {
-      window.location.search = `?scope=boop`;
+      const url = new URL(window.location.href);
+      url.searchParams.set('scope', 'boop');
+      window.history.replaceState({}, '', url.toString());
 
       const backend = new FulltextSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
       expect(queryParams.get('scope')).to.equal('boop');
+
+      url.searchParams.delete('scope');
+      window.history.replaceState({}, '', url.toString());
     });
 
     it('includes caching param if provided', async () => {
@@ -98,13 +103,19 @@ describe('FulltextSearchBackend', () => {
 
     it('includes caching param from URL if not provided', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
-      window.location.search = `?caching=${cachingParam}`;
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('caching', cachingParam);
+      window.history.replaceState({}, '', url.toString());
 
       const backend = new FulltextSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
       expect(queryParams.get('caching')).to.equal(cachingParam);
+
+      url.searchParams.delete('caching');
+      window.history.replaceState({}, '', url.toString());
     });
 
     it('can enable debugging by default on all searches', async () => {
@@ -254,7 +265,7 @@ describe('FulltextSearchBackend', () => {
     });
 
     expect(logSpy.callCount).to.be.greaterThan(0);
-    expect(logSpy.args[0][0]).to.equal('\n\n***** RESPONSE RECEIVED *****');
+    expect(logSpy.args[0][0]).to.equal('***** RESPONSE RECEIVED *****');
     expect(logSpy.args[1][0]).to.equal(JSON.stringify(expectedLogObj, null, 2));
 
     window.fetch = fetchBackup;
@@ -262,7 +273,9 @@ describe('FulltextSearchBackend', () => {
   });
 
   it('includes verbose param from URL if not provided', async () => {
-    window.location.search = `?verbose=1`;
+    const url = new URL(window.location.href);
+    url.searchParams.set('verbose', '1');
+    window.history.replaceState({}, '', url.toString());
 
     const logBackup = console.log;
     const logSpy = Sinon.spy();
@@ -272,8 +285,10 @@ describe('FulltextSearchBackend', () => {
     await backend.performSearch({ query: 'foo' });
 
     expect(logSpy.callCount).to.be.greaterThan(0);
-    expect(logSpy.args[0][0]).to.equal('\n\n***** RESPONSE RECEIVED *****');
+    expect(logSpy.args[0][0]).to.equal('***** RESPONSE RECEIVED *****');
 
     console.log = logBackup;
+    url.searchParams.delete('verbose');
+    window.history.replaceState({}, '', url.toString());
   });
 });
