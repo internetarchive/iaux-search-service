@@ -175,4 +175,57 @@ describe('FulltextSearchBackend', () => {
     window.fetch = fetchBackup;
     console.log = logBackup;
   });
+
+  it('logs response to console if verbose=true', async () => {
+    const responseObj = {
+      response: {
+        body: {
+          hits: {
+            hits: ['h1', 'h2', 'h3', 'h4', 'h5'],
+          },
+          aggregations: {
+            creator: {
+              buckets: ['c1', 'c2', 'c3', 'c4', 'c5'],
+            },
+          },
+        },
+      },
+    };
+
+    const expectedLogObj = {
+      response: {
+        body: {
+          hits: {
+            hits: ['h1', '*** 4 hits omitted ***'],
+          },
+          aggregations: {
+            creator: {
+              buckets: '*** 5 buckets omitted ***',
+            },
+          },
+        },
+      },
+    };
+
+    const fetchBackup = window.fetch;
+    window.fetch = async () => {
+      return new Response(JSON.stringify(responseObj));
+    };
+
+    const logBackup = console.log;
+    const logSpy = Sinon.spy();
+    console.log = logSpy;
+
+    const backend = new FulltextSearchBackend({ verbose: true });
+    await backend.performSearch({
+      query: 'boop',
+    });
+
+    expect(logSpy.callCount).to.be.greaterThan(0);
+    expect(logSpy.args[0][0]).to.equal('\n\n***** RESPONSE RECEIVED *****');
+    expect(logSpy.args[1][0]).to.equal(JSON.stringify(expectedLogObj, null, 2));
+
+    window.fetch = fetchBackup;
+    console.log = logBackup;
+  });
 });
