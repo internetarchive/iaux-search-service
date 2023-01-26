@@ -273,6 +273,11 @@ describe('MetadataSearchBackend', () => {
   });
 
   it('includes verbose param from URL if not provided', async () => {
+    const fetchBackup = window.fetch;
+    window.fetch = async () => {
+      return new Response(JSON.stringify({}));
+    };
+
     const url = new URL(window.location.href);
     url.searchParams.set('verbose', '1');
     window.history.replaceState({}, '', url.toString());
@@ -287,6 +292,7 @@ describe('MetadataSearchBackend', () => {
     expect(logSpy.callCount).to.be.greaterThan(0);
     expect(logSpy.args[0][0]).to.equal('***** RESPONSE RECEIVED *****');
 
+    window.fetch = fetchBackup;
     console.log = logBackup;
     url.searchParams.delete('verbose');
     window.history.replaceState({}, '', url.toString());
