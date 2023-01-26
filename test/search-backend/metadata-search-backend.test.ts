@@ -75,11 +75,32 @@ describe('MetadataSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
+    it('includes scope param from URL if not provided', async () => {
+      window.location.search = `?scope=boop`;
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('scope')).to.equal('boop');
+    });
+
     it('includes caching param if provided', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
       const backend = new MetadataSearchBackend({
         caching: cachingParam,
       });
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal(cachingParam);
+    });
+
+    it('includes caching param from URL if not provided', async () => {
+      const cachingParam = JSON.stringify({ bypass: true });
+      window.location.search = `?caching=${cachingParam}`;
+
+      const backend = new MetadataSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -237,6 +258,22 @@ describe('MetadataSearchBackend', () => {
     expect(logSpy.args[1][0]).to.equal(JSON.stringify(expectedLogObj, null, 2));
 
     window.fetch = fetchBackup;
+    console.log = logBackup;
+  });
+
+  it('includes verbose param from URL if not provided', async () => {
+    window.location.search = `?verbose=1`;
+
+    const logBackup = console.log;
+    const logSpy = Sinon.spy();
+    console.log = logSpy;
+
+    const backend = new MetadataSearchBackend();
+    await backend.performSearch({ query: 'foo' });
+
+    expect(logSpy.callCount).to.be.greaterThan(0);
+    expect(logSpy.args[0][0]).to.equal('\n\n***** RESPONSE RECEIVED *****');
+
     console.log = logBackup;
   });
 });
