@@ -75,6 +75,17 @@ describe('MetadataSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
+    it('includes caching param if provided', async () => {
+      const cachingParam = JSON.stringify({ bypass: true });
+      const backend = new MetadataSearchBackend({
+        caching: cachingParam,
+      });
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal(cachingParam);
+    });
+
     it('can enable debugging by default on all searches', async () => {
       const backend = new MetadataSearchBackend({
         baseUrl: 'foo.bar',
