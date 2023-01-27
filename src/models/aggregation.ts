@@ -20,6 +20,10 @@ export enum AggregationSortType {
    * Sort ascending alphabetically by key
    */
   ALPHABETICAL,
+  /**
+   * Sort descending numerically by key
+   */
+  NUMERIC,
 }
 
 export interface AggregationOptions {
@@ -67,16 +71,22 @@ export class Aggregation {
    * returned as-is.
    *
    * @param sortType What to sort the buckets on.
-   * Accepted values are `AggregationSortType.COUNT` (descending order) and
-   * `AggregationSortType.ALPHABETICAL` (ascending order).
+   * Accepted values are:
+   *  - `AggregationSortType.COUNT` (descending order)
+   *  - `AggregationSortType.ALPHABETICAL` (ascending order)
+   *  - `AggregationSortType.NUMERIC` (descending order)
    */
   @Memoize()
   getSortedBuckets(sortType?: AggregationSortType): Bucket[] | number[] {
-    // Don't apply sorts to numeric buckets.
+    const copiedBuckets = [...this.buckets] as Bucket[] | number[];
+
+    // Don't apply sorts to number[] aggregations (like year_histogram).
+    // Note this _doesn't_ apply to ordinary year aggregations, which have
+    // keyed buckets just like most other facet types.
     // Assumption here is that all the buckets have the same type as the
     // first bucket (which should be true in principle).
-    if (typeof this.buckets[0] === 'number') {
-      return [...(this.buckets as number[])];
+    if (this.isRawNumberBuckets(copiedBuckets)) {
+      return copiedBuckets;
     }
 
     // Default locale & collation options
@@ -84,13 +94,28 @@ export class Aggregation {
 
     switch (sortType) {
       case AggregationSortType.ALPHABETICAL:
-        return [...(this.buckets as Bucket[])].sort((a, b) => {
+        return copiedBuckets.sort((a, b) => {
           return collator.compare(a.key.toString(), b.key.toString());
+        });
+      case AggregationSortType.NUMERIC:
+        return copiedBuckets.sort((a, b) => {
+          return Number(b.key) - Number(a.key);
         });
       case AggregationSortType.COUNT:
       default:
         // Sorted by count by default
-        return [...(this.buckets as Bucket[])];
+        return copiedBuckets;
     }
+  }
+
+  /**
+   * Type guard for number[] buckets, since the buckets provided by the PPS
+   * may be either keyed objects or just an array of numbers. Currently only
+   * `year_histogram` facets are of the latter type.
+   */
+  private isRawNumberBuckets(
+    buckets: Bucket[] | number[]
+  ): buckets is number[] {
+    return typeof this.buckets[0] === 'number';
   }
 }
