@@ -75,6 +75,49 @@ describe('MetadataSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
+    it('includes scope param from URL if not provided', async () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('scope', 'boop');
+      window.history.replaceState({}, '', url.toString());
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('scope')).to.equal('boop');
+
+      url.searchParams.delete('scope');
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    it('includes caching param if provided', async () => {
+      const cachingParam = JSON.stringify({ bypass: true });
+      const backend = new MetadataSearchBackend({
+        caching: cachingParam,
+      });
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal(cachingParam);
+    });
+
+    it('includes caching param from URL if not provided', async () => {
+      const cachingParam = JSON.stringify({ bypass: true });
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('caching', cachingParam);
+      window.history.replaceState({}, '', url.toString());
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal(cachingParam);
+
+      url.searchParams.delete('caching');
+      window.history.replaceState({}, '', url.toString());
+    });
+
     it('can enable debugging by default on all searches', async () => {
       const backend = new MetadataSearchBackend({
         baseUrl: 'foo.bar',
@@ -174,5 +217,84 @@ describe('MetadataSearchBackend', () => {
 
     window.fetch = fetchBackup;
     console.log = logBackup;
+  });
+
+  it('logs response to console if verbose=true', async () => {
+    const responseObj = {
+      response: {
+        body: {
+          hits: {
+            hits: ['h1', 'h2', 'h3', 'h4', 'h5'],
+          },
+          aggregations: {
+            creator: {
+              buckets: ['c1', 'c2', 'c3', 'c4', 'c5'],
+            },
+          },
+        },
+      },
+    };
+
+    const expectedLogObj = {
+      response: {
+        body: {
+          hits: {
+            hits: ['h1', '*** 4 hits omitted ***'],
+          },
+          aggregations: {
+            creator: {
+              buckets: '*** 5 buckets omitted ***',
+            },
+          },
+        },
+      },
+    };
+
+    const fetchBackup = window.fetch;
+    window.fetch = async () => {
+      return new Response(JSON.stringify(responseObj));
+    };
+
+    const logBackup = console.log;
+    const logSpy = Sinon.spy();
+    console.log = logSpy;
+
+    const backend = new MetadataSearchBackend({ verbose: true });
+    await backend.performSearch({
+      query: 'boop',
+    });
+
+    expect(logSpy.callCount).to.be.greaterThan(0);
+    expect(logSpy.args[0][0]).to.equal('***** RESPONSE RECEIVED *****');
+    expect(logSpy.args[1][0]).to.equal(JSON.stringify(expectedLogObj, null, 2));
+
+    window.fetch = fetchBackup;
+    console.log = logBackup;
+  });
+
+  it('includes verbose param from URL if not provided', async () => {
+    const fetchBackup = window.fetch;
+    window.fetch = async () => {
+      return new Response(JSON.stringify({}));
+    };
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('verbose', '1');
+    window.history.replaceState({}, '', url.toString());
+
+    const logBackup = console.log;
+    const logSpy = Sinon.spy();
+    console.log = logSpy;
+
+    const backend = new MetadataSearchBackend();
+    await backend.performSearch({ query: 'foo' });
+
+    expect(logSpy.callCount).to.be.greaterThan(0);
+    expect(logSpy.args[0][0]).to.equal('***** RESPONSE RECEIVED *****');
+
+    window.fetch = fetchBackup;
+    console.log = logBackup;
+    url.searchParams.delete('verbose');
+    window.history.replaceState({}, '', url.toString());
   });
 });

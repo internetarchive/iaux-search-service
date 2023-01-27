@@ -22,6 +22,10 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
 
   protected requestScope?: string;
 
+  protected cachingFlags?: string;
+
+  protected verbose?: boolean;
+
   protected debuggingEnabled?: boolean;
 
   constructor(options?: SearchBackendOptionsInterface) {
@@ -40,14 +44,27 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
         null;
     }
 
+    const currentUrl = new URL(window.location.href);
+    const scopeParam = currentUrl.searchParams.get('scope');
+    const cachingParam = currentUrl.searchParams.get('caching');
+    const verboseParam = currentUrl.searchParams.get('verbose');
+
     if (options?.scope !== undefined) {
       this.requestScope = options.scope;
-    } else {
-      const currentUrl = new URL(window.location.href);
-      const scope = currentUrl.searchParams.get('scope');
-      if (scope) {
-        this.requestScope = scope;
-      }
+    } else if (scopeParam) {
+      this.requestScope = scopeParam;
+    }
+
+    if (options?.caching !== undefined) {
+      this.cachingFlags = options.caching;
+    } else if (cachingParam) {
+      this.cachingFlags = cachingParam;
+    }
+
+    if (options?.verbose !== undefined) {
+      this.verbose = options.verbose;
+    } else if (verboseParam) {
+      this.verbose = !!verboseParam;
     }
   }
 
@@ -72,6 +89,10 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
       finalUrl.searchParams.set('scope', this.requestScope);
     }
 
+    if (this.cachingFlags) {
+      finalUrl.searchParams.set('caching', this.cachingFlags);
+    }
+
     let response: Response;
     // first try the fetch and return a networkError if it fails
     try {
@@ -92,6 +113,10 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     // then try json decoding and return a decodingError if it fails
     try {
       const json = await response.json();
+
+      if (this.verbose) {
+        this.printResponse(json);
+      }
 
       if (json.debugging) {
         this.printDebuggingInfo(json);
@@ -129,6 +154,45 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     const error = new SearchServiceError(errorType, message, details);
     const result = { error };
     return result;
+  }
+
+  /**
+   * Logs a full response to the console, with truncated hits.
+   */
+  private printResponse(json: Record<string, any>) {
+    try {
+      const clonedResponse = JSON.parse(JSON.stringify(json));
+
+      // Keep at most the first hit, and throw away the rest
+      const hits = clonedResponse?.response?.body?.hits?.hits;
+      if (Array.isArray(hits) && hits.length > 1) {
+        const newHits = [];
+        newHits.push(hits[0]);
+        newHits.push(`*** ${hits.length - 1} hits omitted ***`);
+        clonedResponse.response.body.hits.hits = newHits;
+      }
+
+      // Keep the aggregation keys but throw away their buckets
+      const aggregations = clonedResponse?.response?.body?.aggregations;
+      if (aggregations) {
+        Object.entries(aggregations).forEach(([key, val]) => {
+          if ((val as any)?.buckets?.length > 0) {
+            const clonedVal = JSON.parse(JSON.stringify(val));
+            clonedVal.buckets = `*** ${
+              clonedVal.buckets?.length ?? 0
+            } buckets omitted ***`;
+            clonedResponse.response.body.aggregations[key] = clonedVal;
+          }
+        });
+      }
+
+      console.log(`***** RESPONSE RECEIVED *****`);
+      console.groupCollapsed('Response');
+      console.log(JSON.stringify(clonedResponse, null, 2));
+      console.groupEnd();
+    } catch (err) {
+      console.error('Error printing search response:', err);
+    }
   }
 
   /**

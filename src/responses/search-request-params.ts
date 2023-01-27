@@ -20,4 +20,5 @@ export interface SearchRequestParams {
   sort?: string[];
   aggregations?: string[];
   aggregations_size?: number;
+  uid?: string;
 }
