@@ -11,6 +11,7 @@ import type { SearchHitSchema } from './search-hit-schema';
 export interface SearchResponseBody {
   hits: SearchResponseHits;
   aggregations?: Record<string, Aggregation>;
+  collection_titles?: Record<string, string>;
 }
 
 /**
@@ -53,6 +54,12 @@ export class SearchResponseDetails {
   aggregations?: Record<string, Aggregation>;
 
   /**
+   * A map from collection identifiers (those present on the hits/aggregations)
+   * to their titles.
+   */
+  collectionTitles?: Record<string, string>;
+
+  /**
    * The hit schema for this response
    */
   schema?: SearchHitSchema;
@@ -77,6 +84,10 @@ export class SearchResponseDetails {
         },
         {} as Record<string, Aggregation>
       );
+    }
+
+    if (body?.collection_titles) {
+      this.collectionTitles = body.collection_titles;
     }
   }
 
