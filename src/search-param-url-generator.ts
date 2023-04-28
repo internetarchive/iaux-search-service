@@ -120,7 +120,12 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.includeClientUrl !== false) {
-      params.append('client_url', window.location.href);
+      // Truncate the client_url to 400 characters
+      const truncatedUrl = window.location.href.slice(0, 400);
+      // If the query is particularly long, exclude the client_url altogether
+      if (searchParams.query.length <= 1000) {
+        params.append('client_url', truncatedUrl);
+      }
     }
 
     return params;
