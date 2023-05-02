@@ -263,7 +263,7 @@ export interface SearchParams {
    *  * `includeClientUrl: undefined` causes `client_url` param to be included in the request, by default.
    *  * `includeClientUrl: true` causes `client_url` param to be included, explicitly.
    *  * `includeClientUrl: false` causes `client_url` param to _not_ be included in the request.
-   * 
+   *
    * Note that when included, the client URL is truncated to at most 400 characters, to prevent
    * overrunning URL length limits in the payload sent to the PPS. Moreover, if the query being
    * sent exceeds 1000 characters in length, then the client_url will be omitted from the request
