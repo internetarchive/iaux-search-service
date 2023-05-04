@@ -344,13 +344,13 @@ export class AppRoot extends LitElement {
         ${this.lastSearchParams
           ? html`<div>
               Last search params:
-              <pre>${this.lastSearchParams}</pre>
+              <pre class="params">${this.lastSearchParams}</pre>
             </div>`
           : nothing}
         ${this.lastAggregationParams
           ? html`<div>
               Last aggregation params:
-              <pre>${this.lastAggregationParams}</pre>
+              <pre class="params">${this.lastAggregationParams}</pre>
             </div>`
           : nothing}
       </details>
@@ -612,6 +612,10 @@ export class AppRoot extends LitElement {
         display: inline-flex;
         align-items: center;
         margin-right: 8px;
+      }
+
+      .params {
+        white-space: pre-wrap;
       }
     `;
   }
