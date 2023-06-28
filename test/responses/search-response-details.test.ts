@@ -30,6 +30,9 @@ const responseBody: SearchResponseBody = {
   collection_titles: {
     baz: 'Baz Collection',
   },
+  collection_extra_info: {
+    thumbnail_url: 'foo',
+  },
 };
 
 describe('SearchResponseDetails', () => {
@@ -59,6 +62,46 @@ describe('SearchResponseDetails', () => {
     expect(details.results[0].identifier).to.equal('foo');
     expect(details.results[0].mediatype?.value).to.equal('texts');
     expect(details.results[0].creator?.value).to.be.undefined;
+    expect(details.results[1].identifier).to.equal('bar');
+    expect(details.results[1].collection?.value).to.equal('baz');
+  });
+
+  it('prefers hit-type specified on hit itself over schema hit-type', () => {
+    const responseBodyWithTextHit = Object.assign(
+      {},
+      responseBody
+    ) as SearchResponseBody;
+    responseBodyWithTextHit.hits = {
+      total: 2,
+      returned: 2,
+      hits: [
+        {
+          hit_type: 'text',
+          fields: {
+            identifier: 'foo',
+            mediatype: 'texts',
+          },
+        },
+        {
+          fields: {
+            identifier: 'bar',
+            collection: ['baz'],
+          },
+        },
+      ],
+    };
+
+    const responseSchema = {
+      hit_type: 'item' as HitType,
+      field_properties: {},
+    };
+
+    const details = new SearchResponseDetails(responseBody, responseSchema);
+    expect(details.results[0]).to.be.instanceOf(TextHit); // From hit, not schema
+    expect(details.results[0].identifier).to.equal('foo');
+    expect(details.results[0].mediatype?.value).to.equal('texts');
+    expect(details.results[0].creator?.value).to.be.undefined;
+    expect(details.results[1]).to.be.instanceOf(ItemHit); // From schema
     expect(details.results[1].identifier).to.equal('bar');
     expect(details.results[1].collection?.value).to.equal('baz');
   });
@@ -130,5 +173,36 @@ describe('SearchResponseDetails', () => {
     );
     expect(details.results.length).to.equal(2);
     expect(details.collectionTitles).to.be.undefined;
+  });
+
+  it('provides access to collection extra info', () => {
+    const responseSchema = {
+      hit_type: 'item' as HitType,
+      field_properties: {},
+    };
+
+    const details = new SearchResponseDetails(responseBody, responseSchema);
+    expect(details.results.length).to.equal(2);
+    expect(details.collectionExtraInfo).to.deep.equal({ thumbnail_url: 'foo' });
+  });
+
+  it('collection extra info is optional', () => {
+    const responseBodyWithoutExtraInfo = Object.assign(
+      {},
+      responseBody
+    ) as SearchResponseBody;
+    delete responseBodyWithoutExtraInfo.collection_extra_info;
+
+    const responseSchema = {
+      hit_type: 'item' as HitType,
+      field_properties: {},
+    };
+
+    const details = new SearchResponseDetails(
+      responseBodyWithoutExtraInfo,
+      responseSchema
+    );
+    expect(details.results.length).to.equal(2);
+    expect(details.collectionExtraInfo).to.be.undefined;
   });
 });

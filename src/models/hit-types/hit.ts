@@ -8,11 +8,14 @@ import type { TextHit } from './text-hit';
 export type HitType = 'item' | 'text';
 
 /**
- * Applying this to the Result type forces Intellisense to present Result as
- * a type in its own right, and not as the underlying merge type it aliases.
- * Really just to keep things clean at the call site.
+ * Additional information provided by the PPS about hits, separately from
+ * their fields map.
  */
-interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-interface
+interface HitInfo {
+  hit_type?: HitType;
+  index?: string;
+  service_backend?: string;
+}
 
 /**
  * Result is an expansive type definition encompassing all the optional
@@ -20,4 +23,4 @@ interface PreserveAlias {} // eslint-disable-line @typescript-eslint/no-empty-in
  * ('hit') returned by the various search backends. (Most metadata
  * properties are optional anyway).
  */
-export type SearchResult = Partial<ItemHit & TextHit> & PreserveAlias;
+export type SearchResult = Partial<ItemHit & TextHit> & HitInfo;
