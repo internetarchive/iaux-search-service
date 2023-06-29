@@ -51,5 +51,5 @@ export interface RelatedCollection {
 export interface UserDetails {
   screen_name?: string;
   useritem?: string;
-  is_admin?: boolean;
+  is_archivist?: boolean;
 }
