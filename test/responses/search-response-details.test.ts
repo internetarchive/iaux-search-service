@@ -96,7 +96,10 @@ describe('SearchResponseDetails', () => {
       field_properties: {},
     };
 
-    const details = new SearchResponseDetails(responseBody, responseSchema);
+    const details = new SearchResponseDetails(
+      responseBodyWithTextHit,
+      responseSchema
+    );
     expect(details.results[0]).to.be.instanceOf(TextHit); // From hit, not schema
     expect(details.results[0].identifier).to.equal('foo');
     expect(details.results[0].mediatype?.value).to.equal('texts');
