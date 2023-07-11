@@ -32,6 +32,12 @@ export {
 export { SearchResponse } from './src/responses/search-response';
 export { SearchResponseHeader } from './src/responses/search-response-header';
 export { SearchResponseParams } from './src/responses/search-response-params';
+export {
+  CollectionExtraInfo,
+  CollectionSearchDocs,
+  RelatedCollection,
+  UserDetails,
+} from './src/responses/collection-extra-info';
 
 export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
 export { FulltextSearchBackend } from './src/search-backend/fulltext-search-backend';
