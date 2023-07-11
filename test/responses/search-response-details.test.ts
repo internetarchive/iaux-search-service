@@ -67,7 +67,7 @@ describe('SearchResponseDetails', () => {
   });
 
   it('prefers hit-type specified on hit itself over schema hit-type', () => {
-    const responseBodyWithTextHit = {...responseBody} as SearchResponseBody;
+    const responseBodyWithTextHit = { ...responseBody } as SearchResponseBody;
     responseBodyWithTextHit.hits = {
       total: 2,
       returned: 2,
@@ -156,7 +156,7 @@ describe('SearchResponseDetails', () => {
   });
 
   it('collection titles map is optional', () => {
-    const responseBodyWithoutTitles = {...responseBody} as SearchResponseBody;
+    const responseBodyWithoutTitles = { ...responseBody } as SearchResponseBody;
     delete responseBodyWithoutTitles.collection_titles;
 
     const responseSchema = {
@@ -184,7 +184,9 @@ describe('SearchResponseDetails', () => {
   });
 
   it('collection extra info is optional', () => {
-    const responseBodyWithoutExtraInfo = {...responseBody} as SearchResponseBody;
+    const responseBodyWithoutExtraInfo = {
+      ...responseBody,
+    } as SearchResponseBody;
     delete responseBodyWithoutExtraInfo.collection_extra_info;
 
     const responseSchema = {
