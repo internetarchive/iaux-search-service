@@ -5,33 +5,62 @@ import { Metadata } from '../models/metadata';
  * the `collection_details` page type.
  */
 export interface CollectionExtraInfo {
-  thumbnail_url?: string;
-  search_doc_fields?: CollectionSearchDocs;
-  has_items_with_searchable_text?: boolean;
-  forum_identifier?: string;
-  forum_count?: number;
-  review_count?: number;
-  related_collection_details?: RelatedCollection[];
-  uploader_details?: UserDetails;
-  contributors_details?: UserDetails[];
-  public_metadata?: typeof Metadata.prototype.rawMetadata;
-}
-
-/**
- * Fields from the search docs returned for the `collection_details`
- * page type.
- */
-export interface CollectionSearchDocs {
-  item_count?: number;
-  files_count?: number;
-  collection_size?: number;
+  /** How many files are within this collection (incl. its members) */
   collection_files_count?: number;
-  month?: number;
-  week?: number;
+
+  /** Total size in bytes of this collection (incl. its members) */
+  collection_size?: number;
+
+  /** User details for each of the "Additional Contributors" to this collection */
+  contributors_details?: UserDetails[];
+
+  /** How many total views this collection has received (all-time) */
   downloads?: number;
+
+  /** How many files are within this collection proper (not incl. its members) */
+  files_count?: number;
+
+  /** How many forum posts this collection's associated forum has */
+  forum_count?: number;
+
+  /** The identifier of the forum associated with this collection, if any */
+  forum_identifier?: string;
+
+  /** Whether the items in this collection are available to search with FTS */
+  has_items_with_searchable_text?: boolean;
+
+  /** How many members exist within this collection */
+  item_count?: number;
+
+  /** How many views this collection has received in the past month */
+  month?: number;
+
+  /** How many users have favorited this collection */
   num_favorites?: number;
-  title_message?: string | null;
+
+  /** The primary parent collection that contains this one as a member, if any */
   primary_collection?: string | null;
+
+  /** Full MDAPI object for this collection */
+  public_metadata?: typeof Metadata.prototype.rawMetadata;
+
+  /** Identifiers, titles, and item counts for any related collections */
+  related_collection_details?: RelatedCollection[];
+
+  /** How many reviews this collection's members have */
+  review_count?: number;
+
+  /** URL for this collection's header thumbnail image */
+  thumbnail_url?: string;
+
+  /** Additional message to appear in the page title for this collection, if any */
+  title_message?: string | null;
+
+  /** User details for the collection uploader */
+  uploader_details?: UserDetails;
+
+  /** How many views this collection has received in the past week */
+  week?: number;
 }
 
 /**

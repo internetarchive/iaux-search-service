@@ -34,7 +34,6 @@ export { SearchResponseHeader } from './src/responses/search-response-header';
 export { SearchResponseParams } from './src/responses/search-response-params';
 export {
   CollectionExtraInfo,
-  CollectionSearchDocs,
   RelatedCollection,
   UserDetails,
 } from './src/responses/collection-extra-info';
