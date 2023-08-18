@@ -3,6 +3,7 @@ import { Aggregation } from '../models/aggregation';
 import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
+import { FavoritedSearchHit } from '../models/hit-types/favorited_search-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
 
@@ -115,6 +116,8 @@ export class SearchResponseDetails {
         return new ItemHit(result);
       case 'text':
         return new TextHit(result);
+      case 'favorited_search':
+        return new FavoritedSearchHit(result);
       default:
         // The hit type doesn't tell us what to construct, so just construct an ItemHit
         return new ItemHit(result);

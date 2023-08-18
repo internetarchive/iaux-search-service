@@ -29,7 +29,9 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
   protected debuggingEnabled?: boolean;
 
   constructor(options?: SearchBackendOptionsInterface) {
-    this.baseUrl = options?.baseUrl ?? 'archive.org';
+    this.baseUrl =
+      options?.baseUrl ??
+      'ia-petabox-ximm-pps-feature-include-favorited-searches.archive.org';
     this.debuggingEnabled = options?.debuggingEnabled ?? false;
 
     if (options?.includeCredentials !== undefined) {

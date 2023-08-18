@@ -28,6 +28,9 @@ export class AppRoot extends LitElement {
   @query('#search-input')
   private searchInput!: HTMLInputElement;
 
+  @query('#search-within-check')
+  private searchWithinCheck!: HTMLInputElement;
+
   @query('#debug-info-check')
   private debugCheck!: HTMLInputElement;
 
@@ -53,7 +56,8 @@ export class AppRoot extends LitElement {
   private defaultAggregationsCheckbox!: HTMLInputElement;
 
   @state()
-  private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
+  private searchServiceUrlOptions?: SearchBackendOptionsInterface =
+    this.initSearchServiceUrlOptions();
 
   @state()
   private filterMap: FilterMap = {};
@@ -110,8 +114,17 @@ export class AppRoot extends LitElement {
         <legend>Search options</legend>
         <form>
           <label for="search-input">Query: </label>
-          <input type="text" id="search-input" placeholder="Search Term" />
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search Term or identifier"
+          />
           <input type="submit" value="Go" @click=${this.search} />
+
+          <span class="input-with-label">
+            <input type="checkbox" id="search-within-check" />
+            <label for="search-input-check">Search within collection</label>
+          </span>
 
           <span class="input-with-label">
             <input
@@ -493,6 +506,11 @@ export class AppRoot extends LitElement {
       debugging: includeDebugging,
       uid: 'demo',
     };
+
+    if (this.searchWithinCheck?.checked) {
+      searchParams.pageTarget = query;
+      searchParams.pageType = 'collection_details';
+    }
 
     this.lastSearchParams = decodeURIComponent(
       SearchParamURLGenerator.generateURLSearchParams(searchParams).toString()
