@@ -56,8 +56,7 @@ export class AppRoot extends LitElement {
   private defaultAggregationsCheckbox!: HTMLInputElement;
 
   @state()
-  private searchServiceUrlOptions?: SearchBackendOptionsInterface =
-    this.initSearchServiceUrlOptions();
+  private searchServiceUrlOptions?: SearchBackendOptionsInterface = this.initSearchServiceUrlOptions();
 
   @state()
   private filterMap: FilterMap = {};
@@ -101,7 +100,9 @@ export class AppRoot extends LitElement {
   private initSearchServiceUrlOptions() {
     const params = new URL(window.location.href).searchParams;
     return {
-      baseUrl: params.get('search_base_url') ?? undefined,
+      baseUrl:
+        params.get('search_base_url') ??
+        'ia-petabox-ximm-pps-feature-include-favorited-searches.archive.org',
       servicePath: params.get('search_service_path') ?? undefined,
       debuggingEnabled: !!params.get('debugging') ?? undefined,
     };

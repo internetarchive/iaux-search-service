@@ -1,6 +1,6 @@
 import type { ItemHit } from './item-hit';
 import type { TextHit } from './text-hit';
-import type { FavoritedSearchHit } from './favorited_search-hit';
+import type { FavoritedSearchHit } from './favorited-search-hit';
 
 /**
  * Union of the different hit_type values returned by the PPS.

@@ -3,7 +3,7 @@ import { Aggregation } from '../models/aggregation';
 import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
-import { FavoritedSearchHit } from '../models/hit-types/favorited_search-hit';
+import { FavoritedSearchHit } from '../models/hit-types/favorited-search-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
 
