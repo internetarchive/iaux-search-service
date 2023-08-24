@@ -12,7 +12,7 @@ export interface CollectionExtraInfo {
   collection_size?: number;
 
   /** User details for each of the "Additional Contributors" to this collection */
-  contributors_details?: UserDetails[];
+  contributor_details?: UserDetails[];
 
   /** How many total views this collection has received (all-time) */
   downloads?: number;
