@@ -118,6 +118,51 @@ describe('MetadataSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
+    it('includes reCache param from URL if not provided', async () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('reCache', '1');
+      window.history.replaceState({}, '', url.toString());
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal('{"recompute":true}');
+
+      url.searchParams.delete('reCache');
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    it('includes noCache param from URL if not provided', async () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('noCache', '1');
+      window.history.replaceState({}, '', url.toString());
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal('{"bypass":true}');
+
+      url.searchParams.delete('noCache');
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    it('includes dontCache param from URL if not provided', async () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('dontCache', '1');
+      window.history.replaceState({}, '', url.toString());
+
+      const backend = new MetadataSearchBackend();
+      await backend.performSearch({ query: 'foo' });
+
+      const queryParams = new URL(urlCalled!.toString()).searchParams;
+      expect(queryParams.get('caching')).to.equal('{"no_compute":true}');
+
+      url.searchParams.delete('dontCache');
+      window.history.replaceState({}, '', url.toString());
+    });
+
     it('can enable debugging by default on all searches', async () => {
       const backend = new MetadataSearchBackend({
         baseUrl: 'foo.bar',
