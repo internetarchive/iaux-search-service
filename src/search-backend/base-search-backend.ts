@@ -9,6 +9,15 @@ import {
 import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
+ * Map from URL aliases for caching strategies to the corresponding PPS flags
+ */
+const CACHING_ALIASES: Record<string, string> = {
+  reCache:   JSON.stringify({ caching: 'recompute' }),
+  noCache:   JSON.stringify({ caching: 'bypass' }),
+  dontCache: JSON.stringify({ caching: 'no_compute' }),
+};
+
+/**
  * An abstract base class for search backends.
  */
 export abstract class BaseSearchBackend implements SearchBackendInterface {
@@ -44,10 +53,21 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
         null;
     }
 
-    const currentUrl = new URL(window.location.href);
-    const scopeParam = currentUrl.searchParams.get('scope');
-    const cachingParam = currentUrl.searchParams.get('caching');
-    const verboseParam = currentUrl.searchParams.get('verbose');
+    const searchParams = new URL(window.location.href).searchParams;
+    const scopeParam = searchParams.get('scope');
+    const verboseParam = searchParams.get('verbose');
+
+    // Caching param aliases
+    let cachingParam: string = '';
+    for (const alias of Object.keys(CACHING_ALIASES)) {
+      if (searchParams.get(alias)) {
+        cachingParam = CACHING_ALIASES[alias];
+        break;
+      }
+    }
+
+    // Explicit PPS caching param overrides any aliases
+    cachingParam = searchParams.get('caching') ?? cachingParam;
 
     if (options?.scope !== undefined) {
       this.requestScope = options.scope;
