@@ -102,6 +102,16 @@ export class ItemHit {
       : undefined;
   }
 
+  /**
+   * Not metadata; only present in favorites lists, sourced from Lists API.
+   * Optional.
+   */
+  @Memoize() get date_favorited(): DateField | undefined {
+    return this.rawMetadata?.fields?.date_favorited 
+      ? new DateField(this.rawMetadata.fields.date_favorited)
+      : undefined;
+  }
+
   /** Optional. */
   @Memoize() get description(): typeof Metadata.prototype.description {
     return this.rawMetadata?.fields?.description
@@ -286,10 +296,40 @@ export class ItemHit {
       : undefined;
   }
 
+  /**
+   * For Account reviews.
+   * Optional.
+   */
+  @Memoize() get reviewbody(): StringField | undefined {
+    return this.rawMetadata?.fields?.reviewbody
+      ? new StringField(this.rawMetadata.fields.reviewbody)
+      : undefined;
+  }
+
   /** Optional. */
   @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
+      : undefined;
+  }
+
+  /**
+   * Screen name, for Account reviews.
+   * Optional.
+   */
+  @Memoize() get reviewer(): StringField | undefined {
+    return this.rawMetadata?.fields?.reviewer
+      ? new StringField(this.rawMetadata.fields.reviewer)
+      : undefined;
+  }
+
+  /**
+   * For Account reviews.
+   * Optional.
+   */
+  @Memoize() get reviewtitle(): StringField | undefined {
+    return this.rawMetadata?.fields?.reviewtitle
+      ? new StringField(this.rawMetadata.fields.reviewtitle)
       : undefined;
   }
 
