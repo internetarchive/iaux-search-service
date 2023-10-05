@@ -12,9 +12,9 @@ import type { SearchBackendOptionsInterface } from './search-backend-options';
  * Map from URL aliases for caching strategies to the corresponding PPS flags
  */
 const CACHING_ALIASES: Record<string, string> = {
-  reCache:   JSON.stringify({ caching: 'recompute' }),
-  noCache:   JSON.stringify({ caching: 'bypass' }),
-  dontCache: JSON.stringify({ caching: 'no_compute' }),
+  reCache: JSON.stringify({ recompute: true }),
+  noCache: JSON.stringify({ bypass: true }),
+  dontCache: JSON.stringify({ no_compute: true }),
 };
 
 /**
@@ -39,7 +39,6 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
 
   constructor(options?: SearchBackendOptionsInterface) {
     this.baseUrl = options?.baseUrl ?? 'archive.org';
-    this.debuggingEnabled = options?.debuggingEnabled ?? false;
 
     if (options?.includeCredentials !== undefined) {
       this.includeCredentials = options.includeCredentials;
@@ -56,9 +55,11 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     const searchParams = new URL(window.location.href).searchParams;
     const scopeParam = searchParams.get('scope');
     const verboseParam = searchParams.get('verbose');
+    const debuggingParam = searchParams.get('debugging');
+    const cacheDebugParam = searchParams.get('cacheDebug');
 
     // Caching param aliases
-    let cachingParam: string = '';
+    let cachingParam = '';
     for (const alias of Object.keys(CACHING_ALIASES)) {
       if (searchParams.get(alias)) {
         cachingParam = CACHING_ALIASES[alias];
@@ -69,16 +70,22 @@ export abstract class BaseSearchBackend implements SearchBackendInterface {
     // Explicit PPS caching param overrides any aliases
     cachingParam = searchParams.get('caching') ?? cachingParam;
 
-    if (options?.scope !== undefined) {
-      this.requestScope = options.scope;
-    } else if (scopeParam) {
-      this.requestScope = scopeParam;
-    }
-
     if (options?.caching !== undefined) {
       this.cachingFlags = options.caching;
     } else if (cachingParam) {
       this.cachingFlags = cachingParam;
+    }
+
+    if (options?.debuggingEnabled !== undefined) {
+      this.debuggingEnabled = options.debuggingEnabled;
+    } else if (debuggingParam || cacheDebugParam) {
+      this.debuggingEnabled = true;
+    }
+
+    if (options?.scope !== undefined) {
+      this.requestScope = options.scope;
+    } else if (scopeParam) {
+      this.requestScope = scopeParam;
     }
 
     if (options?.verbose !== undefined) {
