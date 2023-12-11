@@ -180,10 +180,16 @@ export interface SearchParams {
   pageType?: PageType;
 
   /**
-   * For collection details pages, specifies the name of the collection
-   * that is to be retrieved (e.g., 'prelinger').
+   * For details pages, specifies the name of the collection/account
+   * that is to be retrieved (e.g., 'prelinger', '@brewster').
    */
   pageTarget?: string;
+
+  /**
+   * For account details pages, which segments of page data should be retrieved
+   * (e.g., 'uploads', 'reviews', ...)
+   */
+  pageElements?: string[];
 
   /**
    * One or more parameters specifying how the search results should be

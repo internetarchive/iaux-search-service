@@ -72,6 +72,10 @@ export class SearchParamURLGenerator {
       params.append('page_target', String(searchParams.pageTarget));
     }
 
+    if (searchParams.pageElements) {
+      params.append('page_elements', searchParams.pageElements.join(','));
+    }
+
     if (searchParams.rows != null) {
       params.append('hits_per_page', String(searchParams.rows));
     }
