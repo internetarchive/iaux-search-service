@@ -72,7 +72,7 @@ export class SearchParamURLGenerator {
       params.append('page_target', String(searchParams.pageTarget));
     }
 
-    if (searchParams.pageElements) {
+    if (searchParams.pageElements && searchParams.pageElements.length > 0) {
       params.append('page_elements', searchParams.pageElements.join(','));
     }
 
