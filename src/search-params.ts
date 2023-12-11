@@ -150,6 +150,12 @@ export type FieldFilter = Record<string, FilterConstraint | FilterConstraint[]>;
  */
 export type FilterMap = Record<string, FieldFilter>;
 
+export type PageType =
+  | 'search_results'
+  | 'collection_details'
+  | 'account_details'
+  ;
+
 /**
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
@@ -171,7 +177,7 @@ export interface SearchParams {
    * Defaults to 'search_results' in the PPS. Meant to allow different
    * backend defaults to be used depending on the needs of certain pages.
    */
-  pageType?: string;
+  pageType?: PageType;
 
   /**
    * For collection details pages, specifies the name of the collection

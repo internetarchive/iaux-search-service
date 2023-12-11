@@ -47,6 +47,7 @@ export { SearchBackendOptionsInterface } from './src/search-backend/search-backe
 export { SearchType } from './src/search-type';
 export {
   SearchParams,
+  PageType,
   SortParam,
   SortDirection,
   AggregateSearchParams,
