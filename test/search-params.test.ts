@@ -137,9 +137,9 @@ describe('SearchParams', () => {
 
   it('properly generates a URLSearchParam with a page_type', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = {
+    const params: SearchParams = {
       query,
-      pageType: 'foo',
+      pageType: 'search_results',
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
       params
@@ -148,14 +148,14 @@ describe('SearchParams', () => {
     const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
       .searchParams;
     expect(queryParams.get('user_query')).to.equal(query);
-    expect(queryParams.get('page_type')).to.equal('foo');
+    expect(queryParams.get('page_type')).to.equal('search_results');
   });
 
   it('properly generates a URLSearchParam with a page_type and page_target', async () => {
     const query = 'title:foo AND collection:bar';
-    const params = {
+    const params: SearchParams = {
       query,
-      pageType: 'foo',
+      pageType: 'collection_details',
       pageTarget: 'bar',
     };
     const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
@@ -165,7 +165,7 @@ describe('SearchParams', () => {
     const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
       .searchParams;
     expect(queryParams.get('user_query')).to.equal(query);
-    expect(queryParams.get('page_type')).to.equal('foo');
+    expect(queryParams.get('page_type')).to.equal('collection_details');
     expect(queryParams.get('page_target')).to.equal('bar');
   });
 
