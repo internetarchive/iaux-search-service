@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Aggregation } from '../models/aggregation';
+import { Aggregation, AggregationOptions } from '../models/aggregation';
 import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
@@ -115,6 +115,29 @@ export class SearchResponseDetails {
 
     if (body?.page_elements) {
       this.pageElements = body.page_elements;
+
+      // If we didn't receive any hits/aggregations on the response body,
+      // try finding them in the first page element instead
+      const firstPageElement = Object.values(this.pageElements)[0];
+      if (firstPageElement) {
+        if (!this.results?.length && firstPageElement.hits) {
+          this.results = firstPageElement.hits.hits?.map((hit: SearchResult) =>
+            SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
+          ) ?? [];
+        }
+
+        const alreadyHaveAggregations = this.aggregations && Object.keys(this.aggregations).length > 0;
+        if (!alreadyHaveAggregations && firstPageElement.aggregations) {
+          const pageElementAggregations = firstPageElement.aggregations as Record<string, Aggregation>;
+          this.aggregations = Object.entries(pageElementAggregations).reduce(
+            (acc, [key, val]) => {
+              acc[key] = new Aggregation(val);
+              return acc;
+            },
+            {} as Record<string, Aggregation>
+          );
+        }
+      }
     }
   }
 

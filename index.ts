@@ -41,7 +41,8 @@ export {
   AccountExtraInfo
 } from './src/responses/account-extra-info';
 export {
-  PageElementMap
+  PageElementMap,
+  PageElementName,
 } from './src/responses/page-elements';
 
 export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
