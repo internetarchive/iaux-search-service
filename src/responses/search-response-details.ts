@@ -83,16 +83,38 @@ export class SearchResponseDetails {
     this.schema = schema;
     const schemaHitType = schema?.hit_type;
 
+    let firstPageElement;
+    if (body?.page_elements) {
+      this.pageElements = body.page_elements;
+      if (this.pageElements) firstPageElement = Object.values(this.pageElements)[0];
+    }
+
+    // Use hits directly from the body if available.
+    // Otherwise, try extracting them from the first page_element
+    let hits = body?.hits?.hits;
+    if (!hits?.length && this.pageElements) {
+      if (firstPageElement?.hits?.hits) {
+        hits = firstPageElement.hits.hits;
+      }
+    }
+
+    // Use aggregations directly from the body if available.
+    // Otherwise, try extracting them from the first page_element.
+    let aggregations = body?.aggregations;
+    const bodyHasAggregations = this.aggregations && Object.keys(this.aggregations).length > 0;
+    if (!bodyHasAggregations && this.pageElements && firstPageElement?.aggregations) {
+      aggregations = firstPageElement.aggregations;
+    }
+
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
-    this.results =
-      body?.hits?.hits?.map((hit: SearchResult) =>
-        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-      ) ?? [];
+    this.results = hits?.map((hit: SearchResult) =>
+      SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
+    ) ?? [];
 
     // Construct Aggregation objects
-    if (body?.aggregations) {
-      this.aggregations = Object.entries(body.aggregations).reduce(
+    if (aggregations) {
+      this.aggregations = Object.entries(aggregations).reduce(
         (acc, [key, val]) => {
           acc[key] = new Aggregation(val);
           return acc;
@@ -111,33 +133,6 @@ export class SearchResponseDetails {
 
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info;
-    }
-
-    if (body?.page_elements) {
-      this.pageElements = body.page_elements;
-
-      // If we didn't receive any hits/aggregations on the response body,
-      // try finding them in the first page element instead
-      const firstPageElement = Object.values(this.pageElements)[0];
-      if (firstPageElement) {
-        if (!this.results?.length && firstPageElement.hits) {
-          this.results = firstPageElement.hits.hits?.map((hit: SearchResult) =>
-            SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-          ) ?? [];
-        }
-
-        const alreadyHaveAggregations = this.aggregations && Object.keys(this.aggregations).length > 0;
-        if (!alreadyHaveAggregations && firstPageElement.aggregations) {
-          const pageElementAggregations = firstPageElement.aggregations as Record<string, Aggregation>;
-          this.aggregations = Object.entries(pageElementAggregations).reduce(
-            (acc, [key, val]) => {
-              acc[key] = new Aggregation(val);
-              return acc;
-            },
-            {} as Record<string, Aggregation>
-          );
-        }
-      }
     }
   }
 
