@@ -21,32 +21,6 @@ export type PageElementName =
   | 'forum_posts';
 
 /**
- * A map containing one or more page elements returned by the PPS, keyed by the
- * name of the element.
- */
-export interface PageElementMap
-  extends Partial<Record<PageElementName, unknown>> {
-  uploads?: UploadsPageElement;
-  reviews?: ReviewsPageElement;
-  collections?: CollectionsPageElement;
-  lending?: LendingPageElement;
-  web_archives?: WebArchivesPageElement;
-  forum_posts?: ForumPostsPageElement;
-}
-
-export type UploadsPageElement = HitsAggregationsPageElement;
-export type ReviewsPageElement = HitsAggregationsPageElement;
-export type CollectionsPageElement = HitsAggregationsPageElement;
-export interface LendingPageElement {
-  loans: Record<string, unknown>[];
-  waitlist: Record<string, unknown>[];
-  loan_history: Record<string, unknown>[];
-}
-
-export type WebArchivesPageElement = WebArchiveEntry[];
-export type ForumPostsPageElement = ForumPost[];
-
-/**
  * A basic page element returning hits and/or aggregations
  */
 interface HitsAggregationsPageElement {
@@ -76,4 +50,30 @@ export interface ForumPost {
   forum_href: string;
   replies: number;
   date: string;
+}
+
+export type UploadsPageElement = HitsAggregationsPageElement;
+export type ReviewsPageElement = HitsAggregationsPageElement;
+export type CollectionsPageElement = HitsAggregationsPageElement;
+export interface LendingPageElement {
+  loans: Record<string, unknown>[];
+  waitlist: Record<string, unknown>[];
+  loan_history: Record<string, unknown>[];
+}
+
+export type WebArchivesPageElement = WebArchiveEntry[];
+export type ForumPostsPageElement = ForumPost[];
+
+/**
+ * A map containing one or more page elements returned by the PPS, keyed by the
+ * name of the element.
+ */
+export interface PageElementMap
+  extends Partial<Record<PageElementName, unknown>> {
+  uploads?: UploadsPageElement;
+  reviews?: ReviewsPageElement;
+  collections?: CollectionsPageElement;
+  lending?: LendingPageElement;
+  web_archives?: WebArchivesPageElement;
+  forum_posts?: ForumPostsPageElement;
 }
