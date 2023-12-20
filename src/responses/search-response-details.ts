@@ -106,8 +106,8 @@ export class SearchResponseDetails {
       aggregations = firstPageElement.aggregations;
     }
 
-    this.totalResults = body?.hits?.total ?? 0;
-    this.returnedCount = body?.hits?.returned ?? 0;
+    this.totalResults = body?.hits?.total ?? firstPageElement?.hits?.total ?? 0;
+    this.returnedCount = body?.hits?.returned ?? firstPageElement?.hits?.returned ?? 0;
     this.results = hits?.map((hit: SearchResult) =>
       SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
     ) ?? [];
