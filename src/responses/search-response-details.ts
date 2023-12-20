@@ -6,24 +6,19 @@ import { TextHit } from '../models/hit-types/text-hit';
 import { FavoritedSearchHit } from '../models/hit-types/favorited-search-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
+import { AccountExtraInfo } from './account-extra-info';
+import { PageElementMap, SearchResponseHits } from './page-elements';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
  */
 export interface SearchResponseBody {
-  hits: SearchResponseHits;
+  hits?: SearchResponseHits;
   aggregations?: Record<string, Aggregation>;
   collection_titles?: Record<string, string>;
   collection_extra_info?: CollectionExtraInfo;
-}
-
-/**
- * The structure of the response body `hits` object returned from the PPS endpoint.
- */
-export interface SearchResponseHits {
-  total: number;
-  returned: number;
-  hits: Record<string, any>[];
+  account_extra_info?: AccountExtraInfo;
+  page_elements?: PageElementMap;
 }
 
 /**
@@ -69,6 +64,17 @@ export class SearchResponseDetails {
   collectionExtraInfo?: CollectionExtraInfo;
 
   /**
+   * Extra info about the target account, returned when the page type is
+   * `account_details`.
+   */
+  accountExtraInfo?: AccountExtraInfo;
+
+  /**
+   * Specific page elements requested from the PPS will be present in this map
+   */
+  pageElements?: PageElementMap;
+
+  /**
    * The hit schema for this response
    */
   schema?: SearchHitSchema;
@@ -101,6 +107,14 @@ export class SearchResponseDetails {
 
     if (body?.collection_extra_info) {
       this.collectionExtraInfo = body.collection_extra_info;
+    }
+
+    if (body?.account_extra_info) {
+      this.accountExtraInfo = body.account_extra_info;
+    }
+
+    if (body?.page_elements) {
+      this.pageElements = body.page_elements;
     }
   }
 
