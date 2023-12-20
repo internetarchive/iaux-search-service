@@ -73,7 +73,9 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.pageElements && searchParams.pageElements.length > 0) {
-      params.append('page_elements', `[${searchParams.pageElements.join(',')}]`);
+      const quotedPageElements = searchParams.pageElements.map(el => `"${el}"`);
+      const pageElementParam = `[${quotedPageElements.join(',')}]`;
+      params.append('page_elements', pageElementParam);
     }
 
     if (searchParams.rows != null) {
