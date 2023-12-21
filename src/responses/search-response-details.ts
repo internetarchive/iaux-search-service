@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Aggregation, AggregationOptions } from '../models/aggregation';
+import { Aggregation } from '../models/aggregation';
 import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
@@ -61,13 +61,13 @@ export class SearchResponseDetails {
    * Extra info about the target collection, returned when the page type is
    * `collection_details`.
    */
-  collectionExtraInfo?: CollectionExtraInfo;
+  collectionExtraInfo?: CollectionExtraInfo | null = null;
 
   /**
    * Extra info about the target account, returned when the page type is
    * `account_details`.
    */
-  accountExtraInfo?: AccountExtraInfo;
+  accountExtraInfo: AccountExtraInfo | null = null;
 
   /**
    * Specific page elements requested from the PPS will be present in this map
@@ -86,7 +86,8 @@ export class SearchResponseDetails {
     let firstPageElement;
     if (body?.page_elements) {
       this.pageElements = body.page_elements;
-      if (this.pageElements) firstPageElement = Object.values(this.pageElements)[0];
+      if (this.pageElements)
+        firstPageElement = Object.values(this.pageElements)[0];
     }
 
     // Use hits directly from the body if available.
@@ -101,16 +102,24 @@ export class SearchResponseDetails {
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
     let aggregations = body?.aggregations;
-    const bodyHasAggregations = this.aggregations && Object.keys(this.aggregations).length > 0;
-    if (!bodyHasAggregations && this.pageElements && firstPageElement?.aggregations) {
+    const bodyHasAggregations =
+      this.aggregations && Object.keys(this.aggregations).length > 0;
+    if (
+      !bodyHasAggregations &&
+      this.pageElements &&
+      firstPageElement?.aggregations
+    ) {
       aggregations = firstPageElement.aggregations;
     }
 
     this.totalResults = body?.hits?.total ?? firstPageElement?.hits?.total ?? 0;
-    this.returnedCount = body?.hits?.returned ?? firstPageElement?.hits?.returned ?? 0;
-    this.results = hits?.map((hit: SearchResult) =>
-      SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-    ) ?? [];
+    this.returnedCount =
+      body?.hits?.returned ?? firstPageElement?.hits?.returned ?? 0;
+
+    this.results =
+      hits?.map((hit: SearchResult) =>
+        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
+      ) ?? [];
 
     // Construct Aggregation objects
     if (aggregations) {
@@ -124,15 +133,15 @@ export class SearchResponseDetails {
     }
 
     if (body?.collection_titles) {
-      this.collectionTitles = body.collection_titles;
+      this.collectionTitles = body.collection_titles ?? {};
     }
 
     if (body?.collection_extra_info) {
-      this.collectionExtraInfo = body.collection_extra_info;
+      this.collectionExtraInfo = body.collection_extra_info ?? null;
     }
 
     if (body?.account_extra_info) {
-      this.accountExtraInfo = body.account_extra_info;
+      this.accountExtraInfo = body.account_extra_info ?? null;
     }
   }
 

@@ -43,14 +43,14 @@ describe('MetadataSearchBackend', () => {
       expect(result.success?.foo).to.equal('bar');
     });
 
-    it('sets the metadata service backend', async () => {
+    it('omits the metadata service backend', async () => {
       const backend = new MetadataSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       expect(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         new URL(urlCalled!.toString()).searchParams.get('service_backend')
-      ).to.equal('metadata');
+      ).to.be.null;
     });
 
     it('uses the provided service path', async () => {
