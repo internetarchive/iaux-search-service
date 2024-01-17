@@ -1,3 +1,5 @@
+import { PageElementName } from "./responses/page-elements";
+
 export interface AggregateSearchParam {
   field: string;
   size?: number;
@@ -188,7 +190,7 @@ export interface SearchParams {
    * For account details pages, which segments of page data should be retrieved
    * (e.g., 'uploads', 'reviews', ...)
    */
-  pageElements?: string[];
+  pageElements?: PageElementName[];
 
   /**
    * One or more parameters specifying how the search results should be

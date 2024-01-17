@@ -1,4 +1,6 @@
 import { Aggregation } from '../models/aggregation';
+import { SearchResult } from '../models/hit-types/hit';
+import { ItemHit } from '../models/hit-types/item-hit';
 
 /**
  * The structure of the response body `hits` object returned from the PPS endpoint.
@@ -64,16 +66,48 @@ export interface LendingPageElement {
 export type WebArchivesPageElement = WebArchiveEntry[];
 export type ForumPostsPageElement = ForumPost[];
 
+export type PageElement =
+  | UploadsPageElement
+  | ReviewsPageElement
+  | CollectionsPageElement
+  | LendingPageElement
+  | WebArchivesPageElement
+  | ForumPostsPageElement;
+
 /**
  * A map containing one or more page elements returned by the PPS, keyed by the
  * name of the element.
  */
 export interface PageElementMap
-  extends Partial<Record<PageElementName, unknown>> {
+  extends Partial<Record<PageElementName, PageElement>> {
   uploads?: UploadsPageElement;
   reviews?: ReviewsPageElement;
   collections?: CollectionsPageElement;
   lending?: LendingPageElement;
   web_archives?: WebArchivesPageElement;
   forum_posts?: ForumPostsPageElement;
+}
+
+/**
+ * Converts dates from web capture "YYYYMMDDhhmmss" format to ISO-8601 "YYYY-MM-DDThh:mm:ssZ" format.
+ */
+function fixWebCaptureDateFormatting(date: string): string {
+  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${date.slice(8, 10)}:${date.slice(10, 12)}:${date.slice(12, 14)}Z`;
+}
+
+export function convertWebArchivesToSearchHits(pageElement: WebArchivesPageElement): Record<string, unknown>[] {
+  const results: Record<string, unknown>[] = [];
+
+  for (const entry of pageElement) {
+    results.push({
+      hit_type: 'web_archive',
+      fields: {
+        url: entry.url,
+        capture_dates: entry.captures?.map(date => fixWebCaptureDateFormatting(date)),
+        __href__: `https://web.archive.org/web/${entry.captures[0]}/${encodeURIComponent(entry.url)}`,
+      },
+    });
+  }
+
+  return results;
 }

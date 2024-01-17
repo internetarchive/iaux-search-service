@@ -38,7 +38,7 @@ export {
   UserDetails,
 } from './src/responses/collection-extra-info';
 export { AccountExtraInfo } from './src/responses/account-extra-info';
-export { PageElementMap, PageElementName } from './src/responses/page-elements';
+export { PageElementMap, PageElementName, ForumPost, WebArchiveEntry } from './src/responses/page-elements';
 
 export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
 export { FulltextSearchBackend } from './src/search-backend/fulltext-search-backend';

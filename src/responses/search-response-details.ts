@@ -7,7 +7,8 @@ import { FavoritedSearchHit } from '../models/hit-types/favorited-search-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
 import { AccountExtraInfo } from './account-extra-info';
-import { PageElementMap, SearchResponseHits } from './page-elements';
+import { PageElementMap, SearchResponseHits, convertWebArchivesToSearchHits } from './page-elements';
+import { WebArchiveHit } from '../models/hit-types/web-archive-hit';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
@@ -61,13 +62,13 @@ export class SearchResponseDetails {
    * Extra info about the target collection, returned when the page type is
    * `collection_details`.
    */
-  collectionExtraInfo?: CollectionExtraInfo | null = null;
+  collectionExtraInfo?: CollectionExtraInfo;
 
   /**
    * Extra info about the target account, returned when the page type is
    * `account_details`.
    */
-  accountExtraInfo: AccountExtraInfo | null = null;
+  accountExtraInfo?: AccountExtraInfo;
 
   /**
    * Specific page elements requested from the PPS will be present in this map
@@ -84,42 +85,51 @@ export class SearchResponseDetails {
     const schemaHitType = schema?.hit_type;
 
     let firstPageElement;
+    console.log('has page elements?', !!body?.page_elements);
     if (body?.page_elements) {
       this.pageElements = body.page_elements;
-      if (this.pageElements)
-        firstPageElement = Object.values(this.pageElements)[0];
+      firstPageElement = Object.values(this.pageElements)[0];
+      console.log('first page element is', firstPageElement);
     }
 
     // Use hits directly from the body if available.
     // Otherwise, try extracting them from the first page_element
     let hits = body?.hits?.hits;
-    if (!hits?.length && this.pageElements) {
-      if (firstPageElement?.hits?.hits) {
-        hits = firstPageElement.hits.hits;
-      }
+    this.totalResults = body?.hits?.total ?? 0;
+    this.returnedCount = body?.hits?.returned ?? 0;
+    console.log('hits from body', hits);
+    if (!hits?.length && firstPageElement?.hits?.hits) {
+      hits = firstPageElement.hits.hits;
+      this.totalResults = firstPageElement.hits.total ?? 0;
+      this.returnedCount = firstPageElement.hits.returned ?? 0;
+      console.log('hits from page element', hits);
+    } else if (this.pageElements?.['web_archives']) {
+      hits = convertWebArchivesToSearchHits(this.pageElements['web_archives']);
+      this.totalResults = this.pageElements['web_archives'].length ?? 0;
+      this.returnedCount = this.totalResults;
+      console.log('hits from web archives', hits);
     }
+    console.log('total/returned:', this.totalResults, this.returnedCount);
+
+    this.results =
+      hits?.map((hit: SearchResult) =>
+        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
+      ) ?? [];
+    console.log('results', this.results);
 
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
     let aggregations = body?.aggregations;
     const bodyHasAggregations =
       this.aggregations && Object.keys(this.aggregations).length > 0;
+    console.log('aggs from body', bodyHasAggregations, aggregations);
     if (
       !bodyHasAggregations &&
-      this.pageElements &&
       firstPageElement?.aggregations
     ) {
       aggregations = firstPageElement.aggregations;
+      console.log('aggs from page element', aggregations);
     }
-
-    this.totalResults = body?.hits?.total ?? firstPageElement?.hits?.total ?? 0;
-    this.returnedCount =
-      body?.hits?.returned ?? firstPageElement?.hits?.returned ?? 0;
-
-    this.results =
-      hits?.map((hit: SearchResult) =>
-        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-      ) ?? [];
 
     // Construct Aggregation objects
     if (aggregations) {
@@ -130,6 +140,7 @@ export class SearchResponseDetails {
         },
         {} as Record<string, Aggregation>
       );
+      console.log(this.aggregations);
     }
 
     if (body?.collection_titles) {
@@ -142,6 +153,7 @@ export class SearchResponseDetails {
 
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info ?? null;
+      console.log('acct extra info (search service)', this.accountExtraInfo);
     }
   }
 
@@ -159,6 +171,8 @@ export class SearchResponseDetails {
         return new TextHit(result);
       case 'favorited_search':
         return new FavoritedSearchHit(result);
+      case 'web_archive':
+        return new WebArchiveHit(result);
       default:
         // The hit type doesn't tell us what to construct, so just construct an ItemHit
         return new ItemHit(result);
