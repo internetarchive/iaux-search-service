@@ -85,11 +85,9 @@ export class SearchResponseDetails {
     const schemaHitType = schema?.hit_type;
 
     let firstPageElement;
-    console.log('has page elements?', !!body?.page_elements);
     if (body?.page_elements) {
       this.pageElements = body.page_elements;
       firstPageElement = Object.values(this.pageElements)[0];
-      console.log('first page element is', firstPageElement);
     }
 
     // Use hits directly from the body if available.
@@ -97,38 +95,33 @@ export class SearchResponseDetails {
     let hits = body?.hits?.hits;
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
-    console.log('hits from body', hits);
+
     if (!hits?.length && firstPageElement?.hits?.hits) {
       hits = firstPageElement.hits.hits;
       this.totalResults = firstPageElement.hits.total ?? 0;
       this.returnedCount = firstPageElement.hits.returned ?? 0;
-      console.log('hits from page element', hits);
     } else if (this.pageElements?.['web_archives']) {
       hits = convertWebArchivesToSearchHits(this.pageElements['web_archives']);
       this.totalResults = this.pageElements['web_archives'].length ?? 0;
       this.returnedCount = this.totalResults;
-      console.log('hits from web archives', hits);
     }
-    console.log('total/returned:', this.totalResults, this.returnedCount);
 
     this.results =
       hits?.map((hit: SearchResult) =>
         SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
       ) ?? [];
-    console.log('results', this.results);
 
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
     let aggregations = body?.aggregations;
     const bodyHasAggregations =
       this.aggregations && Object.keys(this.aggregations).length > 0;
-    console.log('aggs from body', bodyHasAggregations, aggregations);
+
     if (
       !bodyHasAggregations &&
       firstPageElement?.aggregations
     ) {
       aggregations = firstPageElement.aggregations;
-      console.log('aggs from page element', aggregations);
     }
 
     // Construct Aggregation objects
@@ -140,7 +133,6 @@ export class SearchResponseDetails {
         },
         {} as Record<string, Aggregation>
       );
-      console.log(this.aggregations);
     }
 
     if (body?.collection_titles) {
@@ -153,7 +145,6 @@ export class SearchResponseDetails {
 
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info ?? null;
-      console.log('acct extra info (search service)', this.accountExtraInfo);
     }
   }
 
