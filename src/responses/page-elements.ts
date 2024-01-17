@@ -95,15 +95,20 @@ function fixWebCaptureDateFormatting(date: string): string {
   return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${date.slice(8, 10)}:${date.slice(10, 12)}:${date.slice(12, 14)}Z`;
 }
 
+/**
+ * Converts an array of web archive entries to an array of objects compatible with the search hit constructors
+ */
 export function convertWebArchivesToSearchHits(pageElement: WebArchivesPageElement): Record<string, unknown>[] {
   const results: Record<string, unknown>[] = [];
 
   for (const entry of pageElement) {
+    if (!entry.captures?.length) continue;
+
     results.push({
       hit_type: 'web_archive',
       fields: {
         url: entry.url,
-        capture_dates: entry.captures?.map(date => fixWebCaptureDateFormatting(date)),
+        capture_dates: entry.captures.map(date => fixWebCaptureDateFormatting(date)),
         __href__: `https://web.archive.org/web/${entry.captures[0]}/${encodeURIComponent(entry.url)}`,
       },
     });
