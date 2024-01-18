@@ -3,6 +3,7 @@ import { Memoize } from 'typescript-memoize';
 import type { Metadata } from '../metadata';
 import { DateField } from '../metadata-fields/field-types/date';
 import { StringField } from '../metadata-fields/field-types/string';
+import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
 
 /**
  * A model that describes a set of captures for a given URL, as presented in the Web Archives tab
@@ -28,6 +29,10 @@ export class WebArchiveHit {
 
   get identifier(): typeof Metadata.prototype.identifier {
     return this.rawMetadata?.fields?.url;
+  }
+
+  get mediatype(): typeof Metadata.prototype.mediatype {
+    return new MediaTypeField('web');
   }
 
   /** The URL that was captured */
