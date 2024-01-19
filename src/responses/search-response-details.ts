@@ -100,6 +100,10 @@ export class SearchResponseDetails {
       hits = firstPageElement.hits.hits;
       this.totalResults = firstPageElement.hits.total ?? 0;
       this.returnedCount = firstPageElement.hits.returned ?? 0;
+    } else if (this.pageElements?.['lending']?.['loans']) {
+      hits = this.pageElements['lending']['loans'];
+      this.totalResults = hits.length ?? 0;
+      this.returnedCount = this.totalResults;
     } else if (this.pageElements?.['web_archives']) {
       hits = convertWebArchivesToSearchHits(this.pageElements['web_archives']);
       this.totalResults = this.pageElements['web_archives'].length ?? 0;
