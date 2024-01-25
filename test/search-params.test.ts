@@ -169,6 +169,28 @@ describe('SearchParams', () => {
     expect(queryParams.get('page_target')).to.equal('bar');
   });
 
+  it('properly generates a URLSearchParam with a page_type, page_target, and page_elements', async () => {
+    const query = 'title:foo AND collection:bar';
+    const params: SearchParams = {
+      query,
+      pageType: 'account_details',
+      pageTarget: '@foobar',
+      pageElements: ['uploads', 'web_archives'],
+    };
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.equal(query);
+    expect(queryParams.get('page_type')).to.equal('account_details');
+    expect(queryParams.get('page_target')).to.equal('@foobar');
+    expect(queryParams.get('page_elements')).to.equal(
+      '["uploads","web_archives"]'
+    );
+  });
+
   it('properly generates a URLSearchParam with aggregations omitted', async () => {
     const query = 'title:foo AND collection:bar';
     const params = {

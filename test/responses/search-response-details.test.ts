@@ -117,6 +117,36 @@ const accountUploadsResponseBody: SearchResponseBody = {
   },
 };
 
+const accountReviewsResponseBody: SearchResponseBody = {
+  page_elements: {
+    reviews: {
+      hits: {
+        total: 1,
+        returned: 1,
+        hits: [
+          {
+            hit_type: 'item',
+            fields: {
+              identifier: 'foo',
+              mediatype: 'texts',
+            },
+            review: {
+              reviewbody: 'foo bar baz',
+              reviewtitle: 'Foo Bar',
+              reviewer: 'Baz Quux',
+              reviewer_itemname: '@bazquux',
+              reviewdate: '2010-01-02 03:04:05',
+              createdate: '2011-02-03 04:05:06',
+              stars: '0',
+              __href__: 'https://example.com?reviewid=123',
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 const accountLendingResponseBody: SearchResponseBody = {
   page_elements: {
     lending: {
@@ -148,22 +178,6 @@ const accountLendingResponseBody: SearchResponseBody = {
       ],
     },
   },
-  account_extra_info: {
-    account_details: {
-      screenname: 'Foobar',
-      user_item_identifier: '@foobar',
-      user_since: '2010-01-02T03:04:05Z',
-    },
-    policy_settings: {
-      is_archive_user: true,
-      preferences: [],
-      privileges: [],
-    },
-    user_item_metadata: {
-      title: 'Foobar',
-      description: 'Foo bar baz',
-    },
-  },
 };
 
 const accountWebArchivesResponseBody: SearchResponseBody = {
@@ -178,22 +192,6 @@ const accountWebArchivesResponseBody: SearchResponseBody = {
         captures: [], // This one will be skipped due to empty captures
       },
     ],
-  },
-  account_extra_info: {
-    account_details: {
-      screenname: 'Foobar',
-      user_item_identifier: '@foobar',
-      user_since: '2010-01-02T03:04:05Z',
-    },
-    policy_settings: {
-      is_archive_user: true,
-      preferences: [],
-      privileges: [],
-    },
-    user_item_metadata: {
-      title: 'Foobar',
-      description: 'Foo bar baz',
-    },
   },
 };
 
@@ -386,6 +384,23 @@ describe('SearchResponseDetails', () => {
       key: 'foo',
       doc_count: 1,
     });
+  });
+
+  it('provides access to hit reviews from reviews page element', () => {
+    const details = new SearchResponseDetails(
+      accountReviewsResponseBody,
+      itemSchema
+    );
+    expect(details.results.length).to.equal(1);
+    expect(details.results[0].identifier).to.equal('foo');
+    expect(details.results[0].review?.body).to.equal('foo bar baz');
+    expect(details.results[0].review?.title).to.equal('Foo Bar');
+    expect(details.results[0].review?.author).to.equal('Baz Quux');
+    expect(details.results[0].review?.authorItem).to.equal('@bazquux');
+    expect(details.results[0].review?.stars).to.equal(0);
+    expect(details.results[0].review?.__href__).to.equal(
+      'https://example.com?reviewid=123'
+    );
   });
 
   it('provides access to lending page elements', () => {

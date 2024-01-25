@@ -52,6 +52,25 @@ export interface ForumPost {
   date: string;
 }
 
+export interface Review {
+  /** A preview of the review's body text, truncated to 100 characters */
+  body: string;
+  /** The title of the review */
+  title: string;
+  /** The screen name of the review author */
+  author: string;
+  /** The user item identifier of the review author, if available (e.g., @user) */
+  authorItem: string;
+  /** The date on which the review was last edited */
+  updatedate: Date;
+  /** The date on which the review was first created */
+  createdate: Date;
+  /** The star rating (out of 5) attached to the review */
+  stars: number;
+  /** A URL linking directly to the review on its item page */
+  __href__: string;
+}
+
 export type UploadsPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
