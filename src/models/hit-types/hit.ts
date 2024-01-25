@@ -20,10 +20,14 @@ interface HitInfo {
 }
 
 /**
+ * Type that includes all the fields present on any type of hit
+ */
+type AllHitFields = ItemHit & TextHit & FavoritedSearchHit & WebArchiveHit;
+
+/**
  * Result is an expansive type definition encompassing all the optional
  * and required properties that may occur on any type of search result
  * ('hit') returned by the various search backends. (Most metadata
  * properties are optional anyway).
  */
-export type SearchResult = Partial<ItemHit & TextHit & FavoritedSearchHit & WebArchiveHit> &
-  HitInfo;
+export type SearchResult = Partial<AllHitFields> & HitInfo;

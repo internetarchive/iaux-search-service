@@ -1,6 +1,4 @@
 import { Aggregation } from '../models/aggregation';
-import { SearchResult } from '../models/hit-types/hit';
-import { ItemHit } from '../models/hit-types/item-hit';
 
 /**
  * The structure of the response body `hits` object returned from the PPS endpoint.
@@ -57,11 +55,17 @@ export interface ForumPost {
 export type UploadsPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
-export interface LendingPageElement {
-  loans: Record<string, unknown>[];
-  waitlist: Record<string, unknown>[];
-  loan_history: Record<string, unknown>[];
-}
+
+export const LENDING_SUB_ELEMENTS = [
+  'loans',
+  'waitlist',
+  'loan_history',
+] as const;
+export type LendingSubElement = typeof LENDING_SUB_ELEMENTS[number];
+export type LendingPageElement = Record<
+  LendingSubElement,
+  Record<string, unknown>[]
+>;
 
 export type WebArchivesPageElement = WebArchiveEntry[];
 export type ForumPostsPageElement = ForumPost[];
@@ -92,24 +96,36 @@ export interface PageElementMap
  * Converts dates from web capture "YYYYMMDDhhmmss" format to ISO-8601 "YYYY-MM-DDThh:mm:ssZ" format.
  */
 function fixWebCaptureDateFormatting(date: string): string {
-  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${date.slice(8, 10)}:${date.slice(10, 12)}:${date.slice(12, 14)}Z`;
+  const year = date.slice(0, 4);
+  const month = date.slice(4, 6);
+  const day = date.slice(6, 8);
+  const hour = date.slice(8, 10);
+  const minute = date.slice(10, 12);
+  const second = date.slice(12, 14);
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
 }
 
 /**
  * Converts an array of web archive entries to an array of objects compatible with the search hit constructors
  */
-export function convertWebArchivesToSearchHits(pageElement: WebArchivesPageElement): Record<string, unknown>[] {
+export function convertWebArchivesToSearchHits(
+  pageElement: WebArchivesPageElement
+): Record<string, unknown>[] {
   const results: Record<string, unknown>[] = [];
 
   for (const entry of pageElement) {
     if (!entry.captures?.length) continue;
 
+    const encodedUrl = encodeURIComponent(entry.url);
+    const href = `https://web.archive.org/web/${entry.captures[0]}/${encodedUrl}`;
     results.push({
       hit_type: 'web_archive',
       fields: {
         url: entry.url,
-        capture_dates: entry.captures.map(date => fixWebCaptureDateFormatting(date)),
-        __href__: `https://web.archive.org/web/${entry.captures[0]}/${encodeURIComponent(entry.url)}`,
+        capture_dates: entry.captures.map(date =>
+          fixWebCaptureDateFormatting(date)
+        ),
+        __href__: href,
       },
     });
   }

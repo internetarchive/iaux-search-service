@@ -4,11 +4,18 @@ import { SearchResult, HitType } from '../models/hit-types/hit';
 import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
 import { FavoritedSearchHit } from '../models/hit-types/favorited-search-hit';
+import { WebArchiveHit } from '../models/hit-types/web-archive-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
 import { AccountExtraInfo } from './account-extra-info';
-import { PageElementMap, SearchResponseHits, convertWebArchivesToSearchHits } from './page-elements';
-import { WebArchiveHit } from '../models/hit-types/web-archive-hit';
+import {
+  LendingPageElement,
+  PageElementMap,
+  SearchResponseHits,
+  convertWebArchivesToSearchHits,
+  LENDING_SUB_ELEMENTS,
+  WebArchivesPageElement,
+} from './page-elements';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
@@ -28,7 +35,7 @@ export interface SearchResponseBody {
  *
  * @export
  */
-export class SearchResponseDetails {
+export interface SearchResponseDetailsInterface {
   /**
    * Total number of results found
    */
@@ -79,6 +86,57 @@ export class SearchResponseDetails {
    * The hit schema for this response
    */
   schema?: SearchHitSchema;
+}
+
+/**
+ * Implementation for search response details, converting raw response bodies
+ * into a more consistent set of properties & types.
+ */
+export class SearchResponseDetails implements SearchResponseDetailsInterface {
+  /**
+   * @inheritdoc
+   */
+  totalResults: number;
+
+  /**
+   * @inheritdoc
+   */
+  returnedCount: number;
+
+  /**
+   * @inheritdoc
+   */
+  results: SearchResult[];
+
+  /**
+   * @inheritdoc
+   */
+  aggregations?: Record<string, Aggregation>;
+
+  /**
+   * @inheritdoc
+   */
+  collectionTitles?: Record<string, string>;
+
+  /**
+   * @inheritdoc
+   */
+  collectionExtraInfo?: CollectionExtraInfo;
+
+  /**
+   * @inheritdoc
+   */
+  accountExtraInfo?: AccountExtraInfo;
+
+  /**
+   * @inheritdoc
+   */
+  pageElements?: PageElementMap;
+
+  /**
+   * @inheritdoc
+   */
+  schema?: SearchHitSchema;
 
   constructor(body: SearchResponseBody, schema: SearchHitSchema) {
     this.schema = schema;
@@ -100,14 +158,10 @@ export class SearchResponseDetails {
       hits = firstPageElement.hits.hits;
       this.totalResults = firstPageElement.hits.total ?? 0;
       this.returnedCount = firstPageElement.hits.returned ?? 0;
-    } else if (this.pageElements?.['lending']?.['loans']) {
-      hits = this.pageElements['lending']['loans'];
-      this.totalResults = hits.length ?? 0;
-      this.returnedCount = this.totalResults;
-    } else if (this.pageElements?.['web_archives']) {
-      hits = convertWebArchivesToSearchHits(this.pageElements['web_archives']);
-      this.totalResults = this.pageElements['web_archives'].length ?? 0;
-      this.returnedCount = this.totalResults;
+    } else if (this.pageElements?.lending) {
+      hits = this.handleLendingPageElement(schemaHitType);
+    } else if (this.pageElements?.web_archives) {
+      hits = this.handleWebArchivesPageElement();
     }
 
     this.results =
@@ -121,22 +175,13 @@ export class SearchResponseDetails {
     const bodyHasAggregations =
       this.aggregations && Object.keys(this.aggregations).length > 0;
 
-    if (
-      !bodyHasAggregations &&
-      firstPageElement?.aggregations
-    ) {
+    if (!bodyHasAggregations && firstPageElement?.aggregations) {
       aggregations = firstPageElement.aggregations;
     }
 
     // Construct Aggregation objects
     if (aggregations) {
-      this.aggregations = Object.entries(aggregations).reduce(
-        (acc, [key, val]) => {
-          acc[key] = new Aggregation(val);
-          return acc;
-        },
-        {} as Record<string, Aggregation>
-      );
+      this.buildAggregations(aggregations);
     }
 
     if (body?.collection_titles) {
@@ -150,6 +195,58 @@ export class SearchResponseDetails {
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info ?? null;
     }
+  }
+
+  /**
+   * Constructs Aggregation objects from raw aggregations data and applies them
+   * to this instance's aggregations property.
+   * @param aggregations The raw aggregations data from the PPS
+   */
+  private buildAggregations(aggregations: Record<string, Aggregation>): void {
+    this.aggregations = Object.entries(aggregations).reduce(
+      (acc, [key, val]) => {
+        acc[key] = new Aggregation(val);
+        return acc;
+      },
+      {} as Record<string, Aggregation>
+    );
+  }
+
+  /**
+   * Special handling for when the 'lending' page element is present on the response.
+   * @returns An array of raw hits representing current loans.
+   */
+  private handleLendingPageElement(
+    schemaHitType: HitType
+  ): Record<string, unknown>[] {
+    const pageElements = this.pageElements?.lending as LendingPageElement;
+    const hits = pageElements.loans ?? [];
+    this.totalResults = hits.length;
+    this.returnedCount = this.totalResults;
+
+    // For loans, we also need to build hit models for each sub-element
+    for (const subElement of LENDING_SUB_ELEMENTS) {
+      pageElements[subElement] = (pageElements[
+        subElement
+      ].map((hit: SearchResult) =>
+        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
+      ) ?? []) as Record<string, unknown>[];
+    }
+
+    return hits;
+  }
+
+  /**
+   * Special handling for when the 'web_archives' page element is present on the response.
+   * @returns An array of raw hits representing the web archive results.
+   */
+  private handleWebArchivesPageElement(): Record<string, unknown>[] {
+    const hits = convertWebArchivesToSearchHits(
+      this.pageElements?.web_archives as WebArchivesPageElement
+    );
+    this.totalResults = hits.length;
+    this.returnedCount = this.totalResults;
+    return hits;
   }
 
   /**

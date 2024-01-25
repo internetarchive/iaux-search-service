@@ -1,4 +1,4 @@
-import { PageElementName } from "./responses/page-elements";
+import { PageElementName } from './responses/page-elements';
 
 export interface AggregateSearchParam {
   field: string;
