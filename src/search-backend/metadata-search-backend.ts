@@ -30,7 +30,7 @@ export class MetadataSearchBackend extends BaseSearchBackend {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const url = `https://${this.baseUrl}${this.servicePath}/?service_backend=metadata&${queryAsString}`;
+    const url = `https://${this.baseUrl}${this.servicePath}/?${queryAsString}`;
     return this.fetchUrl(url);
   }
 }

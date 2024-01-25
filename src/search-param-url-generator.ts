@@ -72,6 +72,12 @@ export class SearchParamURLGenerator {
       params.append('page_target', String(searchParams.pageTarget));
     }
 
+    if (searchParams.pageElements && searchParams.pageElements.length > 0) {
+      const quotedPageElements = searchParams.pageElements.map(el => `"${el}"`);
+      const pageElementParam = `[${quotedPageElements.join(',')}]`;
+      params.append('page_elements', pageElementParam);
+    }
+
     if (searchParams.rows != null) {
       params.append('hits_per_page', String(searchParams.rows));
     }

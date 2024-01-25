@@ -7,6 +7,7 @@ import { DateField } from '../metadata-fields/field-types/date';
 import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
 import { NumberField } from '../metadata-fields/field-types/number';
 import { StringField } from '../metadata-fields/field-types/string';
+import { Review } from '../../responses/page-elements';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -290,6 +291,28 @@ export class ItemHit {
   @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
+      : undefined;
+  }
+
+  /**
+   * Optional.
+   * Only present when requesting the reviews page_element of an account_details page.
+   * Contains data about the target user's review on this item.
+   * Note: this property is not a standard field type and there is no need to call `.value`/`.values` on it.
+   */
+  @Memoize() get review(): Review | undefined {
+    const reviewData = this.rawMetadata?.review;
+    return reviewData
+      ? {
+          body: reviewData.reviewbody,
+          title: reviewData.reviewtitle,
+          author: reviewData.reviewer,
+          authorItem: reviewData.reviewer_itemname,
+          updatedate: new Date(reviewData.reviewdate),
+          createdate: new Date(reviewData.createdate),
+          stars: Number(reviewData.stars) || 0,
+          __href__: reviewData.__href__,
+        }
       : undefined;
   }
 

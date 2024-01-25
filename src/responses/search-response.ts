@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchResponseHeader } from './search-response-header';
-import { SearchResponseDetails } from './search-response-details';
+import {
+  SearchResponseDetailsInterface,
+  SearchResponseDetails,
+} from './search-response-details';
 import { SearchRequest } from './search-request';
 
 /**
@@ -35,10 +38,10 @@ export class SearchResponse {
   /**
    * The response containing the search results
    *
-   * @type {SearchResponseDetails}
+   * @type {SearchResponseDetailsInterface}
    * @memberof SearchResponse
    */
-  response: SearchResponseDetails;
+  response: SearchResponseDetailsInterface;
 
   constructor(json: Record<string, any>) {
     this.rawResponse = json;

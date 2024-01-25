@@ -1,3 +1,5 @@
+import { PageElementName } from './responses/page-elements';
+
 export interface AggregateSearchParam {
   field: string;
   size?: number;
@@ -150,6 +152,11 @@ export type FieldFilter = Record<string, FilterConstraint | FilterConstraint[]>;
  */
 export type FilterMap = Record<string, FieldFilter>;
 
+export type PageType =
+  | 'search_results'
+  | 'collection_details'
+  | 'account_details';
+
 /**
  * SearchParams provides an encapsulation to all of the search parameters
  * available for searching.
@@ -171,13 +178,19 @@ export interface SearchParams {
    * Defaults to 'search_results' in the PPS. Meant to allow different
    * backend defaults to be used depending on the needs of certain pages.
    */
-  pageType?: string;
+  pageType?: PageType;
 
   /**
-   * For collection details pages, specifies the name of the collection
-   * that is to be retrieved (e.g., 'prelinger').
+   * For details pages, specifies the name of the collection/account
+   * that is to be retrieved (e.g., 'prelinger', '@brewster').
    */
   pageTarget?: string;
+
+  /**
+   * For account details pages, which segments of page data should be retrieved
+   * (e.g., 'uploads', 'reviews', ...)
+   */
+  pageElements?: PageElementName[];
 
   /**
    * One or more parameters specifying how the search results should be
