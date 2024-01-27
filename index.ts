@@ -41,6 +41,7 @@ export { AccountExtraInfo } from './src/responses/account-extra-info';
 export {
   PageElementMap,
   PageElementName,
+  Review,
   ForumPost,
   WebArchiveEntry,
   LendingPageElement,
