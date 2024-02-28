@@ -31,6 +31,7 @@ export {
 
 export { SearchResponse } from './src/responses/search-response';
 export { SearchResponseHeader } from './src/responses/search-response-header';
+export { SearchResponseSessionContext } from './src/responses/search-response-session-context';
 export { SearchResponseParams } from './src/responses/search-response-params';
 export {
   CollectionExtraInfo,
