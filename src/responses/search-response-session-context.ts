@@ -13,5 +13,5 @@ export interface SearchResponseSessionContext {
   pps?: {
     is_page_target_owner?: boolean;
     full_text_search_override?: boolean;
-  }
+  };
 }
