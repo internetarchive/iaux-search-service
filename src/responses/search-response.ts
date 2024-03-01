@@ -5,6 +5,7 @@ import {
   SearchResponseDetails,
 } from './search-response-details';
 import { SearchRequest } from './search-request';
+import { SearchResponseSessionContext } from './search-response-session-context';
 
 /**
  * The top-level response model when retrieving a response from the page production service endpoint.
@@ -36,6 +37,11 @@ export class SearchResponse {
   responseHeader: SearchResponseHeader;
 
   /**
+   * The session context from the PPS
+   */
+  sessionContext: SearchResponseSessionContext;
+
+  /**
    * The response containing the search results
    *
    * @type {SearchResponseDetailsInterface}
@@ -47,6 +53,7 @@ export class SearchResponse {
     this.rawResponse = json;
     this.request = new SearchRequest(json.request);
     this.responseHeader = json.response?.header;
+    this.sessionContext = json.session_context;
     this.response = new SearchResponseDetails(
       json.response?.body,
       json.response?.hit_schema
