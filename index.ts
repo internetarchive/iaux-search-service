@@ -52,6 +52,7 @@ export {
 
 export { MetadataSearchBackend } from './src/search-backend/metadata-search-backend';
 export { FulltextSearchBackend } from './src/search-backend/fulltext-search-backend';
+export { RadioSearchBackend } from './src/search-backend/radio-search-backend';
 
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
