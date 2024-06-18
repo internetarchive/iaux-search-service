@@ -7,5 +7,5 @@ export enum SearchType {
   FULLTEXT,
   //TV, // not yet available
   RADIO = 3, // explicit value for now, just to maintain consistency when we add TV later
-             // and so that the order matches how we present these options beside search widgets
+  // and so that the order matches how we present these options beside search widgets
 }
