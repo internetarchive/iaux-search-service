@@ -18,6 +18,7 @@ export interface UserAccountDetails {
   screenname: string;
   user_item_identifier: string;
   user_since: string;
+  loan_visibility: string;
 }
 
 /**
