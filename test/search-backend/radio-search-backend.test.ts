@@ -75,7 +75,7 @@ describe('RadioSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
-    it('includes scope param from URL if not provided', async () => {
+    it('gets scope param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('scope', 'boop');
       window.history.replaceState({}, '', url.toString());
@@ -90,7 +90,7 @@ describe('RadioSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes caching param if provided', async () => {
+    it('includes caching param if provided as option', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
       const backend = new RadioSearchBackend({
         caching: cachingParam,
@@ -101,7 +101,7 @@ describe('RadioSearchBackend', () => {
       expect(queryParams.get('caching')).to.equal(cachingParam);
     });
 
-    it('includes caching param from URL if not provided', async () => {
+    it('gets caching param from URL if not provided as option', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
 
       const url = new URL(window.location.href);
@@ -118,7 +118,7 @@ describe('RadioSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes reCache param from URL if not provided', async () => {
+    it('gets reCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('reCache', '1');
       window.history.replaceState({}, '', url.toString());
@@ -133,7 +133,7 @@ describe('RadioSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes noCache param from URL if not provided', async () => {
+    it('gets noCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('noCache', '1');
       window.history.replaceState({}, '', url.toString());
@@ -148,7 +148,7 @@ describe('RadioSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes dontCache param from URL if not provided', async () => {
+    it('gets dontCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('dontCache', '1');
       window.history.replaceState({}, '', url.toString());
