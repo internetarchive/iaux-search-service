@@ -260,6 +260,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
       case 'item':
         return new ItemHit(result);
       case 'text':
+      case 'asr_text':
         return new TextHit(result);
       case 'favorited_search':
         return new FavoritedSearchHit(result);

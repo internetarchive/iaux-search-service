@@ -9,6 +9,7 @@ import type { SearchBackendInterface } from './search-backend/search-backend-int
 import { FulltextSearchBackend } from './search-backend/fulltext-search-backend';
 import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
 import { Memoize } from 'typescript-memoize';
+import { RadioSearchBackend } from './search-backend/radio-search-backend';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -63,9 +64,10 @@ export class SearchService implements SearchServiceInterface {
   ): SearchBackendInterface {
     switch (type) {
       //case SearchType.TV: // Will eventually have its own service backend
-      //case SearchType.RADIO: // Will eventually have its own service backend
       case SearchType.FULLTEXT:
         return new FulltextSearchBackend(options);
+      case SearchType.RADIO:
+        return new RadioSearchBackend(options);
       case SearchType.METADATA:
       default:
         return new MetadataSearchBackend(options);

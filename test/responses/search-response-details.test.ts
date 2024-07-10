@@ -52,6 +52,29 @@ const responseBody: SearchResponseBody = {
   },
 };
 
+const radioResponseBody: SearchResponseBody = {
+  hits: {
+    total: 2,
+    returned: 2,
+    hits: [
+      {
+        hit_type: 'asr_text',
+        fields: {
+          identifier: 'foo',
+          mediatype: 'audio',
+        },
+      },
+      {
+        hit_type: 'asr_text',
+        fields: {
+          identifier: 'bar',
+          collection: ['baz'],
+        },
+      },
+    ],
+  },
+};
+
 const favSearchResponseBody: SearchResponseBody = {
   hits: {
     total: 1,
@@ -267,6 +290,15 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
     expect(details.results[0]).to.be.instanceOf(ItemHit);
+    expect(details.results[0].identifier).to.equal('foo');
+  });
+
+  it("constructs text hits for 'asr_text' hit type", () => {
+    const details = new SearchResponseDetails(
+      radioResponseBody,
+      {} as SearchHitSchema
+    );
+    expect(details.results[0]).to.be.instanceOf(TextHit);
     expect(details.results[0].identifier).to.equal('foo');
   });
 
