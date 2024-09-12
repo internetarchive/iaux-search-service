@@ -5,6 +5,7 @@ import { ItemHit } from '../models/hit-types/item-hit';
 import { TextHit } from '../models/hit-types/text-hit';
 import { FavoritedSearchHit } from '../models/hit-types/favorited-search-hit';
 import { WebArchiveHit } from '../models/hit-types/web-archive-hit';
+import { TvClipHit } from '../models/hit-types/tv-clip-hit';
 import { CollectionExtraInfo } from './collection-extra-info';
 import type { SearchHitSchema } from './search-hit-schema';
 import { AccountExtraInfo } from './account-extra-info';
@@ -259,6 +260,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     switch (type) {
       case 'item':
         return new ItemHit(result);
+      case 'asr_text':
       case 'text':
       case 'asr_text':
         return new TextHit(result);
@@ -266,6 +268,8 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
         return new FavoritedSearchHit(result);
       case 'web_archive':
         return new WebArchiveHit(result);
+      case 'tv_clip':
+        return new TvClipHit(result);
       default:
         // The hit type doesn't tell us what to construct, so just construct an ItemHit
         return new ItemHit(result);
