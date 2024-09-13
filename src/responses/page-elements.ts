@@ -9,6 +9,12 @@ export interface SearchResponseHits {
   hits: Record<string, unknown>[];
 }
 
+export type FederatedServiceName =
+  | 'full_text'
+  | 'tv_captions'
+  | 'radio_captions'
+  | 'media_transcription';
+
 /**
  * Valid page element names recognized & returned by the PPS
  */
@@ -19,10 +25,7 @@ export type PageElementName =
   | 'lending'
   | 'web_archives'
   | 'forum_posts'
-  | 'full_text'
-  | 'tv_captions'
-  | 'radio_captions'
-  | 'media_transcription';
+  | FederatedServiceName;
 
 /**
  * A basic page element returning hits and/or aggregations
@@ -78,7 +81,7 @@ export interface Review {
 export type UploadsPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
-export type FederatedPageElement = SearchResponseHits;
+export type FederatedPageElement = HitsAggregationsPageElement;
 
 export const LENDING_SUB_ELEMENTS = [
   'loans',

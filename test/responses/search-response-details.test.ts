@@ -3,6 +3,7 @@ import { Aggregation } from '../../src/models/aggregation';
 import { HitType } from '../../src/models/hit-types/hit';
 import { ItemHit } from '../../src/models/hit-types/item-hit';
 import { TextHit } from '../../src/models/hit-types/text-hit';
+import { TvClipHit } from '../../src/models/hit-types/tv-clip-hit';
 import {
   SearchResponseBody,
   SearchResponseDetails,
@@ -215,6 +216,82 @@ const accountWebArchivesResponseBody: SearchResponseBody = {
         captures: [], // This one will be skipped due to empty captures
       },
     ],
+  },
+};
+
+// TODO: Add metada when it has been added to the endpoint
+// Also add a corresponding test to ensure metadata is used to populate response.results
+const federatedSearchResponseBody: SearchResponseBody = {
+  page_elements: {
+    full_text: {
+      hits: {
+        total: 2,
+        returned: 2,
+        hits: [
+          {
+            hit_type: 'text',
+            fields: {
+              identifier: 'foo',
+              mediatype: 'texts',
+            },
+          },
+          {
+            hit_type: 'text',
+            fields: {
+              identifier: 'bar',
+              collection: ['baz'],
+            },
+          },
+        ],
+      },
+    },
+    tv_captions: {
+      hits: {
+        total: 1,
+        returned: 1,
+        hits: [
+          {
+            hit_type: 'tv_clip',
+            fields: {
+              identifier: 'foo',
+              mediatype: 'movies',
+              start: '52',
+              href: '/details/baz/start/52/end/112',
+            },
+          },
+        ],
+      },
+    },
+    radio_captions: {
+      hits: {
+        total: 1,
+        returned: 1,
+        hits: [
+          {
+            hit_type: 'asr_text',
+            fields: {
+              identifier: 'foo',
+              mediatype: 'texts',
+            },
+          },
+        ],
+      },
+    },
+    media_transcription: {
+      hits: {
+        total: 1,
+        returned: 1,
+        hits: [
+          {
+            hit_type: 'asr_text',
+            fields: {
+              identifier: 'foo',
+              mediatype: 'texts',
+            },
+          },
+        ],
+      },
+    },
   },
 };
 
@@ -469,6 +546,83 @@ describe('SearchResponseDetails', () => {
     expect(webArchiveResult.capture_dates?.values?.length).to.equal(2);
     expect(webArchiveResult.__href__?.value).to.equal(
       'https://web.archive.org/web/20100102030405/https%3A%2F%2Fexample.com%2F'
+    );
+  });
+
+  it('provides access to the hits from federated search', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    // TODO: Add metadata
+    expect(details.pageElements?.full_text?.hits?.hits).to.exist;
+    expect(details.pageElements?.tv_captions?.hits?.hits).to.exist;
+    expect(details.pageElements?.radio_captions?.hits?.hits).to.exist;
+    expect(details.pageElements?.media_transcription?.hits?.hits).to.exist;
+  });
+
+  it('provides access to the hit counts from each federated search service', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    // TODO: Add metadata
+    expect(details.pageElements?.full_text?.hits?.total).to.equal(2);
+    expect(details.pageElements?.tv_captions?.hits?.total).to.equal(1);
+    expect(details.pageElements?.radio_captions?.hits?.total).to.equal(1);
+    expect(details.pageElements?.media_transcription?.hits?.total).to.equal(1);
+  });
+
+  it('adds each service result count to total', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.totalResults).to.equal(5);
+  });
+
+  it('constructs text hits from federated full-text search', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.federatedResults?.full_text[0]).to.be.instanceOf(TextHit);
+  });
+
+  it('constructs TV clip hits from federated TV search', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.federatedResults?.tv_captions[0]).to.be.instanceOf(
+      TvClipHit
+    );
+  });
+
+  it('constructs text hits from federated radio search', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.federatedResults?.radio_captions[0]).to.be.instanceOf(
+      TextHit
+    );
+  });
+
+  it('constructs text hits from federated media transcription search', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.federatedResults?.media_transcription[0]).to.be.instanceOf(
+      TextHit
     );
   });
 });

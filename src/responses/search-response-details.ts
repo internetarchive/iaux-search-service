@@ -17,7 +17,7 @@ import {
   LENDING_SUB_ELEMENTS,
   WebArchivesPageElement,
   FederatedPageElement,
-  PageElementName,
+  FederatedServiceName,
 } from './page-elements';
 
 /**
@@ -30,6 +30,13 @@ export interface SearchResponseBody {
   collection_extra_info?: CollectionExtraInfo;
   account_extra_info?: AccountExtraInfo;
   page_elements?: PageElementMap;
+}
+
+/**
+ * The structure of the optional federated results to be added to the results
+ */
+export interface FederatedResults {
+  [key: string]: SearchResult[];
 }
 
 /**
@@ -53,6 +60,11 @@ export interface SearchResponseDetailsInterface {
    * The array of search results
    */
   results: SearchResult[];
+
+  /**
+   * The array of federated search results
+   */
+  federatedresults?: FederatedResults;
 
   /**
    * Requested aggregations such as facets or histogram data
@@ -114,6 +126,11 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
   /**
    * @inheritdoc
    */
+  federatedResults?: FederatedResults;
+
+  /**
+   * @inheritdoc
+   */
   aggregations?: Record<string, Aggregation>;
 
   /**
@@ -158,7 +175,9 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.returnedCount = body?.hits?.returned ?? 0;
 
     // TODO: Add a condition to use metadata page element hits first if available
-    if (!hits?.length && firstPageElement?.hits?.hits) {
+    if (this.pageElements?.full_text) {
+      this.handleFederatedPageElements();
+    } else if (!hits?.length && firstPageElement?.hits?.hits) {
       hits = firstPageElement.hits.hits;
       this.totalResults = firstPageElement.hits.total ?? 0;
       this.returnedCount = firstPageElement.hits.returned ?? 0;
@@ -172,11 +191,6 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
       hits?.map((hit: SearchResult) =>
         SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
       ) ?? [];
-
-    // Check for federated search elements
-    if (this.pageElements?.full_text) {
-      this.handleFederatedPageElements();
-    }
 
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
@@ -262,21 +276,31 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * Special handling for when the federated search elements are present in the response.
    */
   private handleFederatedPageElements(): void {
-    // TODO: Add metadata when it has been added to the endpoint
-    const SEARCH_SERVICES: PageElementName[] = [
+    const SEARCH_SERVICES: FederatedServiceName[] = [
       'full_text',
       'tv_captions',
       'radio_captions',
       'media_transcription',
     ];
 
-    // For loans, we also need to build hit models for each sub-element
     for (const service of SEARCH_SERVICES) {
-      const results = this.pageElements?.[service] as FederatedPageElement;
+      this.federatedResults
+        ? (this.federatedResults[service] = [])
+        : (this.federatedResults = { [service]: [] });
 
-      results.hits?.map((hit: SearchResult) =>
-        SearchResponseDetails.createResult(hit.hit_type ?? 'item', hit)
-      ) ?? [];
+      const serviceElement = this.pageElements?.[
+        service
+      ] as FederatedPageElement;
+
+      if (serviceElement.hits?.hits) {
+        this.federatedResults[
+          service
+        ] = serviceElement.hits.hits.map((hit: SearchResult) =>
+          SearchResponseDetails.createResult(hit.hit_type ?? 'item', hit)
+        );
+      }
+
+      this.totalResults += serviceElement.hits?.total ?? 0;
     }
   }
 

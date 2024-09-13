@@ -19,7 +19,7 @@ export class FederatedSearchBackend extends BaseSearchBackend {
     super(options);
     this.servicePath =
       options?.servicePath ?? '/services/search/beta/page_production';
-      
+
     // TODO: Remove this when we're no longer using the temp URL
     this.baseUrl = PROTOTYPE_URL;
   }
