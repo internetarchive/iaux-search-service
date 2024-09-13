@@ -16,6 +16,7 @@ import { SearchType } from '../src/search-type';
 import { MetadataSearchBackend } from '../src/search-backend/metadata-search-backend';
 import { FulltextSearchBackend } from '../src/search-backend/fulltext-search-backend';
 import { RadioSearchBackend } from '../src/search-backend/radio-search-backend';
+import { FederatedSearchBackend } from '../src/search-backend/federated-search-backend';
 
 describe('SearchService', () => {
   it('can search when requested', async () => {
@@ -159,5 +160,11 @@ describe('SearchService', () => {
     expect(
       SearchService.getBackendForSearchType(SearchType.RADIO)
     ).to.be.instanceOf(RadioSearchBackend);
+  });
+
+  it('factory method gets federated backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.FEDERATED)
+    ).to.be.instanceOf(FederatedSearchBackend);
   });
 });
