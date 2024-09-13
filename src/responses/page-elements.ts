@@ -18,7 +18,11 @@ export type PageElementName =
   | 'collections'
   | 'lending'
   | 'web_archives'
-  | 'forum_posts';
+  | 'forum_posts'
+  | 'full_text'
+  | 'tv_captions'
+  | 'radio_captions'
+  | 'media_transcription';
 
 /**
  * A basic page element returning hits and/or aggregations
@@ -74,6 +78,7 @@ export interface Review {
 export type UploadsPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
+export type FederatedPageElement = SearchResponseHits;
 
 export const LENDING_SUB_ELEMENTS = [
   'loans',
@@ -95,11 +100,13 @@ export type PageElement =
   | CollectionsPageElement
   | LendingPageElement
   | WebArchivesPageElement
-  | ForumPostsPageElement;
+  | ForumPostsPageElement
+  | FederatedPageElement;
 
 /**
  * A map containing one or more page elements returned by the PPS, keyed by the
  * name of the element.
+ * TODO: Add FederatedPageElement metadata once it has been added to the endpoint
  */
 export interface PageElementMap
   extends Partial<Record<PageElementName, PageElement>> {
@@ -109,6 +116,10 @@ export interface PageElementMap
   lending?: LendingPageElement;
   web_archives?: WebArchivesPageElement;
   forum_posts?: ForumPostsPageElement;
+  full_text?: FederatedPageElement;
+  tv_captions?: FederatedPageElement;
+  radio_captions?: FederatedPageElement;
+  media_transcription?: FederatedPageElement;
 }
 
 /**

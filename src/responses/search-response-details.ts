@@ -16,6 +16,8 @@ import {
   convertWebArchivesToSearchHits,
   LENDING_SUB_ELEMENTS,
   WebArchivesPageElement,
+  FederatedPageElement,
+  PageElementName,
 } from './page-elements';
 
 /**
@@ -155,6 +157,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
 
+    // TODO: Add a condition to use metadata page element hits first if available
     if (!hits?.length && firstPageElement?.hits?.hits) {
       hits = firstPageElement.hits.hits;
       this.totalResults = firstPageElement.hits.total ?? 0;
@@ -169,6 +172,11 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
       hits?.map((hit: SearchResult) =>
         SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
       ) ?? [];
+
+    // Check for federated search elements
+    if (this.pageElements?.full_text) {
+      this.handleFederatedPageElements();
+    }
 
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
@@ -248,6 +256,28 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.totalResults = hits.length;
     this.returnedCount = this.totalResults;
     return hits;
+  }
+
+  /**
+   * Special handling for when the federated search elements are present in the response.
+   */
+  private handleFederatedPageElements(): void {
+    // TODO: Add metadata when it has been added to the endpoint
+    const SEARCH_SERVICES: PageElementName[] = [
+      'full_text',
+      'tv_captions',
+      'radio_captions',
+      'media_transcription',
+    ];
+
+    // For loans, we also need to build hit models for each sub-element
+    for (const service of SEARCH_SERVICES) {
+      const results = this.pageElements?.[service] as FederatedPageElement;
+
+      results.hits?.map((hit: SearchResult) =>
+        SearchResponseDetails.createResult(hit.hit_type ?? 'item', hit)
+      ) ?? [];
+    }
   }
 
   /**
