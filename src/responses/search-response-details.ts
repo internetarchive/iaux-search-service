@@ -16,7 +16,6 @@ import {
   convertWebArchivesToSearchHits,
   LENDING_SUB_ELEMENTS,
   WebArchivesPageElement,
-  FederatedPageElement,
   FederatedServiceName,
 } from './page-elements';
 
@@ -64,7 +63,7 @@ export interface SearchResponseDetailsInterface {
   /**
    * The array of federated search results
    */
-  federatedresults?: FederatedResults;
+  federatedResults?: FederatedResults;
 
   /**
    * Requested aggregations such as facets or histogram data
@@ -101,6 +100,11 @@ export interface SearchResponseDetailsInterface {
    * The hit schema for this response
    */
   schema?: SearchHitSchema;
+
+  /**
+   * The hit type from the schema for this resopnse
+   */
+  schemaHitType?: HitType;
 }
 
 /**
@@ -158,9 +162,14 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    */
   schema?: SearchHitSchema;
 
+  /**
+   * @inheritdoc
+   */
+  schemaHitType?: HitType;
+
   constructor(body: SearchResponseBody, schema: SearchHitSchema) {
     this.schema = schema;
-    const schemaHitType = schema?.hit_type;
+    this.schemaHitType = schema?.hit_type;
 
     let firstPageElement;
     if (body?.page_elements) {
@@ -174,23 +183,26 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
 
-    // TODO: Add a condition to use metadata page element hits first if available
-    if (this.pageElements?.full_text) {
+    // Use hits from federated search metadata if available
+    if (!hits?.length && this.pageElements?.fts) {
+      hits = this.pageElements.item_metadata?.hits?.hits;
+
+      this.totalResults = this.pageElements.item_metadata?.hits?.total ?? 0;
+      this.returnedCount = this.pageElements.item_metadata?.hits?.returned ?? 0;
+
       this.handleFederatedPageElements();
     } else if (!hits?.length && firstPageElement?.hits?.hits) {
       hits = firstPageElement.hits.hits;
+
       this.totalResults = firstPageElement.hits.total ?? 0;
       this.returnedCount = firstPageElement.hits.returned ?? 0;
     } else if (this.pageElements?.lending) {
-      hits = this.handleLendingPageElement(schemaHitType);
+      hits = this.handleLendingPageElement();
     } else if (this.pageElements?.web_archives) {
       hits = this.handleWebArchivesPageElement();
     }
 
-    this.results =
-      hits?.map((hit: SearchResult) =>
-        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-      ) ?? [];
+    this.results = this.formatHits(hits);
 
     // Use aggregations directly from the body if available.
     // Otherwise, try extracting them from the first page_element.
@@ -221,6 +233,23 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
   }
 
   /**
+   * Constructs correctly typed search results objects from raw hits.
+   *
+   * @param hits An array of raw hits data from the PPS
+   * @returns An array of correctly-typed hits given each hit type
+   */
+  private formatHits(hits?: SearchResult[]) {
+    return (
+      hits?.map((hit: SearchResult) =>
+        SearchResponseDetails.createResult(
+          hit.hit_type ?? (this.schemaHitType as HitType),
+          hit
+        )
+      ) ?? []
+    );
+  }
+
+  /**
    * Constructs Aggregation objects from raw aggregations data and applies them
    * to this instance's aggregations property.
    * @param aggregations The raw aggregations data from the PPS
@@ -239,9 +268,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * Special handling for when the 'lending' page element is present on the response.
    * @returns An array of raw hits representing current loans.
    */
-  private handleLendingPageElement(
-    schemaHitType: HitType
-  ): Record<string, unknown>[] {
+  private handleLendingPageElement(): Record<string, unknown>[] {
     const pageElements = this.pageElements?.lending as LendingPageElement;
     const hits = pageElements.loans ?? [];
     this.totalResults = hits.length;
@@ -249,11 +276,9 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
 
     // For loans, we also need to build hit models for each sub-element
     for (const subElement of LENDING_SUB_ELEMENTS) {
-      pageElements[subElement] = (pageElements[
-        subElement
-      ].map((hit: SearchResult) =>
-        SearchResponseDetails.createResult(hit.hit_type ?? schemaHitType, hit)
-      ) ?? []) as Record<string, unknown>[];
+      pageElements[subElement] = this.formatHits(
+        pageElements[subElement]
+      ) as Record<string, unknown>[];
     }
 
     return hits;
@@ -274,33 +299,32 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
 
   /**
    * Special handling for when the federated search elements are present in the response.
+   * Formats all non-metadata hits to a new federatedResults object in the results.
    */
   private handleFederatedPageElements(): void {
     const SEARCH_SERVICES: FederatedServiceName[] = [
-      'full_text',
-      'tv_captions',
-      'radio_captions',
-      'media_transcription',
+      'fts',
+      'tvs',
+      'rcs',
+      'whisper',
     ];
 
     for (const service of SEARCH_SERVICES) {
+      // Add federated results for service
       this.federatedResults
         ? (this.federatedResults[service] = [])
         : (this.federatedResults = { [service]: [] });
 
-      const serviceElement = this.pageElements?.[
-        service
-      ] as FederatedPageElement;
-
-      if (serviceElement.hits?.hits) {
-        this.federatedResults[
-          service
-        ] = serviceElement.hits.hits.map((hit: SearchResult) =>
-          SearchResponseDetails.createResult(hit.hit_type ?? 'item', hit)
+      const serviceElementHits = this.pageElements?.[service]?.hits;
+      if (serviceElementHits?.hits) {
+        this.federatedResults[service] = this.formatHits(
+          serviceElementHits?.hits
         );
       }
 
-      this.totalResults += serviceElement.hits?.total ?? 0;
+      // Update totals with counts from this service
+      this.totalResults += serviceElementHits?.total ?? 0;
+      this.returnedCount += serviceElementHits?.returned ?? 0;
     }
   }
 

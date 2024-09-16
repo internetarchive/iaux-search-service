@@ -219,11 +219,25 @@ const accountWebArchivesResponseBody: SearchResponseBody = {
   },
 };
 
-// TODO: Add metada when it has been added to the endpoint
 // Also add a corresponding test to ensure metadata is used to populate response.results
 const federatedSearchResponseBody: SearchResponseBody = {
   page_elements: {
-    full_text: {
+    item_metadata: {
+      hits: {
+        total: 2,
+        returned: 1,
+        hits: [
+          {
+            hit_type: 'text',
+            fields: {
+              identifier: 'first_metadata',
+              mediatype: 'texts',
+            },
+          },
+        ],
+      },
+    },
+    fts: {
       hits: {
         total: 2,
         returned: 2,
@@ -245,7 +259,7 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    tv_captions: {
+    tvs: {
       hits: {
         total: 1,
         returned: 1,
@@ -262,7 +276,7 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    radio_captions: {
+    rcs: {
       hits: {
         total: 1,
         returned: 1,
@@ -277,7 +291,7 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    media_transcription: {
+    whisper: {
       hits: {
         total: 1,
         returned: 1,
@@ -555,11 +569,11 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    // TODO: Add metadata
-    expect(details.pageElements?.full_text?.hits?.hits).to.exist;
-    expect(details.pageElements?.tv_captions?.hits?.hits).to.exist;
-    expect(details.pageElements?.radio_captions?.hits?.hits).to.exist;
-    expect(details.pageElements?.media_transcription?.hits?.hits).to.exist;
+    expect(details.pageElements?.item_metadata?.hits?.hits).to.exist;
+    expect(details.pageElements?.fts?.hits?.hits).to.exist;
+    expect(details.pageElements?.tvs?.hits?.hits).to.exist;
+    expect(details.pageElements?.rcs?.hits?.hits).to.exist;
+    expect(details.pageElements?.whisper?.hits?.hits).to.exist;
   });
 
   it('provides access to the hit counts from each federated search service', () => {
@@ -568,11 +582,11 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    // TODO: Add metadata
-    expect(details.pageElements?.full_text?.hits?.total).to.equal(2);
-    expect(details.pageElements?.tv_captions?.hits?.total).to.equal(1);
-    expect(details.pageElements?.radio_captions?.hits?.total).to.equal(1);
-    expect(details.pageElements?.media_transcription?.hits?.total).to.equal(1);
+    expect(details.pageElements?.item_metadata?.hits?.total).to.equal(2);
+    expect(details.pageElements?.fts?.hits?.total).to.equal(2);
+    expect(details.pageElements?.tvs?.hits?.total).to.equal(1);
+    expect(details.pageElements?.rcs?.hits?.total).to.equal(1);
+    expect(details.pageElements?.whisper?.hits?.total).to.equal(1);
   });
 
   it('adds each service result count to total', () => {
@@ -581,7 +595,27 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.totalResults).to.equal(5);
+    expect(details.totalResults).to.equal(7);
+  });
+
+  it('adds each service returned count to total', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.returnedCount).to.equal(6);
+  });
+
+  it('uses the metadata results to populate the main results', () => {
+    const details = new SearchResponseDetails(
+      federatedSearchResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.results[0]).to.exist;
+    expect(details.results[0].identifier).to.equal('first_metadata');
+    expect(details.results[0]).to.be.instanceOf(TextHit);
   });
 
   it('constructs text hits from federated full-text search', () => {
@@ -590,7 +624,7 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.federatedResults?.full_text[0]).to.be.instanceOf(TextHit);
+    expect(details.federatedResults?.fts[0]).to.be.instanceOf(TextHit);
   });
 
   it('constructs TV clip hits from federated TV search', () => {
@@ -599,9 +633,7 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.federatedResults?.tv_captions[0]).to.be.instanceOf(
-      TvClipHit
-    );
+    expect(details.federatedResults?.tvs[0]).to.be.instanceOf(TvClipHit);
   });
 
   it('constructs text hits from federated radio search', () => {
@@ -610,9 +642,7 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.federatedResults?.radio_captions[0]).to.be.instanceOf(
-      TextHit
-    );
+    expect(details.federatedResults?.rcs[0]).to.be.instanceOf(TextHit);
   });
 
   it('constructs text hits from federated media transcription search', () => {
@@ -621,8 +651,6 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.federatedResults?.media_transcription[0]).to.be.instanceOf(
-      TextHit
-    );
+    expect(details.federatedResults?.whisper[0]).to.be.instanceOf(TextHit);
   });
 });

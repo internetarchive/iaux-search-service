@@ -10,10 +10,11 @@ export interface SearchResponseHits {
 }
 
 export type FederatedServiceName =
-  | 'full_text'
-  | 'tv_captions'
-  | 'radio_captions'
-  | 'media_transcription';
+  | 'item_metadata'
+  | 'fts'
+  | 'tvs'
+  | 'rcs'
+  | 'whisper';
 
 /**
  * Valid page element names recognized & returned by the PPS
@@ -109,7 +110,6 @@ export type PageElement =
 /**
  * A map containing one or more page elements returned by the PPS, keyed by the
  * name of the element.
- * TODO: Add FederatedPageElement metadata once it has been added to the endpoint
  */
 export interface PageElementMap
   extends Partial<Record<PageElementName, PageElement>> {
@@ -119,10 +119,11 @@ export interface PageElementMap
   lending?: LendingPageElement;
   web_archives?: WebArchivesPageElement;
   forum_posts?: ForumPostsPageElement;
-  full_text?: FederatedPageElement;
-  tv_captions?: FederatedPageElement;
-  radio_captions?: FederatedPageElement;
-  media_transcription?: FederatedPageElement;
+  item_metadata?: FederatedPageElement;
+  fts?: FederatedPageElement;
+  tvs?: FederatedPageElement;
+  rcs?: FederatedPageElement;
+  whisper?: FederatedPageElement;
 }
 
 /**
