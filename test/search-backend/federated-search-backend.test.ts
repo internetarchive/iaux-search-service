@@ -53,9 +53,7 @@ describe('FederatedSearchBackend', () => {
       ).to.equal('simple_federation');
     });
 
-    // TODO: Uncomment this test when we're no longer using the prototype URL
-
-    /* it('uses the provided service path', async () => {
+    it('uses the provided service path', async () => {
       const backend = new FederatedSearchBackend({
         baseUrl: 'foo.bar',
         servicePath: '/baz',
@@ -65,7 +63,7 @@ describe('FederatedSearchBackend', () => {
       expect(urlCalled!.toString()).to.satisfy((url: string) =>
         url.startsWith('https://foo.bar/baz')
       );
-    }); */
+    });
 
     it('includes credentials for search endpoint if requested', async () => {
       const backend = new FederatedSearchBackend({
