@@ -10,11 +10,10 @@ export interface SearchResponseHits {
 }
 
 export type FederatedServiceName =
-  | 'item_metadata'
-  | 'fts'
-  | 'tvs'
-  | 'rcs'
-  | 'whisper';
+  | 'service___fts'
+  | 'service___tvs'
+  | 'service___rcs'
+  | 'service___whisper';
 
 /**
  * Valid page element names recognized & returned by the PPS
@@ -119,11 +118,10 @@ export interface PageElementMap
   lending?: LendingPageElement;
   web_archives?: WebArchivesPageElement;
   forum_posts?: ForumPostsPageElement;
-  item_metadata?: FederatedPageElement;
-  fts?: FederatedPageElement;
-  tvs?: FederatedPageElement;
-  rcs?: FederatedPageElement;
-  whisper?: FederatedPageElement;
+  service___fts?: FederatedPageElement;
+  service___tvs?: FederatedPageElement;
+  service___rcs?: FederatedPageElement;
+  service___whisper?: FederatedPageElement;
 }
 
 /**

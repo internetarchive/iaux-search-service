@@ -183,12 +183,10 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
 
-    // Use hits from federated search metadata if available
-    if (!hits?.length && this.pageElements?.fts) {
-      hits = this.pageElements.item_metadata?.hits?.hits;
-
-      this.totalResults = this.pageElements.item_metadata?.hits?.total ?? 0;
-      this.returnedCount = this.pageElements.item_metadata?.hits?.returned ?? 0;
+    // Use total hits from search services if federated search
+    if (!hits?.length && this.pageElements?.service___fts) {
+      this.totalResults = 0;
+      this.returnedCount = 0;
 
       this.handleFederatedPageElements();
     } else if (!hits?.length && firstPageElement?.hits?.hits) {
@@ -303,21 +301,24 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    */
   private handleFederatedPageElements(): void {
     const SEARCH_SERVICES: FederatedServiceName[] = [
-      'fts',
-      'tvs',
-      'rcs',
-      'whisper',
+      'service___fts',
+      'service___tvs',
+      'service___rcs',
+      'service___whisper',
     ];
 
     for (const service of SEARCH_SERVICES) {
-      // Add federated results for service
+      const simpleServiceName: string = this.removeServicePrefix(service);
+
+      // Add service name to federated results section
       this.federatedResults
         ? (this.federatedResults[service] = [])
-        : (this.federatedResults = { [service]: [] });
+        : (this.federatedResults = { [simpleServiceName]: [] });
 
+      // Add hits to service
       const serviceElementHits = this.pageElements?.[service]?.hits;
       if (serviceElementHits?.hits) {
-        this.federatedResults[service] = this.formatHits(
+        this.federatedResults[simpleServiceName] = this.formatHits(
           serviceElementHits?.hits
         );
       }
@@ -326,6 +327,17 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
       this.totalResults += serviceElementHits?.total ?? 0;
       this.returnedCount += serviceElementHits?.returned ?? 0;
     }
+  }
+
+  /**
+   * Utility method to remove 'service___' from the beginning of federated service names,
+   * so that output will be cleaner.
+   *
+   * @param {FederatedServiceName} service Original service name
+   * @returns {string} Service name with prefix removed
+   */
+  private removeServicePrefix(service: FederatedServiceName): string {
+    return service.split('___')[1];
   }
 
   /**

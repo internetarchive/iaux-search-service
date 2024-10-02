@@ -222,22 +222,7 @@ const accountWebArchivesResponseBody: SearchResponseBody = {
 // Also add a corresponding test to ensure metadata is used to populate response.results
 const federatedSearchResponseBody: SearchResponseBody = {
   page_elements: {
-    item_metadata: {
-      hits: {
-        total: 2,
-        returned: 1,
-        hits: [
-          {
-            hit_type: 'text',
-            fields: {
-              identifier: 'first_metadata',
-              mediatype: 'texts',
-            },
-          },
-        ],
-      },
-    },
-    fts: {
+    service___fts: {
       hits: {
         total: 2,
         returned: 2,
@@ -259,7 +244,7 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    tvs: {
+    service___tvs: {
       hits: {
         total: 1,
         returned: 1,
@@ -276,7 +261,7 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    rcs: {
+    service___rcs: {
       hits: {
         total: 1,
         returned: 1,
@@ -291,9 +276,9 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
-    whisper: {
+    service___whisper: {
       hits: {
-        total: 1,
+        total: 2,
         returned: 1,
         hits: [
           {
@@ -569,11 +554,10 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.pageElements?.item_metadata?.hits?.hits).to.exist;
-    expect(details.pageElements?.fts?.hits?.hits).to.exist;
-    expect(details.pageElements?.tvs?.hits?.hits).to.exist;
-    expect(details.pageElements?.rcs?.hits?.hits).to.exist;
-    expect(details.pageElements?.whisper?.hits?.hits).to.exist;
+    expect(details.pageElements?.service___fts?.hits?.hits).to.exist;
+    expect(details.pageElements?.service___tvs?.hits?.hits).to.exist;
+    expect(details.pageElements?.service___rcs?.hits?.hits).to.exist;
+    expect(details.pageElements?.service___whisper?.hits?.hits).to.exist;
   });
 
   it('provides access to the hit counts from each federated search service', () => {
@@ -582,11 +566,10 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.pageElements?.item_metadata?.hits?.total).to.equal(2);
-    expect(details.pageElements?.fts?.hits?.total).to.equal(2);
-    expect(details.pageElements?.tvs?.hits?.total).to.equal(1);
-    expect(details.pageElements?.rcs?.hits?.total).to.equal(1);
-    expect(details.pageElements?.whisper?.hits?.total).to.equal(1);
+    expect(details.pageElements?.service___fts?.hits?.total).to.equal(2);
+    expect(details.pageElements?.service___tvs?.hits?.total).to.equal(1);
+    expect(details.pageElements?.service___rcs?.hits?.total).to.equal(1);
+    expect(details.pageElements?.service___whisper?.hits?.total).to.equal(2);
   });
 
   it('adds each service result count to total', () => {
@@ -595,7 +578,7 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.totalResults).to.equal(7);
+    expect(details.totalResults).to.equal(6);
   });
 
   it('adds each service returned count to total', () => {
@@ -604,18 +587,7 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.returnedCount).to.equal(6);
-  });
-
-  it('uses the metadata results to populate the main results', () => {
-    const details = new SearchResponseDetails(
-      federatedSearchResponseBody,
-      {} as SearchHitSchema
-    );
-
-    expect(details.results[0]).to.exist;
-    expect(details.results[0].identifier).to.equal('first_metadata');
-    expect(details.results[0]).to.be.instanceOf(TextHit);
+    expect(details.returnedCount).to.equal(5);
   });
 
   it('constructs text hits from federated full-text search', () => {
