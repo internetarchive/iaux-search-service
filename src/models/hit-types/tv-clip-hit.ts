@@ -58,8 +58,10 @@ export class TvClipHit {
 
   /** Optional. */
   @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
-    return this.rawMetadata?.fields?.avg_rating != null
-      ? new NumberField(this.rawMetadata.fields.avg_rating)
+    const averageRating = this.rawMetadata?.fields?.avg_rating;
+
+    return averageRating || averageRating === 0
+      ? new NumberField(this.rawMetadata?.fields.avg_rating)
       : undefined;
   }
 
@@ -109,8 +111,10 @@ export class TvClipHit {
    * Optional.
    */
   @Memoize() get downloads(): typeof Metadata.prototype.downloads {
-    return this.rawMetadata?.fields?.downloads != null
-      ? new NumberField(this.rawMetadata.fields.downloads)
+    const downloads = this.rawMetadata?.fields?.downloads;
+
+    return downloads || downloads === 0
+      ? new NumberField(this.rawMetadata?.fields.downloads)
       : undefined;
   }
 
@@ -127,8 +131,10 @@ export class TvClipHit {
   }
 
   @Memoize() get file_creation_mtime(): NumberField | undefined {
-    return this.rawMetadata?.fields?.file_creation_mtime != null
-      ? new NumberField(this.rawMetadata.fields.file_creation_mtime)
+    const mTime = this.rawMetadata?.fields?.file_creation_mtime;
+
+    return mTime || mTime === 0
+      ? new NumberField(this.rawMetadata?.fields.file_creation_mtime)
       : undefined;
   }
 
@@ -160,8 +166,10 @@ export class TvClipHit {
    * Potentially irrelevant for TVS hit.
    */
   @Memoize() get result_in_subfile(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.result_in_subfile != null
-      ? new BooleanField(this.rawMetadata.fields.result_in_subfile)
+    const resultInSubfile = this.rawMetadata?.fields?.result_in_subfile;
+
+    return resultInSubfile || resultInSubfile === false
+      ? new BooleanField(this.rawMetadata?.fields.result_in_subfile)
       : undefined;
   }
 
@@ -210,8 +218,10 @@ export class TvClipHit {
    * Optional.
    */
   @Memoize() get year(): NumberField | undefined {
-    return this.rawMetadata?.fields?.year != null
-      ? new NumberField(this.rawMetadata.fields.year)
+    const year = this.rawMetadata?.fields?.year;
+
+    return year || year === 0
+      ? new NumberField(this.rawMetadata?.fields.year)
       : undefined;
   }
 
@@ -220,8 +230,10 @@ export class TvClipHit {
    * Start time for TV hit.
    */
   @Memoize() get start(): StringField | undefined {
-    return this.rawMetadata?.fields?.start != null
-      ? new StringField(this.rawMetadata.fields.start)
+    const start = this.rawMetadata?.fields?.start;
+
+    return start || start === 0
+      ? new StringField(this.rawMetadata?.fields.start)
       : undefined;
   }
 

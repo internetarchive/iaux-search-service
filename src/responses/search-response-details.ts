@@ -183,7 +183,9 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     this.totalResults = body?.hits?.total ?? 0;
     this.returnedCount = body?.hits?.returned ?? 0;
 
-    // Use total hits from search services if federated search
+    // If page elements include services i.e. fts,
+    // this indicates a federated search,
+    // so we should trigger the fed search results handler
     if (!hits?.length && this.pageElements?.service___fts) {
       this.totalResults = 0;
       this.returnedCount = 0;
@@ -310,10 +312,13 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     for (const service of SEARCH_SERVICES) {
       const simpleServiceName: string = this.removeServicePrefix(service);
 
-      // Add service name to federated results section
-      this.federatedResults
-        ? (this.federatedResults[service] = [])
-        : (this.federatedResults = { [simpleServiceName]: [] });
+      // Add service name to federated results section.
+      // Create section if not already created.
+      if (this.federatedResults) {
+        this.federatedResults[service] = [];
+      } else {
+        this.federatedResults = { [simpleServiceName]: [] };
+      }
 
       // Add hits to service
       const serviceElementHits = this.pageElements?.[service]?.hits;
