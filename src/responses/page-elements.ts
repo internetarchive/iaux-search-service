@@ -9,6 +9,12 @@ export interface SearchResponseHits {
   hits: Record<string, unknown>[];
 }
 
+export type FederatedServiceName =
+  | 'service___fts'
+  | 'service___tvs'
+  | 'service___rcs'
+  | 'service___whisper';
+
 /**
  * Valid page element names recognized & returned by the PPS
  */
@@ -18,7 +24,8 @@ export type PageElementName =
   | 'collections'
   | 'lending'
   | 'web_archives'
-  | 'forum_posts';
+  | 'forum_posts'
+  | FederatedServiceName;
 
 /**
  * A basic page element returning hits and/or aggregations
@@ -74,6 +81,7 @@ export interface Review {
 export type UploadsPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
+export type FederatedPageElement = HitsAggregationsPageElement;
 
 export const LENDING_SUB_ELEMENTS = [
   'loans',
@@ -95,7 +103,8 @@ export type PageElement =
   | CollectionsPageElement
   | LendingPageElement
   | WebArchivesPageElement
-  | ForumPostsPageElement;
+  | ForumPostsPageElement
+  | FederatedPageElement;
 
 /**
  * A map containing one or more page elements returned by the PPS, keyed by the
@@ -109,6 +118,10 @@ export interface PageElementMap
   lending?: LendingPageElement;
   web_archives?: WebArchivesPageElement;
   forum_posts?: ForumPostsPageElement;
+  service___fts?: FederatedPageElement;
+  service___tvs?: FederatedPageElement;
+  service___rcs?: FederatedPageElement;
+  service___whisper?: FederatedPageElement;
 }
 
 /**

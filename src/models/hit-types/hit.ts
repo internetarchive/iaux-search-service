@@ -2,6 +2,7 @@ import type { ItemHit } from './item-hit';
 import type { TextHit } from './text-hit';
 import type { FavoritedSearchHit } from './favorited-search-hit';
 import { WebArchiveHit } from './web-archive-hit';
+import type { TvClipHit } from './tv-clip-hit';
 
 /**
  * Union of the different hit_type values returned by the PPS.
@@ -12,7 +13,8 @@ export type HitType =
   | 'text'
   | 'asr_text'
   | 'favorited_search'
-  | 'web_archive';
+  | 'web_archive'
+  | 'tv_clip';
 
 /**
  * Additional information provided by the PPS about hits, separately from
@@ -27,7 +29,11 @@ interface HitInfo {
 /**
  * Type that includes all the fields present on any type of hit
  */
-type AllHitFields = ItemHit & TextHit & FavoritedSearchHit & WebArchiveHit;
+type AllHitFields = ItemHit &
+  TextHit &
+  FavoritedSearchHit &
+  WebArchiveHit &
+  TvClipHit;
 
 /**
  * Result is an expansive type definition encompassing all the optional
