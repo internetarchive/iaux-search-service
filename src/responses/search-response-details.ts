@@ -355,7 +355,6 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     switch (type) {
       case 'item':
         return new ItemHit(result);
-      case 'asr_text':
       case 'text':
       case 'asr_text':
         return new TextHit(result);
