@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  BooleanField,
+  DateField,
+  MediaTypeField,
+  NumberField,
+  StringField,
+} from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
-import type { Metadata } from '../metadata';
-import { BooleanField } from '../metadata-fields/field-types/boolean';
-import { DateField } from '../metadata-fields/field-types/date';
-import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
-import { NumberField } from '../metadata-fields/field-types/number';
-import { StringField } from '../metadata-fields/field-types/string';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes a TV clip hit from a TV search via the PPS endpoint.
@@ -34,7 +36,7 @@ export class TvClipHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): typeof Metadata.prototype.identifier {
+  get identifier(): typeof SearchMetadata.prototype.identifier {
     return this.rawMetadata?.fields?.identifier;
   }
 
@@ -50,14 +52,14 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get addeddate(): typeof Metadata.prototype.addeddate {
+  @Memoize() get addeddate(): typeof SearchMetadata.prototype.addeddate {
     return this.rawMetadata?.fields?.addeddate
       ? new DateField(this.rawMetadata.fields.addeddate)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
+  @Memoize() get avg_rating(): typeof SearchMetadata.prototype.avg_rating {
     const averageRating = this.rawMetadata?.fields?.avg_rating;
 
     return averageRating || averageRating === 0
@@ -66,7 +68,7 @@ export class TvClipHit {
   }
 
   /** Multivalued. */
-  @Memoize() get collection(): typeof Metadata.prototype.collection {
+  @Memoize() get collection(): typeof SearchMetadata.prototype.collection {
     return this.rawMetadata?.fields?.collection
       ? new StringField(this.rawMetadata.fields.collection)
       : undefined;
@@ -82,14 +84,14 @@ export class TvClipHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get creator(): typeof Metadata.prototype.creator {
+  @Memoize() get creator(): typeof SearchMetadata.prototype.creator {
     return this.rawMetadata?.fields?.creator
       ? new StringField(this.rawMetadata.fields.creator)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get date(): typeof Metadata.prototype.date {
+  @Memoize() get date(): typeof SearchMetadata.prototype.date {
     return this.rawMetadata?.fields?.date
       ? new DateField(this.rawMetadata.fields.date)
       : undefined;
@@ -100,7 +102,7 @@ export class TvClipHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get description(): typeof Metadata.prototype.description {
+  @Memoize() get description(): typeof SearchMetadata.prototype.description {
     return this.rawMetadata?.fields?.description
       ? new StringField(this.rawMetadata.fields.description)
       : undefined;
@@ -110,7 +112,7 @@ export class TvClipHit {
    * Total views over ITEM (not text) lifetime, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get downloads(): typeof Metadata.prototype.downloads {
+  @Memoize() get downloads(): typeof SearchMetadata.prototype.downloads {
     const downloads = this.rawMetadata?.fields?.downloads;
 
     return downloads || downloads === 0
@@ -142,20 +144,20 @@ export class TvClipHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get issue(): typeof Metadata.prototype.issue {
+  @Memoize() get issue(): typeof SearchMetadata.prototype.issue {
     return this.rawMetadata?.fields?.issue
       ? new StringField(this.rawMetadata.fields.issue)
       : undefined;
   }
 
-  @Memoize() get mediatype(): typeof Metadata.prototype.mediatype {
+  @Memoize() get mediatype(): typeof SearchMetadata.prototype.mediatype {
     return this.rawMetadata?.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get publicdate(): typeof Metadata.prototype.publicdate {
+  @Memoize() get publicdate(): typeof SearchMetadata.prototype.publicdate {
     return this.rawMetadata?.fields?.publicdate
       ? new DateField(this.rawMetadata.fields.publicdate)
       : undefined;
@@ -174,7 +176,7 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
+  @Memoize() get reviewdate(): typeof SearchMetadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
       : undefined;
@@ -184,7 +186,7 @@ export class TvClipHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get source(): typeof Metadata.prototype.source {
+  @Memoize() get source(): typeof SearchMetadata.prototype.source {
     return this.rawMetadata?.fields?.source
       ? new StringField(this.rawMetadata.fields.source)
       : undefined;
@@ -201,7 +203,7 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get title(): typeof Metadata.prototype.title {
+  @Memoize() get title(): typeof SearchMetadata.prototype.title {
     return this.rawMetadata?.fields?.title
       ? new StringField(this.rawMetadata.fields.title)
       : undefined;

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { DateField, StringField } from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
-import type { Metadata } from '../metadata';
-import { DateField } from '../metadata-fields/field-types/date';
-import { StringField } from '../metadata-fields/field-types/string';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -31,7 +30,7 @@ export class FavoritedSearchHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): typeof Metadata.prototype.identifier {
+  get identifier(): typeof SearchMetadata.prototype.identifier {
     return this.rawMetadata?.fields.query;
   }
 
@@ -43,7 +42,7 @@ export class FavoritedSearchHit {
   }
 
   /** Optional. */
-  @Memoize() get query(): typeof Metadata.prototype.query {
+  @Memoize() get query(): typeof SearchMetadata.prototype.query {
     return this.rawMetadata?.fields?.query
       ? new StringField(this.rawMetadata.fields.query)
       : undefined;
@@ -52,7 +51,8 @@ export class FavoritedSearchHit {
   /**
    * Optional.
    */
-  @Memoize() get date_favorited(): typeof Metadata.prototype.date_favorited {
+  @Memoize()
+  get date_favorited(): typeof SearchMetadata.prototype.date_favorited {
     return this.rawMetadata?.fields?.date_favorited
       ? new DateField(this.rawMetadata.fields.date_favorited)
       : undefined;
@@ -61,7 +61,7 @@ export class FavoritedSearchHit {
   /**
    * Optional.
    */
-  @Memoize() get __href__(): typeof Metadata.prototype.__href__ {
+  @Memoize() get __href__(): typeof SearchMetadata.prototype.__href__ {
     return this.rawMetadata?.fields?.__href__
       ? new StringField(this.rawMetadata.fields.__href__)
       : undefined;

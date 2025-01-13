@@ -1,4 +1,4 @@
-import { Metadata } from '../models/metadata';
+import { SearchMetadata } from '../models/search-metadata';
 
 /**
  * Extra info about the target collection that is returned for
@@ -42,7 +42,7 @@ export interface CollectionExtraInfo {
   primary_collection?: string | null;
 
   /** Full MDAPI object for this collection */
-  public_metadata?: typeof Metadata.prototype.rawMetadata;
+  public_metadata?: typeof SearchMetadata.prototype.rawMetadata;
 
   /** Identifiers, titles, and item counts for any related collections */
   related_collection_details?: RelatedCollection[];

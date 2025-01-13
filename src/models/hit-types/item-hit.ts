@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  BooleanField,
+  ByteField,
+  DateField,
+  MediaTypeField,
+  NumberField,
+  StringField,
+} from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
-import type { Metadata } from '../metadata';
-import { BooleanField } from '../metadata-fields/field-types/boolean';
-import { ByteField } from '../metadata-fields/field-types/byte';
-import { DateField } from '../metadata-fields/field-types/date';
-import { MediaTypeField } from '../metadata-fields/field-types/mediatype';
-import { NumberField } from '../metadata-fields/field-types/number';
-import { StringField } from '../metadata-fields/field-types/string';
 import { Review } from '../../responses/page-elements';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -36,19 +38,19 @@ export class ItemHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): typeof Metadata.prototype.identifier {
+  get identifier(): typeof SearchMetadata.prototype.identifier {
     return this.rawMetadata?.fields?.identifier;
   }
 
   /** Optional. */
-  @Memoize() get addeddate(): typeof Metadata.prototype.addeddate {
+  @Memoize() get addeddate(): typeof SearchMetadata.prototype.addeddate {
     return this.rawMetadata?.fields?.addeddate
       ? new DateField(this.rawMetadata.fields.addeddate)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get avg_rating(): typeof Metadata.prototype.avg_rating {
+  @Memoize() get avg_rating(): typeof SearchMetadata.prototype.avg_rating {
     return this.rawMetadata?.fields?.avg_rating != null
       ? new NumberField(this.rawMetadata.fields.avg_rating)
       : undefined;
@@ -58,7 +60,7 @@ export class ItemHit {
    * May be a superset of metadata collection field.
    * Multivalued.
    */
-  @Memoize() get collection(): typeof Metadata.prototype.collection {
+  @Memoize() get collection(): typeof SearchMetadata.prototype.collection {
     return this.rawMetadata?.fields?.collection
       ? new StringField(this.rawMetadata.fields.collection)
       : undefined;
@@ -78,7 +80,8 @@ export class ItemHit {
    * In bytes; computed during document construction, for collection items only.
    * Optional.
    */
-  @Memoize() get collection_size(): typeof Metadata.prototype.collection_size {
+  @Memoize()
+  get collection_size(): typeof SearchMetadata.prototype.collection_size {
     return this.rawMetadata?.fields?.collection_size != null
       ? new ByteField(this.rawMetadata.fields.collection_size)
       : undefined;
@@ -88,7 +91,7 @@ export class ItemHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get creator(): typeof Metadata.prototype.creator {
+  @Memoize() get creator(): typeof SearchMetadata.prototype.creator {
     return this.rawMetadata?.fields?.creator
       ? new StringField(this.rawMetadata.fields.creator)
       : undefined;
@@ -97,14 +100,14 @@ export class ItemHit {
   /**
    * Optional.
    */
-  @Memoize() get date(): typeof Metadata.prototype.date {
+  @Memoize() get date(): typeof SearchMetadata.prototype.date {
     return this.rawMetadata?.fields?.date
       ? new DateField(this.rawMetadata.fields.date)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get description(): typeof Metadata.prototype.description {
+  @Memoize() get description(): typeof SearchMetadata.prototype.description {
     return this.rawMetadata?.fields?.description
       ? new StringField(this.rawMetadata.fields.description)
       : undefined;
@@ -114,7 +117,7 @@ export class ItemHit {
    * Total views over item lifetime, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get downloads(): typeof Metadata.prototype.downloads {
+  @Memoize() get downloads(): typeof SearchMetadata.prototype.downloads {
     return this.rawMetadata?.fields?.downloads != null
       ? new NumberField(this.rawMetadata.fields.downloads)
       : undefined;
@@ -123,7 +126,7 @@ export class ItemHit {
   /**
    * Computed during document construction.
    */
-  @Memoize() get files_count(): typeof Metadata.prototype.files_count {
+  @Memoize() get files_count(): typeof SearchMetadata.prototype.files_count {
     return this.rawMetadata?.fields?.files_count != null
       ? new NumberField(this.rawMetadata.fields.files_count)
       : undefined;
@@ -153,7 +156,7 @@ export class ItemHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get issue(): typeof Metadata.prototype.issue {
+  @Memoize() get issue(): typeof SearchMetadata.prototype.issue {
     return this.rawMetadata?.fields?.issue
       ? new StringField(this.rawMetadata.fields.issue)
       : undefined;
@@ -163,7 +166,7 @@ export class ItemHit {
    * Computed during document construction.
    * Optional.
    */
-  @Memoize() get item_count(): typeof Metadata.prototype.item_count {
+  @Memoize() get item_count(): typeof SearchMetadata.prototype.item_count {
     return this.rawMetadata?.fields?.item_count != null
       ? new NumberField(this.rawMetadata.fields.item_count)
       : undefined;
@@ -172,7 +175,7 @@ export class ItemHit {
   /**
    * In bytes; computed during document construction.
    */
-  @Memoize() get item_size(): typeof Metadata.prototype.item_size {
+  @Memoize() get item_size(): typeof SearchMetadata.prototype.item_size {
     return this.rawMetadata?.fields?.item_size != null
       ? new ByteField(this.rawMetadata.fields.item_size)
       : undefined;
@@ -182,7 +185,7 @@ export class ItemHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get language(): typeof Metadata.prototype.language {
+  @Memoize() get language(): typeof SearchMetadata.prototype.language {
     return this.rawMetadata?.fields?.language
       ? new StringField(this.rawMetadata.fields.language)
       : undefined;
@@ -237,7 +240,7 @@ export class ItemHit {
       : undefined;
   }
 
-  @Memoize() get mediatype(): typeof Metadata.prototype.mediatype {
+  @Memoize() get mediatype(): typeof SearchMetadata.prototype.mediatype {
     return this.rawMetadata?.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
       : undefined;
@@ -247,14 +250,14 @@ export class ItemHit {
    * Views over a month, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get month(): typeof Metadata.prototype.month {
+  @Memoize() get month(): typeof SearchMetadata.prototype.month {
     return this.rawMetadata?.fields?.month != null
       ? new NumberField(this.rawMetadata.fields.month)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get noindex(): typeof Metadata.prototype.noindex {
+  @Memoize() get noindex(): typeof SearchMetadata.prototype.noindex {
     return this.rawMetadata?.fields?.noindex != null
       ? new BooleanField(this.rawMetadata.fields.noindex)
       : undefined;
@@ -264,7 +267,8 @@ export class ItemHit {
    * Computed during document construction.
    * Optional.
    */
-  @Memoize() get num_favorites(): typeof Metadata.prototype.num_favorites {
+  @Memoize()
+  get num_favorites(): typeof SearchMetadata.prototype.num_favorites {
     return this.rawMetadata?.fields?.num_favorites != null
       ? new NumberField(this.rawMetadata.fields.num_favorites)
       : undefined;
@@ -274,21 +278,21 @@ export class ItemHit {
    * Computed during document construction.
    * Optional.
    */
-  @Memoize() get num_reviews(): typeof Metadata.prototype.num_reviews {
+  @Memoize() get num_reviews(): typeof SearchMetadata.prototype.num_reviews {
     return this.rawMetadata?.fields?.num_reviews != null
       ? new NumberField(this.rawMetadata.fields.num_reviews)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get publicdate(): typeof Metadata.prototype.publicdate {
+  @Memoize() get publicdate(): typeof SearchMetadata.prototype.publicdate {
     return this.rawMetadata?.fields?.publicdate
       ? new DateField(this.rawMetadata.fields.publicdate)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get reviewdate(): typeof Metadata.prototype.reviewdate {
+  @Memoize() get reviewdate(): typeof SearchMetadata.prototype.reviewdate {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
       : undefined;
@@ -320,7 +324,7 @@ export class ItemHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get source(): typeof Metadata.prototype.source {
+  @Memoize() get source(): typeof SearchMetadata.prototype.source {
     return this.rawMetadata?.fields?.source
       ? new StringField(this.rawMetadata.fields.source)
       : undefined;
@@ -337,21 +341,21 @@ export class ItemHit {
   }
 
   /** Optional. */
-  @Memoize() get title(): typeof Metadata.prototype.title {
+  @Memoize() get title(): typeof SearchMetadata.prototype.title {
     return this.rawMetadata?.fields?.title
       ? new StringField(this.rawMetadata.fields.title)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get type(): typeof Metadata.prototype.type {
+  @Memoize() get type(): typeof SearchMetadata.prototype.type {
     return this.rawMetadata?.fields?.type
       ? new StringField(this.rawMetadata.fields.type)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get volume(): typeof Metadata.prototype.volume {
+  @Memoize() get volume(): typeof SearchMetadata.prototype.volume {
     return this.rawMetadata?.fields?.volume
       ? new StringField(this.rawMetadata.fields.volume)
       : undefined;
@@ -361,7 +365,7 @@ export class ItemHit {
    * Views over a seven-day period, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get week(): typeof Metadata.prototype.week {
+  @Memoize() get week(): typeof SearchMetadata.prototype.week {
     return this.rawMetadata?.fields?.week != null
       ? new NumberField(this.rawMetadata.fields.week)
       : undefined;

@@ -1,7 +1,7 @@
 import { DateParser } from '@internetarchive/field-parsers';
 import { expect } from '@open-wc/testing';
 import { ItemHit } from '../../../src/models/hit-types/item-hit';
-import { DateField } from '../../../src/models/metadata-fields/field-types/date';
+import { DateField } from '@internetarchive/iaux-item-metadata';
 
 const fieldNames: (keyof ItemHit)[] = [
   'identifier',

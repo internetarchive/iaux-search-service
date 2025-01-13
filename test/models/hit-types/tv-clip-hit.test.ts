@@ -1,7 +1,7 @@
 import { DateParser } from '@internetarchive/field-parsers';
 import { expect } from '@open-wc/testing';
 import { TvClipHit } from '../../../src/models/hit-types/tv-clip-hit';
-import { DateField } from '../../../src/models/metadata-fields/field-types/date';
+import { DateField } from '@internetarchive/iaux-item-metadata';
 
 const fieldNames: (keyof TvClipHit)[] = [
   'identifier',
