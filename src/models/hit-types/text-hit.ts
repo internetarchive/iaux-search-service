@@ -23,7 +23,7 @@ export class TextHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  readonly rawMetadata: Readonly<Record<string, any>>;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
@@ -36,7 +36,7 @@ export class TextHit {
    * the primary key of the item.
    */
   get identifier(): string | undefined {
-    return this.rawMetadata?.fields?.identifier;
+    return this.rawMetadata.fields?.identifier;
   }
 
   /**
@@ -45,7 +45,7 @@ export class TextHit {
    */
   @Memoize() get highlight(): StringField | undefined {
     // Note: _not_ inside the fields object.
-    return this.rawMetadata?.highlight?.text
+    return this.rawMetadata.highlight?.text
       ? new StringField(this.rawMetadata.highlight.text)
       : undefined;
   }
@@ -55,27 +55,27 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get addeddate(): DateField | undefined {
-    return this.rawMetadata?.fields?.addeddate
+    return this.rawMetadata.fields?.addeddate
       ? new DateField(this.rawMetadata.fields.addeddate)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get avg_rating(): NumberField | undefined {
-    return this.rawMetadata?.fields?.avg_rating != null
+    return this.rawMetadata.fields?.avg_rating != null
       ? new NumberField(this.rawMetadata.fields.avg_rating)
       : undefined;
   }
 
   /** Multivalued. */
   @Memoize() get collection(): StringField | undefined {
-    return this.rawMetadata?.fields?.collection
+    return this.rawMetadata.fields?.collection
       ? new StringField(this.rawMetadata.fields.collection)
       : undefined;
   }
 
   @Memoize() get created_on(): DateField | undefined {
-    return this.rawMetadata?.fields?.created_on
+    return this.rawMetadata.fields?.created_on
       ? new DateField(this.rawMetadata.fields.created_on)
       : undefined;
   }
@@ -85,14 +85,14 @@ export class TextHit {
    * Multivalued.
    */
   @Memoize() get creator(): StringField | undefined {
-    return this.rawMetadata?.fields?.creator
+    return this.rawMetadata.fields?.creator
       ? new StringField(this.rawMetadata.fields.creator)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get date(): DateField | undefined {
-    return this.rawMetadata?.fields?.date
+    return this.rawMetadata.fields?.date
       ? new DateField(this.rawMetadata.fields.date)
       : undefined;
   }
@@ -103,7 +103,7 @@ export class TextHit {
    * Multivalued.
    */
   @Memoize() get description(): StringField | undefined {
-    return this.rawMetadata?.fields?.description
+    return this.rawMetadata.fields?.description
       ? new StringField(this.rawMetadata.fields.description)
       : undefined;
   }
@@ -113,25 +113,25 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get downloads(): NumberField | undefined {
-    return this.rawMetadata?.fields?.downloads != null
+    return this.rawMetadata.fields?.downloads != null
       ? new NumberField(this.rawMetadata.fields.downloads)
       : undefined;
   }
 
   @Memoize() get filename(): StringField | undefined {
-    return this.rawMetadata?.fields?.filename
+    return this.rawMetadata.fields?.filename
       ? new StringField(this.rawMetadata.fields.filename)
       : undefined;
   }
 
   @Memoize() get file_basename(): StringField | undefined {
-    return this.rawMetadata?.fields?.file_basename
+    return this.rawMetadata.fields?.file_basename
       ? new StringField(this.rawMetadata.fields.file_basename)
       : undefined;
   }
 
   @Memoize() get file_creation_mtime(): NumberField | undefined {
-    return this.rawMetadata?.fields?.file_creation_mtime != null
+    return this.rawMetadata.fields?.file_creation_mtime != null
       ? new NumberField(this.rawMetadata.fields.file_creation_mtime)
       : undefined;
   }
@@ -141,27 +141,27 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get issue(): StringField | undefined {
-    return this.rawMetadata?.fields?.issue
+    return this.rawMetadata.fields?.issue
       ? new StringField(this.rawMetadata.fields.issue)
       : undefined;
   }
 
   @Memoize() get mediatype(): MediaTypeField | undefined {
-    return this.rawMetadata?.fields?.mediatype
+    return this.rawMetadata.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get page_num(): NumberField | undefined {
-    return this.rawMetadata?.fields?.page_num != null
+    return this.rawMetadata.fields?.page_num != null
       ? new NumberField(this.rawMetadata.fields.page_num)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get publicdate(): DateField | undefined {
-    return this.rawMetadata?.fields?.publicdate
+    return this.rawMetadata.fields?.publicdate
       ? new DateField(this.rawMetadata.fields.publicdate)
       : undefined;
   }
@@ -170,14 +170,14 @@ export class TextHit {
    * Computed in processing of FTS API hit.
    */
   @Memoize() get result_in_subfile(): BooleanField | undefined {
-    return this.rawMetadata?.fields?.result_in_subfile != null
+    return this.rawMetadata.fields?.result_in_subfile != null
       ? new BooleanField(this.rawMetadata.fields.result_in_subfile)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get reviewdate(): DateField | undefined {
-    return this.rawMetadata?.fields?.reviewdate
+    return this.rawMetadata.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
       : undefined;
   }
@@ -187,7 +187,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get source(): StringField | undefined {
-    return this.rawMetadata?.fields?.source
+    return this.rawMetadata.fields?.source
       ? new StringField(this.rawMetadata.fields.source)
       : undefined;
   }
@@ -197,20 +197,20 @@ export class TextHit {
    * Multivalued.
    */
   @Memoize() get subject(): StringField | undefined {
-    return this.rawMetadata?.fields?.subject
+    return this.rawMetadata.fields?.subject
       ? new StringField(this.rawMetadata.fields.subject)
       : undefined;
   }
 
   /** Optional. */
   @Memoize() get title(): StringField | undefined {
-    return this.rawMetadata?.fields?.title
+    return this.rawMetadata.fields?.title
       ? new StringField(this.rawMetadata.fields.title)
       : undefined;
   }
 
   @Memoize() get updated_on(): DateField | undefined {
-    return this.rawMetadata?.fields?.updated_on
+    return this.rawMetadata.fields?.updated_on
       ? new DateField(this.rawMetadata.fields.updated_on)
       : undefined;
   }
@@ -220,7 +220,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get year(): NumberField | undefined {
-    return this.rawMetadata?.fields?.year != null
+    return this.rawMetadata.fields?.year != null
       ? new NumberField(this.rawMetadata.fields.year)
       : undefined;
   }
@@ -230,7 +230,7 @@ export class TextHit {
    * Optional.
    */
   @Memoize() get __href__(): StringField | undefined {
-    return this.rawMetadata?.fields?.__href__
+    return this.rawMetadata.fields?.__href__
       ? new StringField(this.rawMetadata.fields.__href__)
       : undefined;
   }

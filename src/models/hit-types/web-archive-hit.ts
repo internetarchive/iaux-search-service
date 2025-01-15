@@ -22,14 +22,14 @@ export class WebArchiveHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  readonly rawMetadata: Readonly<Record<string, any>>;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
   }
 
   get identifier(): string | undefined {
-    return this.rawMetadata?.fields?.url;
+    return this.rawMetadata.fields?.url;
   }
 
   get mediatype(): MediaTypeField {
@@ -38,7 +38,7 @@ export class WebArchiveHit {
 
   /** The URL that was captured */
   @Memoize() get title(): StringField | undefined {
-    return this.rawMetadata?.fields?.url
+    return this.rawMetadata.fields?.url
       ? new StringField(this.rawMetadata.fields?.url)
       : undefined;
   }
@@ -47,7 +47,7 @@ export class WebArchiveHit {
    * Optional.
    */
   @Memoize() get capture_dates(): DateField | undefined {
-    return this.rawMetadata?.fields?.capture_dates
+    return this.rawMetadata.fields?.capture_dates
       ? new DateField(this.rawMetadata.fields?.capture_dates)
       : undefined;
   }
@@ -56,7 +56,7 @@ export class WebArchiveHit {
    * Optional.
    */
   @Memoize() get __href__(): StringField | undefined {
-    return this.rawMetadata?.fields?.__href__
+    return this.rawMetadata.fields?.__href__
       ? new StringField(this.rawMetadata.fields?.__href__)
       : undefined;
   }

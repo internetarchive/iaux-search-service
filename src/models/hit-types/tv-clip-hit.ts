@@ -23,7 +23,7 @@ export class TvClipHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  readonly rawMetadata: Readonly<Record<string, any>>;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
