@@ -5,7 +5,6 @@ import {
   StringField,
 } from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
-import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes a set of captures for a given URL, as presented in the Web Archives tab
@@ -29,11 +28,11 @@ export class WebArchiveHit {
     this.rawMetadata = json;
   }
 
-  get identifier(): typeof SearchMetadata.prototype.identifier {
+  get identifier(): string | undefined {
     return this.rawMetadata?.fields?.url;
   }
 
-  get mediatype(): typeof SearchMetadata.prototype.mediatype {
+  get mediatype(): MediaTypeField {
     return new MediaTypeField('web');
   }
 
@@ -56,7 +55,7 @@ export class WebArchiveHit {
   /**
    * Optional.
    */
-  @Memoize() get __href__(): typeof SearchMetadata.prototype.__href__ {
+  @Memoize() get __href__(): StringField | undefined {
     return this.rawMetadata?.fields?.__href__
       ? new StringField(this.rawMetadata.fields?.__href__)
       : undefined;

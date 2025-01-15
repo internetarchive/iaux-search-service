@@ -1,5 +1,3 @@
-import { SearchMetadata } from '../models/search-metadata';
-
 /**
  * Extra info about the target collection that is returned for
  * the `collection_details` page type.
@@ -42,7 +40,8 @@ export interface CollectionExtraInfo {
   primary_collection?: string | null;
 
   /** Full MDAPI object for this collection */
-  public_metadata?: typeof SearchMetadata.prototype.rawMetadata;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public_metadata?: Record<string, any>;
 
   /** Identifiers, titles, and item counts for any related collections */
   related_collection_details?: RelatedCollection[];

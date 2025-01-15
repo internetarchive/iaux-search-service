@@ -7,7 +7,6 @@ import {
   StringField,
 } from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
-import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes a TV clip hit from a TV search via the PPS endpoint.
@@ -36,7 +35,7 @@ export class TvClipHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): typeof SearchMetadata.prototype.identifier {
+  get identifier(): string | undefined {
     return this.rawMetadata?.fields?.identifier;
   }
 
@@ -52,14 +51,14 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get addeddate(): typeof SearchMetadata.prototype.addeddate {
+  @Memoize() get addeddate(): DateField | undefined {
     return this.rawMetadata?.fields?.addeddate
       ? new DateField(this.rawMetadata.fields.addeddate)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get avg_rating(): typeof SearchMetadata.prototype.avg_rating {
+  @Memoize() get avg_rating(): NumberField | undefined {
     const averageRating = this.rawMetadata?.fields?.avg_rating;
 
     return averageRating || averageRating === 0
@@ -68,7 +67,7 @@ export class TvClipHit {
   }
 
   /** Multivalued. */
-  @Memoize() get collection(): typeof SearchMetadata.prototype.collection {
+  @Memoize() get collection(): StringField | undefined {
     return this.rawMetadata?.fields?.collection
       ? new StringField(this.rawMetadata.fields.collection)
       : undefined;
@@ -84,14 +83,14 @@ export class TvClipHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get creator(): typeof SearchMetadata.prototype.creator {
+  @Memoize() get creator(): StringField | undefined {
     return this.rawMetadata?.fields?.creator
       ? new StringField(this.rawMetadata.fields.creator)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get date(): typeof SearchMetadata.prototype.date {
+  @Memoize() get date(): DateField | undefined {
     return this.rawMetadata?.fields?.date
       ? new DateField(this.rawMetadata.fields.date)
       : undefined;
@@ -102,7 +101,7 @@ export class TvClipHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get description(): typeof SearchMetadata.prototype.description {
+  @Memoize() get description(): StringField | undefined {
     return this.rawMetadata?.fields?.description
       ? new StringField(this.rawMetadata.fields.description)
       : undefined;
@@ -112,7 +111,7 @@ export class TvClipHit {
    * Total views over ITEM (not text) lifetime, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get downloads(): typeof SearchMetadata.prototype.downloads {
+  @Memoize() get downloads(): NumberField | undefined {
     const downloads = this.rawMetadata?.fields?.downloads;
 
     return downloads || downloads === 0
@@ -144,20 +143,20 @@ export class TvClipHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get issue(): typeof SearchMetadata.prototype.issue {
+  @Memoize() get issue(): StringField | undefined {
     return this.rawMetadata?.fields?.issue
       ? new StringField(this.rawMetadata.fields.issue)
       : undefined;
   }
 
-  @Memoize() get mediatype(): typeof SearchMetadata.prototype.mediatype {
+  @Memoize() get mediatype(): MediaTypeField | undefined {
     return this.rawMetadata?.fields?.mediatype
       ? new MediaTypeField(this.rawMetadata.fields.mediatype)
       : undefined;
   }
 
   /** Optional. */
-  @Memoize() get publicdate(): typeof SearchMetadata.prototype.publicdate {
+  @Memoize() get publicdate(): DateField | undefined {
     return this.rawMetadata?.fields?.publicdate
       ? new DateField(this.rawMetadata.fields.publicdate)
       : undefined;
@@ -176,7 +175,7 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get reviewdate(): typeof SearchMetadata.prototype.reviewdate {
+  @Memoize() get reviewdate(): DateField | undefined {
     return this.rawMetadata?.fields?.reviewdate
       ? new DateField(this.rawMetadata.fields.reviewdate)
       : undefined;
@@ -186,7 +185,7 @@ export class TvClipHit {
    * Format varies.
    * Optional.
    */
-  @Memoize() get source(): typeof SearchMetadata.prototype.source {
+  @Memoize() get source(): StringField | undefined {
     return this.rawMetadata?.fields?.source
       ? new StringField(this.rawMetadata.fields.source)
       : undefined;
@@ -203,7 +202,7 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get title(): typeof SearchMetadata.prototype.title {
+  @Memoize() get title(): StringField | undefined {
     return this.rawMetadata?.fields?.title
       ? new StringField(this.rawMetadata.fields.title)
       : undefined;
