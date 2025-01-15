@@ -11,7 +11,7 @@ export class SearchMetadata extends Metadata {
    */
   /** Optional. */
   @Memoize() get query(): StringField | undefined {
-    return this.rawMetadata?.fields?.query
+    return this.rawMetadata.fields?.query
       ? new StringField(this.rawMetadata.fields.query)
       : undefined;
   }
@@ -20,7 +20,7 @@ export class SearchMetadata extends Metadata {
    * Optional.
    */
   @Memoize() get date_favorited(): DateField | undefined {
-    return this.rawMetadata?.fields?.date_favorited
+    return this.rawMetadata.fields?.date_favorited
       ? new DateField(this.rawMetadata.fields.date_favorited)
       : undefined;
   }
@@ -29,7 +29,7 @@ export class SearchMetadata extends Metadata {
    * Optional.
    */
   @Memoize() get __href__(): StringField | undefined {
-    return this.rawMetadata?.fields?.__href__
+    return this.rawMetadata.fields?.__href__
       ? new StringField(this.rawMetadata.fields.__href__)
       : undefined;
   }
