@@ -20,9 +20,6 @@ export class SearchMetadata extends Metadata {
       : undefined;
   }
 
-  /**
-   * some extra fields for "favorited_search" hits
-   */
   /** Optional. */
   @Memoize() get created_on(): DateField | undefined {
     return this.rawMetadata.created_on != null
@@ -90,9 +87,6 @@ export class SearchMetadata extends Metadata {
       : undefined;
   }
 
-  /**
-   * some extra fields for "favorited_search" hits
-   */
   /** Optional. */
   @Memoize() get page_num(): NumberField | undefined {
     return this.rawMetadata.page_num != null
@@ -109,9 +103,6 @@ export class SearchMetadata extends Metadata {
       : undefined;
   }
 
-  /**
-   * some extra fields for "favorited_search" hits
-   */
   /** Optional. */
   @Memoize() get query(): StringField | undefined {
     return this.rawMetadata.query != null
