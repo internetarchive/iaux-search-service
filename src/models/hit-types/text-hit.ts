@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
+import {
   BooleanField,
   DateField,
   MediaTypeField,
@@ -131,8 +131,10 @@ export class TextHit {
   }
 
   /** Optional. */
-  get page_num(): NumberField | undefined {
-    return this.fields.page_num;
+  @Memoize() get page_num(): NumberField | undefined {
+    return this.rawMetadata.fields?.page_num != null
+      ? new NumberField(this.rawMetadata.fields.page_num)
+      : undefined;
   }
 
   /** Optional. */

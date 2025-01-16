@@ -182,8 +182,10 @@ export class TvClipHit {
    * Optional.
    * Start time for TV hit.
    */
-  get start(): StringField | undefined {
-    return this.fields.start;
+  @Memoize() get start(): StringField | undefined {
+    return this.rawMetadata.fields?.start != null
+      ? new StringField(this.rawMetadata.fields.start)
+      : undefined;
   }
 
   /**

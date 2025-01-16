@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-  DateField,
-  StringField,
-} from '@internetarchive/iaux-item-metadata';
+import { DateField, StringField } from '@internetarchive/iaux-item-metadata';
 import { MediaTypeField } from '@internetarchive/iaux-item-metadata';
 import { SearchMetadata } from '../search-metadata';
+import { Memoize } from 'typescript-memoize';
 
 /**
  * A model that describes a set of captures for a given URL, as presented in the Web Archives tab
@@ -32,7 +30,7 @@ export class WebArchiveHit {
   }
 
   get identifier(): string | undefined {
-    return this.fields.url?.value;
+    return this.rawMetadata.fields?.url;
   }
 
   get mediatype(): MediaTypeField {
@@ -40,15 +38,19 @@ export class WebArchiveHit {
   }
 
   /** The URL that was captured */
-  get title(): StringField | undefined {
-    return this.fields.url;
+  @Memoize() get title(): StringField | undefined {
+    return this.rawMetadata.fields?.url
+      ? new StringField(this.rawMetadata.fields?.url)
+      : undefined;
   }
 
   /**
    * Optional.
    */
-  get capture_dates(): DateField | undefined {
-    return this.fields.capture_dates;
+  @Memoize() get capture_dates(): DateField | undefined {
+    return this.rawMetadata.fields?.capture_dates
+      ? new DateField(this.rawMetadata.fields?.capture_dates)
+      : undefined;
   }
 
   /**

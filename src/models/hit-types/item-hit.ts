@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
+import {
   BooleanField,
   ByteField,
   DateField,
@@ -67,8 +67,10 @@ export class ItemHit {
    * Computed during document construction, for collection items only.
    * Optional.
    */
-  get collection_files_count(): NumberField | undefined {
-    return this.fields.collection_files_count;
+  @Memoize() get collection_files_count(): NumberField | undefined {
+    return this.rawMetadata.fields?.collection_files_count != null
+      ? new NumberField(this.rawMetadata.fields.collection_files_count)
+      : undefined;
   }
 
   /**
@@ -118,16 +120,20 @@ export class ItemHit {
    * Optional.
    * Multivalued.
    */
-  get genre(): StringField | undefined {
-    return this.fields.genre;
+  @Memoize() get genre(): StringField | undefined {
+    return this.rawMetadata.fields?.genre != null
+      ? new StringField(this.rawMetadata.fields.genre)
+      : undefined;
   }
 
   /**
    * Item characterization including noindex status.
    * Multivalued.
    */
-  get indexflag(): StringField | undefined {
-    return this.fields.indexflag;
+  @Memoize() get indexflag(): StringField | undefined {
+    return this.rawMetadata.fields?.indexflag != null
+      ? new StringField(this.rawMetadata.fields.indexflag)
+      : undefined;
   }
 
   /**
@@ -165,37 +171,49 @@ export class ItemHit {
    * May be stale.
    * Optional.
    */
-  get lending___available_to_borrow(): BooleanField | undefined {
-    return this.fields.lending___available_to_borrow;
+  @Memoize() get lending___available_to_borrow(): BooleanField | undefined {
+    return this.rawMetadata.fields?.lending___available_to_borrow != null
+      ? new BooleanField(this.rawMetadata.fields.lending___available_to_borrow)
+      : undefined;
   }
 
   /**
    * May be stale.
    * Optional.
    */
-  get lending___available_to_browse(): BooleanField | undefined {
-    return this.fields.lending___available_to_browse;
+  @Memoize() get lending___available_to_browse(): BooleanField | undefined {
+    return this.rawMetadata.fields?.lending___available_to_browse != null
+      ? new BooleanField(this.rawMetadata.fields.lending___available_to_browse)
+      : undefined;
   }
 
   /**
    * May be stale.
    * Optional.
    */
-  get lending___available_to_waitlist(): BooleanField | undefined {
-    return this.fields.lending___available_to_waitlist;
+  @Memoize() get lending___available_to_waitlist(): BooleanField | undefined {
+    return this.rawMetadata.fields?.lending___available_to_waitlist != null
+      ? new BooleanField(
+          this.rawMetadata.fields.lending___available_to_waitlist
+        )
+      : undefined;
   }
 
   /**
    * May be stale.
    * Optional.
    */
-  get lending___status(): StringField | undefined {
-    return this.fields.lending___status;
+  @Memoize() get lending___status(): StringField | undefined {
+    return this.rawMetadata.fields?.lending___status != null
+      ? new StringField(this.rawMetadata.fields.lending___status)
+      : undefined;
   }
 
   /** Optional. */
-  get licenseurl(): StringField | undefined {
-    return this.fields.licenseurl;
+  @Memoize() get licenseurl(): StringField | undefined {
+    return this.rawMetadata.fields?.licenseurl != null
+      ? new StringField(this.rawMetadata.fields.licenseurl)
+      : undefined;
   }
 
   get mediatype(): MediaTypeField | undefined {
