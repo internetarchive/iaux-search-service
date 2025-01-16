@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
+import type {
   BooleanField,
   DateField,
   MediaTypeField,
   NumberField,
-  StringField,
 } from '@internetarchive/iaux-item-metadata';
+import { StringField } from '@internetarchive/iaux-item-metadata';
 import { Memoize } from 'typescript-memoize';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes a TV clip hit from a TV search via the PPS endpoint.
@@ -25,8 +26,11 @@ export class TvClipHit {
    */
   readonly rawMetadata: Readonly<Record<string, any>>;
 
+  readonly fields: Readonly<SearchMetadata>;
+
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
+    this.fields = new SearchMetadata(json.fields ?? {});
   }
 
   /**
@@ -36,7 +40,7 @@ export class TvClipHit {
    * the primary key of the item.
    */
   get identifier(): string | undefined {
-    return this.rawMetadata.fields?.identifier;
+    return this.fields.identifier;
   }
 
   /**
@@ -51,49 +55,35 @@ export class TvClipHit {
   }
 
   /** Optional. */
-  @Memoize() get addeddate(): DateField | undefined {
-    return this.rawMetadata.fields?.addeddate
-      ? new DateField(this.rawMetadata.fields.addeddate)
-      : undefined;
+  get addeddate(): DateField | undefined {
+    return this.fields.addeddate;
   }
 
   /** Optional. */
-  @Memoize() get avg_rating(): NumberField | undefined {
-    const averageRating = this.rawMetadata.fields?.avg_rating;
-
-    return averageRating || averageRating === 0
-      ? new NumberField(this.rawMetadata.fields.avg_rating)
-      : undefined;
+  get avg_rating(): NumberField | undefined {
+    return this.fields.avg_rating;
   }
 
   /** Multivalued. */
-  @Memoize() get collection(): StringField | undefined {
-    return this.rawMetadata.fields?.collection
-      ? new StringField(this.rawMetadata.fields.collection)
-      : undefined;
+  get collection(): StringField | undefined {
+    return this.fields.collection;
   }
 
-  @Memoize() get created_on(): DateField | undefined {
-    return this.rawMetadata.fields?.created_on
-      ? new DateField(this.rawMetadata.fields.created_on)
-      : undefined;
+  get created_on(): DateField | undefined {
+    return this.fields.created_on;
   }
 
   /**
    * Optional.
    * Multivalued.
    */
-  @Memoize() get creator(): StringField | undefined {
-    return this.rawMetadata.fields?.creator
-      ? new StringField(this.rawMetadata.fields.creator)
-      : undefined;
+  get creator(): StringField | undefined {
+    return this.fields.creator;
   }
 
   /** Optional. */
-  @Memoize() get date(): DateField | undefined {
-    return this.rawMetadata.fields?.date
-      ? new DateField(this.rawMetadata.fields.date)
-      : undefined;
+  get date(): DateField | undefined {
+    return this.fields.date;
   }
 
   /**
@@ -101,150 +91,106 @@ export class TvClipHit {
    * Optional.
    * Multivalued.
    */
-  @Memoize() get description(): StringField | undefined {
-    return this.rawMetadata.fields?.description
-      ? new StringField(this.rawMetadata.fields.description)
-      : undefined;
+  get description(): StringField | undefined {
+    return this.fields.description;
   }
 
   /**
    * Total views over ITEM (not text) lifetime, updated by audit consultation with Views API.
    * Optional.
    */
-  @Memoize() get downloads(): NumberField | undefined {
-    const downloads = this.rawMetadata.fields?.downloads;
-
-    return downloads || downloads === 0
-      ? new NumberField(this.rawMetadata.fields.downloads)
-      : undefined;
+  get downloads(): NumberField | undefined {
+    return this.fields.downloads;
   }
 
-  @Memoize() get filename(): StringField | undefined {
-    return this.rawMetadata.fields?.filename
-      ? new StringField(this.rawMetadata.fields.filename)
-      : undefined;
+  get filename(): StringField | undefined {
+    return this.fields.filename;
   }
 
-  @Memoize() get file_basename(): StringField | undefined {
-    return this.rawMetadata.fields?.file_basename
-      ? new StringField(this.rawMetadata.fields.file_basename)
-      : undefined;
+  get file_basename(): StringField | undefined {
+    return this.fields.file_basename;
   }
 
-  @Memoize() get file_creation_mtime(): NumberField | undefined {
-    const mTime = this.rawMetadata.fields?.file_creation_mtime;
-
-    return mTime || mTime === 0
-      ? new NumberField(this.rawMetadata.fields.file_creation_mtime)
-      : undefined;
+  get file_creation_mtime(): NumberField | undefined {
+    return this.fields.file_creation_mtime;
   }
 
   /**
    * Format varies.
    * Optional.
    */
-  @Memoize() get issue(): StringField | undefined {
-    return this.rawMetadata.fields?.issue
-      ? new StringField(this.rawMetadata.fields.issue)
-      : undefined;
+  get issue(): StringField | undefined {
+    return this.fields.issue;
   }
 
-  @Memoize() get mediatype(): MediaTypeField | undefined {
-    return this.rawMetadata.fields?.mediatype
-      ? new MediaTypeField(this.rawMetadata.fields.mediatype)
-      : undefined;
+  get mediatype(): MediaTypeField | undefined {
+    return this.fields.mediatype;
   }
 
   /** Optional. */
-  @Memoize() get publicdate(): DateField | undefined {
-    return this.rawMetadata.fields?.publicdate
-      ? new DateField(this.rawMetadata.fields.publicdate)
-      : undefined;
+  get publicdate(): DateField | undefined {
+    return this.fields.publicdate;
   }
 
   /**
    * Computed in processing of FTS API hit.
    * Potentially irrelevant for TVS hit.
    */
-  @Memoize() get result_in_subfile(): BooleanField | undefined {
-    const resultInSubfile = this.rawMetadata.fields?.result_in_subfile;
-
-    return resultInSubfile || resultInSubfile === false
-      ? new BooleanField(this.rawMetadata.fields.result_in_subfile)
-      : undefined;
+  get result_in_subfile(): BooleanField | undefined {
+    return this.fields.result_in_subfile;
   }
 
   /** Optional. */
-  @Memoize() get reviewdate(): DateField | undefined {
-    return this.rawMetadata.fields?.reviewdate
-      ? new DateField(this.rawMetadata.fields.reviewdate)
-      : undefined;
+  get reviewdate(): DateField | undefined {
+    return this.fields.reviewdate;
   }
 
   /**
    * Format varies.
    * Optional.
    */
-  @Memoize() get source(): StringField | undefined {
-    return this.rawMetadata.fields?.source
-      ? new StringField(this.rawMetadata.fields.source)
-      : undefined;
+  get source(): StringField | undefined {
+    return this.fields.source;
   }
 
   /**
    * Optional.
    * Multivalued.
    */
-  @Memoize() get subject(): StringField | undefined {
-    return this.rawMetadata.fields?.subject
-      ? new StringField(this.rawMetadata.fields.subject)
-      : undefined;
+  get subject(): StringField | undefined {
+    return this.fields.subject;
   }
 
   /** Optional. */
-  @Memoize() get title(): StringField | undefined {
-    return this.rawMetadata.fields?.title
-      ? new StringField(this.rawMetadata.fields.title)
-      : undefined;
+  get title(): StringField | undefined {
+    return this.fields.title;
   }
 
-  @Memoize() get updated_on(): DateField | undefined {
-    return this.rawMetadata.fields?.updated_on
-      ? new DateField(this.rawMetadata.fields.updated_on)
-      : undefined;
+  get updated_on(): DateField | undefined {
+    return this.fields.updated_on;
   }
 
   /**
    * Computed from date.
    * Optional.
    */
-  @Memoize() get year(): NumberField | undefined {
-    const year = this.rawMetadata.fields?.year;
-
-    return year || year === 0
-      ? new NumberField(this.rawMetadata.fields.year)
-      : undefined;
+  get year(): NumberField | undefined {
+    return this.fields.year;
   }
 
   /**
    * Optional.
    * Start time for TV hit.
    */
-  @Memoize() get start(): StringField | undefined {
-    const start = this.rawMetadata.fields?.start;
-
-    return start || start === 0
-      ? new StringField(this.rawMetadata.fields.start)
-      : undefined;
+  get start(): StringField | undefined {
+    return this.fields.start;
   }
 
   /**
    * Synthesized in processing of TVS API hit; TBD
    * Optional.
    */
-  @Memoize() get __href__(): StringField | undefined {
-    return this.rawMetadata.fields?.__href__
-      ? new StringField(this.rawMetadata.fields.__href__)
-      : undefined;
+  get __href__(): StringField | undefined {
+    return this.fields.__href__;
   }
 }

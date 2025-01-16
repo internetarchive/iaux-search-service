@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DateField, StringField } from '@internetarchive/iaux-item-metadata';
-import { Memoize } from 'typescript-memoize';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -19,8 +19,11 @@ export class FavoritedSearchHit {
    */
   rawMetadata?: Record<string, any>;
 
+  readonly fields: Readonly<SearchMetadata>;
+
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
+    this.fields = new SearchMetadata(json.fields ?? {});
   }
 
   /**
@@ -30,39 +33,30 @@ export class FavoritedSearchHit {
    * the primary key of the item.
    */
   get identifier(): string | undefined {
-    return this.rawMetadata?.fields.query;
+    return this.fields.query?.value;
   }
 
   /** Optional. */
-  @Memoize() get title(): StringField | undefined {
-    return this.rawMetadata?.fields?.title
-      ? new StringField(this.rawMetadata.fields.title)
-      : undefined;
+  get title(): StringField | undefined {
+    return this.fields.title;
   }
 
   /** Optional. */
-  @Memoize() get query(): StringField | undefined {
-    return this.rawMetadata?.fields?.query
-      ? new StringField(this.rawMetadata.fields.query)
-      : undefined;
+  get query(): StringField | undefined {
+    return this.fields.query;
   }
 
   /**
    * Optional.
    */
-  @Memoize()
   get date_favorited(): DateField | undefined {
-    return this.rawMetadata?.fields?.date_favorited
-      ? new DateField(this.rawMetadata.fields.date_favorited)
-      : undefined;
+    return this.fields.date_favorited;
   }
 
   /**
    * Optional.
    */
-  @Memoize() get __href__(): StringField | undefined {
-    return this.rawMetadata?.fields?.__href__
-      ? new StringField(this.rawMetadata.fields.__href__)
-      : undefined;
+  get __href__(): StringField | undefined {
+    return this.fields.__href__;
   }
 }

@@ -77,9 +77,9 @@
     ]
   },
   "dependencies": {
-    "@internetarchive/iaux-item-metadata": "^1.0.1",
+    "@internetarchive/iaux-item-metadata": "^1.0.3",
     "@internetarchive/result-type": "^0.0.1",
     "decorator-cache-getter": "^1.0.0",
-    "typescript-memoize": "^1.1.0"
+    "typescript-memoize": "^1.1.1"
   }
 }
