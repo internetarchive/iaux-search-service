@@ -17,7 +17,7 @@ export class FavoritedSearchHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  readonly rawMetadata: Readonly<Record<string, any>>;
 
   readonly fields: Readonly<SearchMetadata>;
 
