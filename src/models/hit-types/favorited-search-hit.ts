@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DateField, StringField } from '@internetarchive/iaux-item-metadata';
+import type {
+  DateField,
+  StringField,
+} from '@internetarchive/iaux-item-metadata';
 import { SearchMetadata } from '../search-metadata';
 
 /**
