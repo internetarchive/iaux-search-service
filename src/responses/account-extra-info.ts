@@ -5,6 +5,8 @@
 export interface AccountExtraInfo {
   /** Details about the user account itself (screen name, identifier, creation date) */
   account_details: UserAccountDetails;
+  /** Whether the target account either has privs or is internal to archive.org */
+  is_archivist: boolean;
   /** User-editable metadata about the user account (title and description) */
   user_item_metadata: UserItemMetadata;
   /** Details about the preferences set by the user and the privileges they have */
