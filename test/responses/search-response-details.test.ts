@@ -129,6 +129,7 @@ const accountUploadsResponseBody: SearchResponseBody = {
       user_item_identifier: '@foobar',
       user_since: '2010-01-02T03:04:05Z',
     },
+    is_archivist: false,
     policy_settings: {
       is_archive_user: true,
       preferences: [],
@@ -457,6 +458,7 @@ describe('SearchResponseDetails', () => {
     expect(details.accountExtraInfo?.user_item_metadata?.description).to.equal(
       'Foo bar baz'
     );
+    expect(details.accountExtraInfo?.is_archivist).to.be.false;
   });
 
   it('account extra info is optional', () => {
