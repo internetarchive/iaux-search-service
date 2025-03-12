@@ -1,4 +1,3 @@
-export { Metadata } from './src/models/metadata';
 export { ItemHit } from './src/models/hit-types/item-hit';
 export { TextHit } from './src/models/hit-types/text-hit';
 export { SearchResult, HitType } from './src/models/hit-types/hit';
@@ -8,27 +7,7 @@ export {
   Bucket,
 } from './src/models/aggregation';
 
-export { DateField } from './src/models/metadata-fields/field-types/date';
-
-export { NumberField } from './src/models/metadata-fields/field-types/number';
-
-export { StringField } from './src/models/metadata-fields/field-types/string';
-
-export { BooleanField } from './src/models/metadata-fields/field-types/boolean';
-
-export { ByteField } from './src/models/metadata-fields/field-types/byte';
-
-export { DurationField } from './src/models/metadata-fields/field-types/duration';
-
-export { PageProgressionField } from './src/models/metadata-fields/field-types/page-progression';
-
-export { MediaTypeField } from './src/models/metadata-fields/field-types/mediatype';
-
-export {
-  MetadataFieldInterface,
-  MetadataField,
-} from './src/models/metadata-fields/metadata-field';
-
+export { SearchMetadata } from './src/models/search-metadata';
 export { SearchResponse } from './src/responses/search-response';
 export { SearchResponseHeader } from './src/responses/search-response-header';
 export { SearchResponseSessionContext } from './src/responses/search-response-session-context';

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Memoize } from 'typescript-memoize';
-import type { Metadata } from '../metadata';
-import { DateField } from '../metadata-fields/field-types/date';
-import { StringField } from '../metadata-fields/field-types/string';
+import type {
+  DateField,
+  StringField,
+} from '@internetarchive/iaux-item-metadata';
+import { SearchMetadata } from '../search-metadata';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -19,10 +20,13 @@ export class FavoritedSearchHit {
    * This is the raw hit response; useful for inspecting the raw data
    * returned from the server.
    */
-  rawMetadata?: Record<string, any>;
+  readonly rawMetadata: Readonly<Record<string, any>>;
+
+  readonly fields: Readonly<SearchMetadata>;
 
   constructor(json: Record<string, any>) {
     this.rawMetadata = json;
+    this.fields = new SearchMetadata(json.fields ?? {});
   }
 
   /**
@@ -31,39 +35,31 @@ export class FavoritedSearchHit {
    * _Note_: This is a plain string instead of a `MetadataField` since it's
    * the primary key of the item.
    */
-  get identifier(): typeof Metadata.prototype.identifier {
-    return this.rawMetadata?.fields.query;
+  get identifier(): string | undefined {
+    return this.fields.query?.value;
   }
 
   /** Optional. */
-  @Memoize() get title(): StringField | undefined {
-    return this.rawMetadata?.fields?.title
-      ? new StringField(this.rawMetadata.fields.title)
-      : undefined;
+  get title(): StringField | undefined {
+    return this.fields.title;
   }
 
   /** Optional. */
-  @Memoize() get query(): typeof Metadata.prototype.query {
-    return this.rawMetadata?.fields?.query
-      ? new StringField(this.rawMetadata.fields.query)
-      : undefined;
+  get query(): StringField | undefined {
+    return this.fields.query;
   }
 
   /**
    * Optional.
    */
-  @Memoize() get date_favorited(): typeof Metadata.prototype.date_favorited {
-    return this.rawMetadata?.fields?.date_favorited
-      ? new DateField(this.rawMetadata.fields.date_favorited)
-      : undefined;
+  get date_favorited(): DateField | undefined {
+    return this.fields.date_favorited;
   }
 
   /**
    * Optional.
    */
-  @Memoize() get __href__(): typeof Metadata.prototype.__href__ {
-    return this.rawMetadata?.fields?.__href__
-      ? new StringField(this.rawMetadata.fields.__href__)
-      : undefined;
+  get __href__(): StringField | undefined {
+    return this.fields.__href__;
   }
 }
