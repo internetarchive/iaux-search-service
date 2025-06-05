@@ -15,6 +15,16 @@ export type FederatedServiceName =
   | 'service___rcs'
   | 'service___whisper';
 
+export type FederatedMediatypeName =
+  | 'metadata___mediatype___texts'
+  | 'metadata___mediatype___movies'
+  | 'metadata___mediatype___audio'
+  | 'metadata___mediatype___software'
+  | 'metadata___mediatype___image'
+  | 'metadata___mediatype___etree';
+
+export type FederatedPageElementName = FederatedServiceName | FederatedMediatypeName;
+
 /**
  * Valid page element names recognized & returned by the PPS
  */
@@ -25,7 +35,7 @@ export type PageElementName =
   | 'lending'
   | 'web_archives'
   | 'forum_posts'
-  | FederatedServiceName;
+  | FederatedPageElementName;
 
 /**
  * A basic page element returning hits and/or aggregations
@@ -122,6 +132,12 @@ export interface PageElementMap
   service___tvs?: FederatedPageElement;
   service___rcs?: FederatedPageElement;
   service___whisper?: FederatedPageElement;
+  metadata___mediatype___texts?: FederatedPageElement;
+  metadata___mediatype___movies?: FederatedPageElement;
+  metadata___mediatype___audio?: FederatedPageElement;
+  metadata___mediatype___software?: FederatedPageElement;
+  metadata___mediatype___image?: FederatedPageElement;
+  metadata___mediatype___etree?: FederatedPageElement;
 }
 
 /**

@@ -48,5 +48,6 @@ export {
   FieldFilter,
   FilterConstraint,
 } from './src/search-params';
+export { FederatedResults } from './src/responses/search-response-details';
 export { FilterMapBuilder } from './src/filter-map-builder';
 export { SearchServiceError } from './src/search-service-error';
