@@ -11,6 +11,7 @@ import { MetadataSearchBackend } from './search-backend/metadata-search-backend'
 import { TVSearchBackend } from './search-backend/tv-search-backend';
 import { RadioSearchBackend } from './search-backend/radio-search-backend';
 import { FederatedSearchBackend } from './search-backend/federated-search-backend';
+import { DefaultSearchBackend } from './search-backend/default-search-backend';
 import { Memoize } from 'typescript-memoize';
 
 /**
@@ -65,6 +66,8 @@ export class SearchService implements SearchServiceInterface {
     options: SearchBackendOptionsInterface = {}
   ): SearchBackendInterface {
     switch (type) {
+      case SearchType.METADATA:
+        return new MetadataSearchBackend(options);
       case SearchType.FULLTEXT:
         return new FulltextSearchBackend(options);
       case SearchType.RADIO:
@@ -73,9 +76,8 @@ export class SearchService implements SearchServiceInterface {
         return new TVSearchBackend(options);
       case SearchType.FEDERATED:
         return new FederatedSearchBackend(options);
-      case SearchType.METADATA:
       default:
-        return new MetadataSearchBackend(options);
+        return new DefaultSearchBackend(options);
     }
   }
 }

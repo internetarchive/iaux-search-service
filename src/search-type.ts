@@ -3,6 +3,7 @@
  * through the SearchService.
  */
 export enum SearchType {
+  DEFAULT,
   METADATA,
   FULLTEXT,
   TV,
