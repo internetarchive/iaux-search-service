@@ -8,9 +8,10 @@ import type { SearchBackendOptionsInterface } from './search-backend/search-back
 import type { SearchBackendInterface } from './search-backend/search-backend-interface';
 import { FulltextSearchBackend } from './search-backend/fulltext-search-backend';
 import { MetadataSearchBackend } from './search-backend/metadata-search-backend';
-import { Memoize } from 'typescript-memoize';
+import { TVSearchBackend } from './search-backend/tv-search-backend';
 import { RadioSearchBackend } from './search-backend/radio-search-backend';
 import { FederatedSearchBackend } from './search-backend/federated-search-backend';
+import { Memoize } from 'typescript-memoize';
 
 /**
  * The Search Service is responsible for taking the raw response provided by
@@ -64,11 +65,12 @@ export class SearchService implements SearchServiceInterface {
     options: SearchBackendOptionsInterface = {}
   ): SearchBackendInterface {
     switch (type) {
-      //case SearchType.TV: // Will eventually have its own service backend
       case SearchType.FULLTEXT:
         return new FulltextSearchBackend(options);
       case SearchType.RADIO:
         return new RadioSearchBackend(options);
+      case SearchType.TV:
+        return new TVSearchBackend(options);
       case SearchType.FEDERATED:
         return new FederatedSearchBackend(options);
       case SearchType.METADATA:
