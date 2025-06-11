@@ -16,7 +16,6 @@ import {
   convertWebArchivesToSearchHits,
   LENDING_SUB_ELEMENTS,
   WebArchivesPageElement,
-  FederatedServiceName,
   FederatedPageElementName,
 } from './page-elements';
 
