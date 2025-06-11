@@ -23,7 +23,9 @@ export type FederatedMediatypeName =
   | 'metadata___mediatype___image'
   | 'metadata___mediatype___etree';
 
-export type FederatedPageElementName = FederatedServiceName | FederatedMediatypeName;
+export type FederatedPageElementName =
+  | FederatedServiceName
+  | FederatedMediatypeName;
 
 /**
  * Valid page element names recognized & returned by the PPS
