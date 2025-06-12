@@ -7,9 +7,10 @@ import { BaseSearchBackend } from './base-search-backend';
 import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
- * The MetadataSearchBackend performs a `window.fetch` request to archive.org
+ * The DefaultSearchBackend requests search results from archive.org without specifying a
+ * `service_backend`, causing the PPS to use the appropriate default for the current context.
  */
-export class MetadataSearchBackend extends BaseSearchBackend {
+export class DefaultSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
   constructor(options?: SearchBackendOptionsInterface) {
@@ -30,7 +31,7 @@ export class MetadataSearchBackend extends BaseSearchBackend {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const url = `https://${this.baseUrl}${this.servicePath}/?service_backend=metadata&${queryAsString}`;
+    const url = `https://${this.baseUrl}${this.servicePath}/?${queryAsString}`;
     return this.fetchUrl(url);
   }
 }

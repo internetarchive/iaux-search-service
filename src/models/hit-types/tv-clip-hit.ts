@@ -127,6 +127,10 @@ export class TvClipHit {
     return this.fields.mediatype;
   }
 
+  get num_clips(): NumberField | undefined {
+    return this.fields.num_clips;
+  }
+
   /** Optional. */
   get publicdate(): DateField | undefined {
     return this.fields.publicdate;
@@ -194,5 +198,13 @@ export class TvClipHit {
    */
   get __href__(): StringField | undefined {
     return this.fields.__href__;
+  }
+
+  /**
+   * Derived in annotation of raw hits; TBD
+   * Optional.
+   */
+  get __img__(): StringField | undefined {
+    return this.fields.__img__;
   }
 }

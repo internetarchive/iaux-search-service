@@ -70,9 +70,27 @@ export class SearchMetadata extends Metadata {
   /**
    * Optional.
    */
+  @Memoize() get num_clips(): NumberField | undefined {
+    return this.rawMetadata.nclips != null
+      ? new NumberField(this.rawMetadata.nclips)
+      : undefined;
+  }
+
+  /**
+   * Optional.
+   */
   @Memoize() get __href__(): StringField | undefined {
     return this.rawMetadata.__href__ != null
       ? new StringField(this.rawMetadata.__href__)
+      : undefined;
+  }
+
+  /**
+   * Optional.
+   */
+  @Memoize() get __img__(): StringField | undefined {
+    return this.rawMetadata.__img__ != null
+      ? new StringField(this.rawMetadata.__img__)
       : undefined;
   }
 }
