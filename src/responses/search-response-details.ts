@@ -16,7 +16,7 @@ import {
   convertWebArchivesToSearchHits,
   LENDING_SUB_ELEMENTS,
   WebArchivesPageElement,
-  FederatedServiceName,
+  FederatedPageElementName,
 } from './page-elements';
 
 /**
@@ -302,47 +302,53 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * Formats all non-metadata hits to a new federatedResults object in the results.
    */
   private handleFederatedPageElements(): void {
-    const SEARCH_SERVICES: FederatedServiceName[] = [
+    const FEDERATED_PAGE_ELEMENTS: FederatedPageElementName[] = [
       'service___fts',
       'service___tvs',
       'service___rcs',
       'service___whisper',
+      'metadata___mediatype___texts',
+      'metadata___mediatype___movies',
+      'metadata___mediatype___audio',
+      'metadata___mediatype___software',
+      'metadata___mediatype___image',
+      'metadata___mediatype___etree',
     ];
 
-    for (const service of SEARCH_SERVICES) {
-      const simpleServiceName: string = this.removeServicePrefix(service);
+    for (const element of FEDERATED_PAGE_ELEMENTS) {
+      const simpleElementName: string = this.removePageElementPrefix(element);
 
       // Add service name to federated results section.
       // Create section if not already created.
       if (this.federatedResults) {
-        this.federatedResults[service] = [];
+        this.federatedResults[element] = [];
       } else {
-        this.federatedResults = { [simpleServiceName]: [] };
+        this.federatedResults = { [simpleElementName]: [] };
       }
 
       // Add hits to service
-      const serviceElementHits = this.pageElements?.[service]?.hits;
-      if (serviceElementHits?.hits) {
-        this.federatedResults[simpleServiceName] = this.formatHits(
-          serviceElementHits?.hits
+      const pageElementHits = this.pageElements?.[element]?.hits;
+      if (pageElementHits?.hits) {
+        this.federatedResults[simpleElementName] = this.formatHits(
+          pageElementHits?.hits
         );
       }
 
       // Update totals with counts from this service
-      this.totalResults += serviceElementHits?.total ?? 0;
-      this.returnedCount += serviceElementHits?.returned ?? 0;
+      this.totalResults += pageElementHits?.total ?? 0;
+      this.returnedCount += pageElementHits?.returned ?? 0;
     }
   }
 
   /**
-   * Utility method to remove 'service___' from the beginning of federated service names,
-   * so that output will be cleaner.
+   * Utility method to remove 'service___' or 'metadata___mediatype___' from the beginning of
+   * federated page element names, so that output will be cleaner.
    *
-   * @param {FederatedServiceName} service Original service name
-   * @returns {string} Service name with prefix removed
+   * @param name Original page element name
+   * @returns Page element name with prefix removed
    */
-  private removeServicePrefix(service: FederatedServiceName): string {
-    return service.split('___')[1];
+  private removePageElementPrefix(name: FederatedPageElementName): string {
+    return name.split('___').pop() as string;
   }
 
   /**
