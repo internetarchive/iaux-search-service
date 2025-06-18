@@ -33,6 +33,17 @@ const fieldNames: (keyof TvClipHit)[] = [
   '__img__',
 ];
 
+/**
+ * Map from JSON field names to hit field names, for data fields whose name differs
+ * between the two.
+ */
+const hitFieldNameMap: Record<
+  string,
+  Exclude<keyof TvClipHit, 'identifier' | 'rawMetadata' | 'fields'>
+> = {
+  nclips: 'num_clips',
+};
+
 describe('TvClipHit', () => {
   it('constructs basic tv clip hit', () => {
     const hit = new TvClipHit({ fields: {} });
@@ -80,6 +91,7 @@ describe('TvClipHit', () => {
         result_in_subfile: false,
         description: 'foo-description',
         start: '52',
+        nclips: 5,
         __href__: '/details/foo/start/52/end/112?q=bar',
         __img__: '//services/img/foo',
       },
@@ -97,19 +109,20 @@ describe('TvClipHit', () => {
     for (const key of Object.keys(json.fields)) {
       if (key === 'identifier') continue;
       const fieldName = key as Exclude<keyof typeof json.fields, 'identifier'>;
+      const mappedFieldName = hitFieldNameMap[fieldName] ?? fieldName;
 
       if (Array.isArray(json.fields[fieldName])) {
-        expect(hit[fieldName]?.values).to.deep.equal(
+        expect(hit[mappedFieldName]?.values).to.deep.equal(
           json.fields[fieldName],
           fieldName
         );
-      } else if (hit[fieldName] instanceof DateField) {
-        expect(hit[fieldName]?.value).to.deep.equal(
+      } else if (hit[mappedFieldName] instanceof DateField) {
+        expect(hit[mappedFieldName]?.value).to.deep.equal(
           DateParser.shared.parseValue(json.fields[fieldName].toString()),
           fieldName
         );
       } else {
-        expect(hit[fieldName]?.value).to.equal(
+        expect(hit[mappedFieldName]?.value).to.equal(
           json.fields[fieldName],
           fieldName
         );
