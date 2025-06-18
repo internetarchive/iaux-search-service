@@ -13,8 +13,10 @@ import {
 } from '../src/search-service-error';
 import { SearchBackendInterface } from '../src/search-backend/search-backend-interface';
 import { SearchType } from '../src/search-type';
+import { DefaultSearchBackend } from '../src/search-backend/default-search-backend';
 import { MetadataSearchBackend } from '../src/search-backend/metadata-search-backend';
 import { FulltextSearchBackend } from '../src/search-backend/fulltext-search-backend';
+import { TVSearchBackend } from '../src/search-backend/tv-search-backend';
 import { RadioSearchBackend } from '../src/search-backend/radio-search-backend';
 import { FederatedSearchBackend } from '../src/search-backend/federated-search-backend';
 
@@ -144,6 +146,12 @@ describe('SearchService', () => {
     SearchService.getBackendForSearchType = realFactoryMethod;
   });
 
+  it('factory method gets default backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.DEFAULT)
+    ).to.be.instanceOf(DefaultSearchBackend);
+  });
+
   it('factory method gets metadata backend', async () => {
     expect(
       SearchService.getBackendForSearchType(SearchType.METADATA)
@@ -154,6 +162,12 @@ describe('SearchService', () => {
     expect(
       SearchService.getBackendForSearchType(SearchType.FULLTEXT)
     ).to.be.instanceOf(FulltextSearchBackend);
+  });
+
+  it('factory method gets TV backend', async () => {
+    expect(
+      SearchService.getBackendForSearchType(SearchType.TV)
+    ).to.be.instanceOf(TVSearchBackend);
   });
 
   it('factory method gets radio backend', async () => {
