@@ -7,9 +7,9 @@ import { BaseSearchBackend } from './base-search-backend';
 import type { SearchBackendOptionsInterface } from './search-backend-options';
 
 /**
- * The MetadataSearchBackend performs a `window.fetch` request to archive.org
+ * The TVSearchBackend requests search results among TV captions from archive.org
  */
-export class MetadataSearchBackend extends BaseSearchBackend {
+export class TVSearchBackend extends BaseSearchBackend {
   private servicePath: string;
 
   constructor(options?: SearchBackendOptionsInterface) {
@@ -30,7 +30,7 @@ export class MetadataSearchBackend extends BaseSearchBackend {
       params
     );
     const queryAsString = urlSearchParam.toString();
-    const url = `https://${this.baseUrl}${this.servicePath}/?service_backend=metadata&${queryAsString}`;
+    const url = `https://${this.baseUrl}${this.servicePath}/?service_backend=tvs&${queryAsString}`;
     return this.fetchUrl(url);
   }
 }
