@@ -19,6 +19,7 @@ const fieldNames: (keyof TvClipHit)[] = [
   'highlight',
   'issue',
   'mediatype',
+  'num_clips',
   'publicdate',
   'result_in_subfile',
   'reviewdate',
@@ -29,6 +30,7 @@ const fieldNames: (keyof TvClipHit)[] = [
   'year',
   'start',
   '__href__',
+  '__img__',
 ];
 
 describe('TvClipHit', () => {
@@ -79,6 +81,7 @@ describe('TvClipHit', () => {
         description: 'foo-description',
         start: '52',
         __href__: '/details/foo/start/52/end/112?q=bar',
+        __img__: '//services/img/foo',
       },
       highlight: {
         text: ['foo {{{bar}}} baz'],

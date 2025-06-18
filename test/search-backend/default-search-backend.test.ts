@@ -3,13 +3,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from '@open-wc/testing';
 import Sinon from 'sinon';
-import { MetadataSearchBackend } from '../../src/search-backend/metadata-search-backend';
+import { DefaultSearchBackend } from '../../src/search-backend/default-search-backend';
 import {
   SearchServiceError,
   SearchServiceErrorType,
 } from '../../src/search-service-error';
 
-describe('MetadataSearchBackend', () => {
+describe('DefaultSearchBackend', () => {
   describe('basic fetch behavior', () => {
     let fetchBackup: typeof window.fetch;
     let urlCalled: RequestInfo | URL;
@@ -36,25 +36,25 @@ describe('MetadataSearchBackend', () => {
     });
 
     it('can perform a search', async () => {
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       const params = { query: 'foo' };
       const result = await backend.performSearch(params);
 
       expect(result.success?.foo).to.equal('bar');
     });
 
-    it('sets the metadata service backend', async () => {
-      const backend = new MetadataSearchBackend();
+    it('does not set a service backend', async () => {
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       expect(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         new URL(urlCalled!.toString()).searchParams.get('service_backend')
-      ).to.equal('metadata');
+      ).to.be.null;
     });
 
     it('uses the provided service path', async () => {
-      const backend = new MetadataSearchBackend({
+      const backend = new DefaultSearchBackend({
         baseUrl: 'foo.bar',
         servicePath: '/baz',
       });
@@ -66,7 +66,7 @@ describe('MetadataSearchBackend', () => {
     });
 
     it('includes credentials for search endpoint if requested', async () => {
-      const backend = new MetadataSearchBackend({
+      const backend = new DefaultSearchBackend({
         scope: 'foo',
         includeCredentials: true,
       });
@@ -75,12 +75,12 @@ describe('MetadataSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
-    it('includes scope param from URL if not provided', async () => {
+    it('gets scope param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('scope', 'boop');
       window.history.replaceState({}, '', url.toString());
 
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -90,9 +90,9 @@ describe('MetadataSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes caching param if provided', async () => {
+    it('includes caching param if provided as option', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
-      const backend = new MetadataSearchBackend({
+      const backend = new DefaultSearchBackend({
         caching: cachingParam,
       });
       await backend.performSearch({ query: 'foo' });
@@ -101,14 +101,14 @@ describe('MetadataSearchBackend', () => {
       expect(queryParams.get('caching')).to.equal(cachingParam);
     });
 
-    it('includes caching param from URL if not provided', async () => {
+    it('gets caching param from URL if not provided as option', async () => {
       const cachingParam = JSON.stringify({ bypass: true });
 
       const url = new URL(window.location.href);
       url.searchParams.set('caching', cachingParam);
       window.history.replaceState({}, '', url.toString());
 
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -118,12 +118,12 @@ describe('MetadataSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes reCache param from URL if not provided', async () => {
+    it('gets reCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('reCache', '1');
       window.history.replaceState({}, '', url.toString());
 
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -133,12 +133,12 @@ describe('MetadataSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes noCache param from URL if not provided', async () => {
+    it('gets noCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('noCache', '1');
       window.history.replaceState({}, '', url.toString());
 
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -148,12 +148,12 @@ describe('MetadataSearchBackend', () => {
       window.history.replaceState({}, '', url.toString());
     });
 
-    it('includes dontCache param from URL if not provided', async () => {
+    it('gets dontCache param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('dontCache', '1');
       window.history.replaceState({}, '', url.toString());
 
-      const backend = new MetadataSearchBackend();
+      const backend = new DefaultSearchBackend();
       await backend.performSearch({ query: 'foo' });
 
       const queryParams = new URL(urlCalled!.toString()).searchParams;
@@ -164,7 +164,7 @@ describe('MetadataSearchBackend', () => {
     });
 
     it('can enable debugging by default on all searches', async () => {
-      const backend = new MetadataSearchBackend({
+      const backend = new DefaultSearchBackend({
         baseUrl: 'foo.bar',
         servicePath: '/baz',
         debuggingEnabled: true,
@@ -177,7 +177,7 @@ describe('MetadataSearchBackend', () => {
     });
 
     it('can disable default debugging on individual searches', async () => {
-      const backend = new MetadataSearchBackend({
+      const backend = new DefaultSearchBackend({
         baseUrl: 'foo.bar',
         servicePath: '/baz',
         debuggingEnabled: true,
@@ -199,7 +199,7 @@ describe('MetadataSearchBackend', () => {
       throw new Error();
     };
 
-    const backend = new MetadataSearchBackend();
+    const backend = new DefaultSearchBackend();
     const response = await backend.performSearch({ query: 'foo' });
     expect(response).to.exist; // No error thrown
     expect(response.error).to.be.instanceof(SearchServiceError);
@@ -229,7 +229,7 @@ describe('MetadataSearchBackend', () => {
     const logSpy = Sinon.spy();
     console.log = logSpy;
 
-    const backend = new MetadataSearchBackend();
+    const backend = new DefaultSearchBackend();
     await backend.performSearch({ query: 'foo', debugging: true });
     expect(urlCalled).to.include('debugging=true');
     expect(logSpy.calledWithExactly('boop')).to.be.true;
@@ -253,7 +253,7 @@ describe('MetadataSearchBackend', () => {
     const logSpy = Sinon.spy();
     console.log = logSpy;
 
-    const backend = new MetadataSearchBackend();
+    const backend = new DefaultSearchBackend();
     const response = await backend.performSearch({
       query: 'foo',
       debugging: true,
@@ -304,7 +304,7 @@ describe('MetadataSearchBackend', () => {
     const logSpy = Sinon.spy();
     console.log = logSpy;
 
-    const backend = new MetadataSearchBackend({ verbose: true });
+    const backend = new DefaultSearchBackend({ verbose: true });
     await backend.performSearch({
       query: 'boop',
     });
@@ -331,7 +331,7 @@ describe('MetadataSearchBackend', () => {
     const logSpy = Sinon.spy();
     console.log = logSpy;
 
-    const backend = new MetadataSearchBackend();
+    const backend = new DefaultSearchBackend();
     await backend.performSearch({ query: 'foo' });
 
     expect(logSpy.callCount).to.be.greaterThan(0);
