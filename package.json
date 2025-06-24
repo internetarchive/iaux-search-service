@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/search-service",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A search service for the Internet Archive",
   "license": "AGPL-3.0-only",
   "main": "dist/index.js",
@@ -30,7 +30,7 @@
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
   },
   "devDependencies": {
-    "@internetarchive/field-parsers": "^0.1.4",
+    "@internetarchive/field-parsers": "^1.0.0",
     "@open-wc/eslint-config": "^4.2.0",
     "@open-wc/testing": "^4.0.0",
     "@types/mocha": "^10.0.10",
