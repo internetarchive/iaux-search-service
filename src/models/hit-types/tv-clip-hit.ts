@@ -123,6 +123,14 @@ export class TvClipHit {
     return this.fields.issue;
   }
 
+  /**
+   * Computed during document construction.
+   * Optional (appears on TV sub-collections).
+   */
+  get item_count(): NumberField | undefined {
+    return this.fields.item_count;
+  }
+
   get mediatype(): MediaTypeField | undefined {
     return this.fields.mediatype;
   }
