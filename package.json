@@ -30,6 +30,7 @@
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
   },
   "devDependencies": {
+    "@internetarchive/field-parsers": "^1.0.0",
     "@open-wc/eslint-config": "^4.2.0",
     "@open-wc/testing": "^4.0.0",
     "@types/mocha": "^10.0.10",
@@ -76,7 +77,6 @@
     ]
   },
   "dependencies": {
-    "@internetarchive/field-parsers": "^1.0.0",
     "@internetarchive/iaux-item-metadata": "^1.0.5",
     "@internetarchive/result-type": "^0.0.1",
     "decorator-cache-getter": "^1.0.0",
