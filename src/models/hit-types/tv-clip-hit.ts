@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   BooleanField,
+  ByteField,
   DateField,
   MediaTypeField,
   NumberField,
@@ -116,6 +117,13 @@ export class TvClipHit {
   }
 
   /**
+   * Computed during document construction.
+   */
+  get files_count(): NumberField | undefined {
+    return this.fields.files_count;
+  }
+
+  /**
    * Format varies.
    * Optional.
    */
@@ -131,12 +139,35 @@ export class TvClipHit {
     return this.fields.item_count;
   }
 
+  /**
+   * In bytes; computed during document construction.
+   */
+  get item_size(): ByteField | undefined {
+    return this.fields.item_size;
+  }
+
+  /**
+   * Optional.
+   * Multivalued.
+   */
+  get language(): StringField | undefined {
+    return this.fields.language;
+  }
+
   get mediatype(): MediaTypeField | undefined {
     return this.fields.mediatype;
   }
 
   get num_clips(): NumberField | undefined {
     return this.fields.num_clips;
+  }
+
+  /**
+   * Computed during document construction.
+   * Optional.
+   */
+  get num_favorites(): NumberField | undefined {
+    return this.fields.num_favorites;
   }
 
   /** Optional. */
@@ -180,6 +211,14 @@ export class TvClipHit {
 
   get updated_on(): DateField | undefined {
     return this.fields.updated_on;
+  }
+
+  /**
+   * Views over a seven-day period, updated by audit consultation with Views API.
+   * Optional.
+   */
+  get week(): NumberField | undefined {
+    return this.fields.week;
   }
 
   /**
