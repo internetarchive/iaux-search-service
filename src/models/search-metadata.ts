@@ -68,7 +68,34 @@ export class SearchMetadata extends Metadata {
   }
 
   /**
-   * Optional.
+   * Optional. Only on some TV hits.
+   */
+  @Memoize() get ad_id(): StringField | undefined {
+    return this.rawMetadata.ad_id != null
+      ? new StringField(this.rawMetadata.ad_id)
+      : undefined;
+  }
+  
+  /**
+   * Optional. Only on some TV hits.
+   */
+  @Memoize() get factcheck(): StringField | undefined {
+    return this.rawMetadata.factcheck != null
+      ? new StringField(this.rawMetadata.factcheck)
+      : undefined;
+  }
+
+  /**
+   * Optional. Only on some TV hits.
+   */
+  @Memoize() get is_clip(): BooleanField | undefined {
+    return this.rawMetadata.clip != null
+      ? new BooleanField(this.rawMetadata.clip)
+      : undefined;
+  }
+
+  /**
+   * Optional. Only on TV hits.
    */
   @Memoize() get num_clips(): NumberField | undefined {
     return this.rawMetadata.nclips != null

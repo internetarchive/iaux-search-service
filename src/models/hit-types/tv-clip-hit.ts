@@ -61,6 +61,11 @@ export class TvClipHit {
   }
 
   /** Optional. */
+  get ad_id(): StringField | undefined {
+    return this.fields.ad_id;
+  }
+
+  /** Optional. */
   get avg_rating(): NumberField | undefined {
     return this.fields.avg_rating;
   }
@@ -104,6 +109,11 @@ export class TvClipHit {
     return this.fields.downloads;
   }
 
+  /** Optional. */
+  get factcheck(): StringField | undefined {
+    return this.fields.factcheck;
+  }
+
   get filename(): StringField | undefined {
     return this.fields.filename;
   }
@@ -121,6 +131,13 @@ export class TvClipHit {
    */
   get files_count(): NumberField | undefined {
     return this.fields.files_count;
+  }
+
+  /**
+   * Whether this hit represents a "clip" of a longer TV item.
+   */
+  get is_clip(): BooleanField | undefined {
+    return this.fields.is_clip;
   }
 
   /**
