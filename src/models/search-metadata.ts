@@ -75,7 +75,7 @@ export class SearchMetadata extends Metadata {
       ? new StringField(this.rawMetadata.ad_id)
       : undefined;
   }
-  
+
   /**
    * Optional. Only on some TV hits.
    */
