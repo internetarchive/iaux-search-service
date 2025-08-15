@@ -5,6 +5,7 @@ import { DateField } from '@internetarchive/iaux-item-metadata';
 
 const fieldNames: (keyof TvClipHit)[] = [
   'identifier',
+  'ad_id',
   'addeddate',
   'avg_rating',
   'collection',
@@ -13,11 +14,13 @@ const fieldNames: (keyof TvClipHit)[] = [
   'date',
   'description',
   'downloads',
+  'factcheck',
   'filename',
   'file_basename',
   'file_creation_mtime',
   'files_count',
   'highlight',
+  'is_clip',
   'issue',
   'item_count',
   'item_size',
@@ -48,6 +51,7 @@ const hitFieldNameMap: Record<
   Exclude<keyof TvClipHit, 'identifier' | 'rawMetadata' | 'fields'>
 > = {
   nclips: 'num_clips',
+  clip: 'is_clip',
 };
 
 describe('TvClipHit', () => {
@@ -104,6 +108,9 @@ describe('TvClipHit', () => {
         num_favorites: 6,
         week: 123,
         language: ['eng', 'esp'],
+        clip: true,
+        ad_id: ['foo-ad'],
+        factcheck: ['https://foo.bar'],
         __href__: '/details/foo/start/52/end/112?q=bar',
         __img__: '//services/img/foo',
       },
