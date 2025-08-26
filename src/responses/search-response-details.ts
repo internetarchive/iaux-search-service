@@ -26,6 +26,7 @@ export interface SearchResponseBody {
   hits?: SearchResponseHits;
   aggregations?: Record<string, Aggregation>;
   collection_titles?: Record<string, string>;
+  tv_channel_aliases?: Record<string, string>;
   collection_extra_info?: CollectionExtraInfo;
   account_extra_info?: AccountExtraInfo;
   page_elements?: PageElementMap;

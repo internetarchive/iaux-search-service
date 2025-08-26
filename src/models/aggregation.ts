@@ -27,13 +27,21 @@ export enum AggregationSortType {
 }
 
 export interface AggregationOptions {
+  // All aggregations have buckets
   buckets: Bucket[] | number[];
   doc_count_error_upper_bound?: number;
   sum_other_doc_count?: number;
+  // Additional keys provided by the year_histogram aggregation
   first_bucket_key?: number;
   last_bucket_key?: number;
   number_buckets?: number;
   interval?: number;
+  // Additional keys provided by the monthly date_histogram aggregation
+  first_bucket_year?: number;
+  first_bucket_month?: number;
+  last_bucket_year?: number;
+  last_bucket_month?: number;
+  interval_in_months?: number;
 }
 
 /**
@@ -45,6 +53,7 @@ export class Aggregation {
    * other facets return a `Bucket` array.
    */
   readonly buckets: Bucket[] | number[];
+
   readonly doc_count_error_upper_bound?: number;
   readonly sum_other_doc_count?: number;
   readonly first_bucket_key?: number;
@@ -52,14 +61,27 @@ export class Aggregation {
   readonly number_buckets?: number;
   readonly interval?: number;
 
+  readonly first_bucket_year?: number;
+  readonly first_bucket_month?: number;
+  readonly last_bucket_year?: number;
+  readonly last_bucket_month?: number;
+  readonly interval_in_months?: number;
+
   constructor(options: AggregationOptions) {
     this.buckets = options.buckets;
+
     this.doc_count_error_upper_bound = options.doc_count_error_upper_bound;
     this.sum_other_doc_count = options.sum_other_doc_count;
     this.first_bucket_key = options.first_bucket_key;
     this.last_bucket_key = options.last_bucket_key;
     this.number_buckets = options.number_buckets;
     this.interval = options.interval;
+
+    this.first_bucket_year = options.first_bucket_year;
+    this.first_bucket_month = options.first_bucket_month;
+    this.last_bucket_year = options.last_bucket_year;
+    this.last_bucket_month = options.last_bucket_month;
+    this.interval_in_months = options.interval_in_months;
   }
 
   /**
@@ -116,6 +138,6 @@ export class Aggregation {
   private isRawNumberBuckets(
     buckets: Bucket[] | number[]
   ): buckets is number[] {
-    return typeof this.buckets[0] === 'number';
+    return typeof buckets[0] === 'number';
   }
 }
