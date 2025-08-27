@@ -29,8 +29,6 @@ export enum AggregationSortType {
 export interface AggregationOptions {
   // All aggregations have buckets
   buckets: Bucket[] | number[];
-  doc_count_error_upper_bound?: number;
-  sum_other_doc_count?: number;
   // Additional keys provided by the year_histogram aggregation
   first_bucket_key?: number;
   last_bucket_key?: number;
@@ -54,8 +52,6 @@ export class Aggregation {
    */
   readonly buckets: Bucket[] | number[];
 
-  readonly doc_count_error_upper_bound?: number;
-  readonly sum_other_doc_count?: number;
   readonly first_bucket_key?: number;
   readonly last_bucket_key?: number;
   readonly number_buckets?: number;
@@ -70,8 +66,6 @@ export class Aggregation {
   constructor(options: AggregationOptions) {
     this.buckets = options.buckets;
 
-    this.doc_count_error_upper_bound = options.doc_count_error_upper_bound;
-    this.sum_other_doc_count = options.sum_other_doc_count;
     this.first_bucket_key = options.first_bucket_key;
     this.last_bucket_key = options.last_bucket_key;
     this.number_buckets = options.number_buckets;
