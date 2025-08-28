@@ -48,6 +48,9 @@ const responseBody: SearchResponseBody = {
   collection_titles: {
     baz: 'Baz Collection',
   },
+  tv_channel_aliases: {
+    foo: 'Foo Network',
+  },
   collection_extra_info: {
     thumbnail_url: 'foo',
   },
@@ -428,6 +431,26 @@ describe('SearchResponseDetails', () => {
     );
     expect(details.results.length).to.equal(2);
     expect(details.collectionTitles).to.be.undefined;
+  });
+
+  it('provides access to channel alias map', () => {
+    const details = new SearchResponseDetails(responseBody, itemSchema);
+    expect(details.results.length).to.equal(2);
+    expect(details.tvChannelAliases).to.deep.equal({ foo: 'Foo Network' });
+  });
+
+  it('channel alias map is optional', () => {
+    const responseBodyWithoutAliases = {
+      ...responseBody,
+    } as SearchResponseBody;
+    delete responseBodyWithoutAliases.tv_channel_aliases;
+
+    const details = new SearchResponseDetails(
+      responseBodyWithoutAliases,
+      itemSchema
+    );
+    expect(details.results.length).to.equal(2);
+    expect(details.tvChannelAliases).to.be.undefined;
   });
 
   it('provides access to collection extra info', () => {
