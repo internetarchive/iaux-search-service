@@ -6,10 +6,8 @@ import {
 } from '../../src/models/aggregation';
 
 describe('Aggregation model', () => {
-  it('constructs with options', () => {
+  it('constructs with number buckets by year', () => {
     const buckets = [1, 2, 3, 4];
-    const doc_count_error_upper_bound = 10;
-    const sum_other_doc_count = 20;
     const first_bucket_key = 0;
     const last_bucket_key = 3;
     const number_buckets = 4;
@@ -17,8 +15,6 @@ describe('Aggregation model', () => {
 
     const agg = new Aggregation({
       buckets,
-      doc_count_error_upper_bound,
-      sum_other_doc_count,
       first_bucket_key,
       last_bucket_key,
       number_buckets,
@@ -26,14 +22,38 @@ describe('Aggregation model', () => {
     });
 
     expect(agg.buckets).to.equal(buckets);
-    expect(agg.doc_count_error_upper_bound).to.equal(
-      doc_count_error_upper_bound
-    );
-    expect(agg.sum_other_doc_count).to.equal(sum_other_doc_count);
     expect(agg.first_bucket_key).to.equal(first_bucket_key);
     expect(agg.last_bucket_key).to.equal(last_bucket_key);
     expect(agg.number_buckets).to.equal(number_buckets);
     expect(agg.interval).to.equal(interval);
+  });
+
+  it('constructs with number buckets by month', () => {
+    const buckets = [1, 2, 3, 4, 5];
+    const first_bucket_year = 2000;
+    const last_bucket_year = 2001;
+    const first_bucket_month = 3;
+    const last_bucket_month = 6;
+    const number_buckets = 5;
+    const interval_in_months = 3;
+
+    const agg = new Aggregation({
+      buckets,
+      first_bucket_year,
+      last_bucket_year,
+      first_bucket_month,
+      last_bucket_month,
+      number_buckets,
+      interval_in_months,
+    });
+
+    expect(agg.buckets).to.equal(buckets);
+    expect(agg.first_bucket_year).to.equal(first_bucket_year);
+    expect(agg.last_bucket_year).to.equal(last_bucket_year);
+    expect(agg.first_bucket_month).to.equal(first_bucket_month);
+    expect(agg.last_bucket_month).to.equal(last_bucket_month);
+    expect(agg.number_buckets).to.equal(number_buckets);
+    expect(agg.interval_in_months).to.equal(interval_in_months);
   });
 
   it('expects default sorted buckets by count', async () => {
