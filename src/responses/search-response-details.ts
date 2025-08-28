@@ -81,6 +81,11 @@ export interface SearchResponseDetailsInterface {
   collectionTitles?: Record<string, string>;
 
   /**
+   * A map from TV channel names (creators) to their network names.
+   */
+  tvChannelAliases?: Record<string, string>;
+
+  /**
    * Extra info about the target collection, returned when the page type is
    * `collection_details`.
    */
@@ -142,6 +147,11 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * @inheritdoc
    */
   collectionTitles?: Record<string, string>;
+
+  /**
+   * @inheritdoc
+   */
+  tvChannelAliases?: Record<string, string>;
 
   /**
    * @inheritdoc
@@ -222,6 +232,10 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
 
     if (body?.collection_titles) {
       this.collectionTitles = body.collection_titles ?? {};
+    }
+
+    if (body?.tv_channel_aliases) {
+      this.tvChannelAliases = body.tv_channel_aliases ?? {};
     }
 
     if (body?.collection_extra_info) {
