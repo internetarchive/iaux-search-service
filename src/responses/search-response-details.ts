@@ -18,6 +18,7 @@ import {
   WebArchivesPageElement,
   FederatedPageElementName,
 } from './page-elements';
+import { ItemExtraInfo } from './item-extra-info';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
@@ -30,6 +31,7 @@ export interface SearchResponseBody {
   collection_extra_info?: CollectionExtraInfo;
   account_extra_info?: AccountExtraInfo;
   page_elements?: PageElementMap;
+  extra_info?: ItemExtraInfo;
 }
 
 /**
