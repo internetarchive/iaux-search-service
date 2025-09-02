@@ -18,6 +18,7 @@ export {
   UserDetails,
 } from './src/responses/collection-extra-info';
 export { AccountExtraInfo } from './src/responses/account-extra-info';
+export { ItemExtraInfo } from './src/responses/item-extra-info';
 export {
   PageElementMap,
   PageElementName,

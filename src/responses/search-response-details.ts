@@ -100,6 +100,12 @@ export interface SearchResponseDetailsInterface {
   accountExtraInfo?: AccountExtraInfo;
 
   /**
+   * Extra info about the target item, returned when the page type is
+   * `item_details`.
+   */
+  itemExtraInfo?: ItemExtraInfo;
+
+  /**
    * Specific page elements requested from the PPS will be present in this map
    */
   pageElements?: PageElementMap;
@@ -164,6 +170,11 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * @inheritdoc
    */
   accountExtraInfo?: AccountExtraInfo;
+
+  /**
+   * @inheritdoc
+   */
+  itemExtraInfo?: ItemExtraInfo;
 
   /**
    * @inheritdoc
@@ -246,6 +257,10 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
 
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info ?? null;
+    }
+
+    if (body?.extra_info) {
+      this.itemExtraInfo = body.extra_info ?? null;
     }
   }
 
