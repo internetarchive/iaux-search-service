@@ -10,6 +10,7 @@ import {
 import { Review } from '../../responses/page-elements';
 import { SearchMetadata } from '../search-metadata';
 import { Memoize } from 'typescript-memoize';
+import { makeReview } from '../review-builder';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -267,18 +268,7 @@ export class ItemHit {
    */
   @Memoize() get review(): Review | undefined {
     const reviewData = this.rawMetadata.review;
-    return reviewData
-      ? {
-          body: reviewData.reviewbody,
-          title: reviewData.reviewtitle,
-          author: reviewData.reviewer,
-          authorItem: reviewData.reviewer_itemname,
-          updatedate: new Date(reviewData.reviewdate),
-          createdate: new Date(reviewData.createdate),
-          stars: Number(reviewData.stars) || 0,
-          __href__: reviewData.__href__,
-        }
-      : undefined;
+    return reviewData ? makeReview(reviewData) : undefined;
   }
 
   /**

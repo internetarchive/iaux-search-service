@@ -100,9 +100,7 @@ export class AppRoot extends LitElement {
   private initSearchServiceUrlOptions() {
     const params = new URL(window.location.href).searchParams;
     return {
-      baseUrl:
-        params.get('search_base_url') ??
-        'archive.org',
+      baseUrl: params.get('search_base_url') ?? 'archive.org',
       servicePath: params.get('search_service_path') ?? undefined,
       debuggingEnabled: !!params.get('debugging') ?? undefined,
     };

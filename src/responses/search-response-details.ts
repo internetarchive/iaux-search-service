@@ -31,7 +31,7 @@ export interface SearchResponseBody {
   collection_extra_info?: CollectionExtraInfo;
   account_extra_info?: AccountExtraInfo;
   page_elements?: PageElementMap;
-  extra_info?: ItemExtraInfo;
+  extra_info?: Record<string, any>;
 }
 
 /**
@@ -103,7 +103,7 @@ export interface SearchResponseDetailsInterface {
    * Extra info about the target item, returned when the page type is
    * `item_details`.
    */
-  itemExtraInfo?: ItemExtraInfo;
+  itemExtraInfo?: ItemExtraInfo | null;
 
   /**
    * Specific page elements requested from the PPS will be present in this map
@@ -174,7 +174,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
   /**
    * @inheritdoc
    */
-  itemExtraInfo?: ItemExtraInfo;
+  itemExtraInfo?: ItemExtraInfo | null = null;
 
   /**
    * @inheritdoc
@@ -260,7 +260,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     }
 
     if (body?.extra_info) {
-      this.itemExtraInfo = body.extra_info ?? null;
+      this.itemExtraInfo = new ItemExtraInfo(body.extra_info);
     }
   }
 
