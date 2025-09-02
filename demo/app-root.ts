@@ -33,7 +33,7 @@ export class AppRoot extends LitElement {
   render(): TemplateResult {
     return html`
       <fieldset>
-        <legend>Query Option</legend>
+        <legend>Query Type</legend>
         <input
           type="radio"
           id="search"

@@ -14,6 +14,8 @@ export class ItemDetailQuery extends LitElement {
 
   @state() response?: SearchResponse;
 
+  @state() error?: Error;
+
   private get itemResults(): ItemExtraInfo | null | undefined {
     return this.response?.response.itemExtraInfo;
   }
@@ -36,6 +38,12 @@ export class ItemDetailQuery extends LitElement {
             <pre>${JSON.stringify(this.itemResults, null, 2)}</pre>
           `
         : nothing}
+      ${this.error
+        ? html`
+            <h3>Error:</h3>
+            <pre>${this.error}</pre>
+          `
+        : nothing}
     `;
   }
 
@@ -52,6 +60,8 @@ export class ItemDetailQuery extends LitElement {
       uid: 'demo',
     };
 
+    this.error = undefined;
+    this.response = undefined;
     this.isSearching = true;
 
     const results = await this.searchService?.search(
@@ -60,7 +70,7 @@ export class ItemDetailQuery extends LitElement {
     );
 
     this.response = results?.success;
-
+    this.error = results?.error;
     this.isSearching = false;
   }
 }
