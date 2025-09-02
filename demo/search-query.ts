@@ -1,6 +1,6 @@
 import { css, CSSResult, html, LitElement, nothing, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { map } from 'lit/directives/map';
+import { map } from 'lit/directives/map.js';
 import { SearchParamURLGenerator } from '../src/search-param-url-generator';
 import {
   FilterConstraint,
