@@ -25,7 +25,7 @@ export class AppRoot extends LitElement {
     return {
       baseUrl: params.get('search_base_url') ?? 'archive.org',
       servicePath: params.get('search_service_path') ?? undefined,
-      debuggingEnabled: !!params.get('debugging') ?? undefined,
+      debuggingEnabled: !!params.get('debugging'),
     };
   }
 
