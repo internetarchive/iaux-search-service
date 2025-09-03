@@ -77,7 +77,8 @@ export class ItemExtraInfo {
 
   /** Full MDAPI object for this item */
   @Memoize() get public_metadata(): Metadata | undefined {
-    return new Metadata(this.rawResponse.public_metadata ?? {});
+    if (!this.rawResponse.public_metadata) return undefined;
+    return new Metadata(this.rawResponse.public_metadata);
   }
 
   // array of collection identifiers this item is part of
