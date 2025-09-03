@@ -3,6 +3,8 @@
 # This workflow will run every time new changes were pushed to the `main` branch
 
 name: App build CI/CD to main branch
+permissions:
+  contents: write
 
 on:
   push:
@@ -13,27 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: latest
+
 
       - name: Install dependencies
-        run: yarn install
-  
+        run: npm install
+
       - name: Create build files for gh-pages deploy
-        run: yarn ghpages:build
+        run: npm run ghpages:build
 
       # Reference: https://github.com/JamesIves/github-pages-deploy-action
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           branch: gh-pages
           folder: ghpages
           clean-exclude: pr/
           force: false
           target-folder: main
-          token: ${{ secrets.GH_TOKEN }}
