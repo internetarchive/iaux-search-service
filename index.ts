@@ -15,8 +15,8 @@ export { SearchResponseParams } from './src/responses/search-response-params';
 export {
   CollectionExtraInfo,
   RelatedCollection,
-  UserDetails,
 } from './src/responses/collection-extra-info';
+export { UserDetails } from './src/responses/user-details';
 export { AccountExtraInfo } from './src/responses/account-extra-info';
 export { ItemExtraInfo } from './src/responses/item-extra-info';
 export {

@@ -1,7 +1,8 @@
 import { Memoize } from 'typescript-memoize';
-import { makeReview } from '../models/review-builder';
-import { Review } from './page-elements';
 import { Metadata } from '@internetarchive/iaux-item-metadata';
+import { makeReview } from '../models/review-builder';
+import type { Review } from './page-elements';
+import type { UserDetails } from './user-details';
 
 /**
  * Extra info about the target item that is returned for
@@ -56,8 +57,9 @@ export class ItemExtraInfo {
     return this.rawResponse.primary_collection;
   }
 
-  @Memoize() get reviews_data(): Review[] | undefined {
-    return this.rawResponse.reviews_data.map(makeReview);
+  @Memoize() get reviews_data(): Review[] {
+    const reviews = this.rawResponse.reviews_data ?? [];
+    return reviews.map(makeReview);
   }
 
   /** URL for this item's header thumbnail image */
@@ -86,17 +88,8 @@ export class ItemExtraInfo {
     return this.rawResponse.part_of;
   }
 
-  @Memoize() get reviews_metadata(): Review[] | undefined {
-    return this.rawResponse.reviews_metadata.map(makeReview);
+  @Memoize() get reviews_metadata(): Review[] {
+    const reviews = this.rawResponse.reviews_metadata ?? [];
+    return reviews.map(makeReview);
   }
 }
-
-/**
- * Info about a user (e.g., uploaders/contributors), as returned for
- * the `item_details` page type.
- */
-export type UserDetails = {
-  screen_name?: string;
-  useritem?: string;
-  is_archivist?: boolean;
-};

@@ -45,6 +45,13 @@ describe('ItemExtraInfo', () => {
     expect(extraInfo.reviews_data?.[0].body).to.equal('Foo');
   });
 
+  it('returns empty reviews array if none provided', () => {
+    const json = {};
+    const extraInfo = new ItemExtraInfo(json);
+    expect(extraInfo.reviews_data).to.deep.equal([]);
+    expect(extraInfo.reviews_metadata).to.deep.equal([]);
+  });
+
   it('constructs complete extra info object from json', () => {
     const json = {
       item_size: 123,
