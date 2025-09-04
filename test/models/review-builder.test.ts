@@ -39,10 +39,10 @@ describe('makeReview', () => {
     expect(review.title).to.equal('Title');
     expect(review.author).to.be.undefined;
     expect(review.authorItem).to.be.undefined;
-    expect(review.updatedate instanceof Date).to.equal(true);
-    expect(isNaN(review.updatedate.getTime())).to.equal(true);
-    expect(review.createdate instanceof Date).to.equal(true);
-    expect(isNaN(review.createdate.getTime())).to.equal(true);
+    expect(review.updatedate).to.be.instanceOf(Date);
+    expect(isNaN(review.updatedate.getTime())).to.be.true;
+    expect(review.createdate).to.be.instanceOf(Date);
+    expect(isNaN(review.createdate.getTime())).to.be.true;
     expect(review.stars).to.equal(0);
     expect(review.__href__).to.be.undefined;
   });
