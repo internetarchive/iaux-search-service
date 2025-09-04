@@ -1,8 +1,6 @@
 import { html, LitElement, nothing, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { SearchServiceInterface } from '../src/search-service-interface';
-import { SearchParams } from '../src/search-params';
-import { SearchType } from '../src/search-type';
 import { SearchResponse } from '../src/responses/search-response';
 import { ExtraInfo } from '../src/responses/extra-info';
 
@@ -53,21 +51,11 @@ export class ItemDetailQuery extends LitElement {
       'item-input'
     ) as HTMLInputElement)?.value;
 
-    const searchParams: SearchParams = {
-      query: '',
-      pageType: 'item_details',
-      pageTarget: itemId,
-      uid: 'demo',
-    };
-
     this.error = undefined;
     this.response = undefined;
     this.isSearching = true;
 
-    const results = await this.searchService?.search(
-      searchParams,
-      SearchType.DEFAULT
-    );
+    const results = await this.searchService?.itemDetails(itemId);
 
     this.response = results?.success;
     this.error = results?.error;

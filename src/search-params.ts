@@ -171,7 +171,7 @@ export interface SearchParams {
   /**
    * The query string to search for.
    */
-  query: string;
+  query?: string;
 
   /**
    * The page type to generate results for (e.g., 'search_results').

@@ -62,7 +62,10 @@ export class SearchParamURLGenerator {
 
   static generateURLSearchParams(searchParams: SearchParams): URLSearchParams {
     const params: URLSearchParams = new URLSearchParams();
-    params.append('user_query', searchParams.query);
+
+    if (searchParams.query) {
+      params.append('user_query', searchParams.query);
+    }
 
     if (searchParams.pageType) {
       params.append('page_type', String(searchParams.pageType));
@@ -126,10 +129,15 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.includeClientUrl !== false) {
-      // Truncate the client_url to 400 characters
-      const truncatedUrl = window.location.href.slice(0, 400);
+      const noQuery = searchParams.query == null;
       // If the query is particularly long, exclude the client_url altogether
-      if (searchParams.query.length <= 1000) {
+      const queryWithinLimit =
+        searchParams.query && searchParams.query.length <= 1000;
+      const includeClientUrl = noQuery || queryWithinLimit;
+
+      if (includeClientUrl) {
+        // Truncate the client_url to 400 characters
+        const truncatedUrl = window.location.href.slice(0, 400);
         params.append('client_url', truncatedUrl);
       }
     }

@@ -18,4 +18,14 @@ export interface SearchServiceInterface {
     params: SearchParams,
     searchType?: SearchType
   ): Promise<Result<SearchResponse, SearchServiceError>>;
+
+  /**
+   * Retrieve item details for a specific item.
+   *
+   * @param {string} identifier The item identifier
+   * @returns {Promise<Result<SearchResponse, SearchServiceError>>}
+   */
+  itemDetails(
+    identifier: string
+  ): Promise<Result<SearchResponse, SearchServiceError>>;
 }
