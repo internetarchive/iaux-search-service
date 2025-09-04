@@ -8,7 +8,7 @@ import type { UserDetails } from './user-details';
  * Extra info about the target item that is returned for
  * the `item_details` page type.
  */
-export class ItemExtraInfo {
+export class ExtraInfo {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly rawResponse: Readonly<Record<string, any>>;
 

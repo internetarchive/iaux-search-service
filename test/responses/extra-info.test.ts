@@ -1,14 +1,14 @@
 import { expect } from '@open-wc/testing';
-import { ItemExtraInfo } from '../../src/responses/item-extra-info';
+import { ExtraInfo } from '../../src/responses/extra-info';
 import { Metadata } from '@internetarchive/iaux-item-metadata';
 
-describe('ItemExtraInfo', () => {
+describe('ExtraInfo', () => {
   it('constructs item extra info from json', () => {
     const json = {
       item_size: 123,
     };
-    const extraInfo = new ItemExtraInfo(json);
-    expect(extraInfo).to.be.instanceOf(ItemExtraInfo);
+    const extraInfo = new ExtraInfo(json);
+    expect(extraInfo).to.be.instanceOf(ExtraInfo);
     expect(extraInfo.rawResponse).to.deep.equal(json);
     expect(extraInfo.public_metadata).to.be.undefined;
   });
@@ -20,7 +20,7 @@ describe('ItemExtraInfo', () => {
         description: 'This is a test item',
       },
     };
-    const extraInfo = new ItemExtraInfo(json);
+    const extraInfo = new ExtraInfo(json);
     expect(extraInfo.public_metadata).to.be.instanceOf(Metadata);
     expect(extraInfo.public_metadata?.title?.value).to.equal('Test Item');
     expect(extraInfo.public_metadata?.description?.value).to.equal(
@@ -38,7 +38,7 @@ describe('ItemExtraInfo', () => {
         },
       ],
     };
-    const extraInfo = new ItemExtraInfo(json);
+    const extraInfo = new ExtraInfo(json);
     expect(extraInfo.reviews_data?.length).to.equal(1);
     expect(extraInfo.reviews_data?.[0].stars).to.equal(5);
     expect(extraInfo.reviews_data?.[0].title).to.equal('Bar!');
@@ -47,7 +47,7 @@ describe('ItemExtraInfo', () => {
 
   it('returns empty reviews array if none provided', () => {
     const json = {};
-    const extraInfo = new ItemExtraInfo(json);
+    const extraInfo = new ExtraInfo(json);
     expect(extraInfo.reviews_data).to.deep.equal([]);
     expect(extraInfo.reviews_metadata).to.deep.equal([]);
   });
@@ -89,7 +89,7 @@ describe('ItemExtraInfo', () => {
         is_archivist: true,
       },
     };
-    const extraInfo = new ItemExtraInfo(json);
+    const extraInfo = new ExtraInfo(json);
     expect(extraInfo.rawResponse).to.deep.equal(json);
 
     expect(extraInfo.public_metadata).to.be.instanceOf(Metadata);

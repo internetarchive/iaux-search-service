@@ -671,9 +671,9 @@ describe('SearchResponseDetails', () => {
       {} as SearchHitSchema
     );
 
-    expect(details.itemExtraInfo?.thumbnail_url).to.equal('foo');
-    expect(details.itemExtraInfo?.item_size).to.equal(123);
-    expect(details.itemExtraInfo?.files_count).to.equal(10);
-    expect(details.itemExtraInfo?.public_metadata).to.be.instanceof(Metadata);
+    expect(details.extraInfo?.thumbnail_url).to.equal('foo');
+    expect(details.extraInfo?.item_size).to.equal(123);
+    expect(details.extraInfo?.files_count).to.equal(10);
+    expect(details.extraInfo?.public_metadata).to.be.instanceof(Metadata);
   });
 });

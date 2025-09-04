@@ -4,7 +4,7 @@ import { SearchServiceInterface } from '../src/search-service-interface';
 import { SearchParams } from '../src/search-params';
 import { SearchType } from '../src/search-type';
 import { SearchResponse } from '../src/responses/search-response';
-import { ItemExtraInfo } from '../src/responses/item-extra-info';
+import { ExtraInfo } from '../src/responses/extra-info';
 
 @customElement('item-detail-query')
 export class ItemDetailQuery extends LitElement {
@@ -16,8 +16,8 @@ export class ItemDetailQuery extends LitElement {
 
   @state() error?: Error;
 
-  private get itemResults(): ItemExtraInfo | null | undefined {
-    return this.response?.response.itemExtraInfo;
+  private get itemResults(): ExtraInfo | null | undefined {
+    return this.response?.response.extraInfo;
   }
 
   render(): TemplateResult {

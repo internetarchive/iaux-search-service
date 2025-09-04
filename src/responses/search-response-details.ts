@@ -18,7 +18,7 @@ import {
   WebArchivesPageElement,
   FederatedPageElementName,
 } from './page-elements';
-import { ItemExtraInfo } from './item-extra-info';
+import { ExtraInfo } from './extra-info';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
@@ -103,7 +103,7 @@ export interface SearchResponseDetailsInterface {
    * Extra info about the target item, returned when the page type is
    * `item_details`.
    */
-  itemExtraInfo?: ItemExtraInfo | null;
+  extraInfo?: ExtraInfo | null;
 
   /**
    * Specific page elements requested from the PPS will be present in this map
@@ -174,7 +174,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
   /**
    * @inheritdoc
    */
-  itemExtraInfo?: ItemExtraInfo | null = null;
+  extraInfo?: ExtraInfo | null = null;
 
   /**
    * @inheritdoc
@@ -260,7 +260,7 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
     }
 
     if (body?.extra_info) {
-      this.itemExtraInfo = new ItemExtraInfo(body.extra_info);
+      this.extraInfo = new ExtraInfo(body.extra_info);
     }
   }
 
