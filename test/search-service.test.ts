@@ -181,4 +181,32 @@ describe('SearchService', () => {
       SearchService.getBackendForSearchType(SearchType.FEDERATED)
     ).to.be.instanceOf(FederatedSearchBackend);
   });
+
+  describe('itemDetails', () => {
+    it('can get item details when requested', async () => {
+      class MockSearchBackend implements SearchBackendInterface {
+        async performSearch(
+          params: SearchParams
+        ): Promise<Result<any, SearchServiceError>> {
+          const responseGenerator = new MockResponseGenerator();
+          const mockResponse = responseGenerator.generateMockItemDetailsResponse();
+          return { success: mockResponse };
+        }
+      }
+
+      const backend = new MockSearchBackend();
+      const realFactoryMethod = SearchService.getBackendForSearchType;
+      SearchService.getBackendForSearchType = () => backend;
+
+      const service = new SearchService();
+
+      const searchResult = await service.itemDetails('foo');
+      expect(searchResult.success).to.not.equal(undefined);
+      expect(searchResult.success?.response.extraInfo?.item_size).to.equal(
+        1094661875
+      );
+
+      SearchService.getBackendForSearchType = realFactoryMethod;
+    });
+  });
 });
