@@ -46,6 +46,17 @@ export class SearchService implements SearchServiceInterface {
     return { success: modeledResponse };
   }
 
+  itemDetails(
+    identifier: string
+  ): Promise<Result<SearchResponse, SearchServiceError>> {
+    const searchParams: SearchParams = {
+      pageType: 'item_details',
+      pageTarget: identifier,
+    };
+
+    return this.search(searchParams, SearchType.DEFAULT);
+  }
+
   /**
    * Retrieve a search backend that can handle the given type of search.
    * @param type The type of search that the backend needs to handle.

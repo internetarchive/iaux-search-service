@@ -250,4 +250,47 @@ describe('ItemHit', () => {
     expect(hit.num_favorites?.value).to.equal(0);
     expect(hit.num_reviews?.value).to.equal(0);
   });
+
+  it('correctly creates Review objects', () => {
+    const json = {
+      fields: {
+        identifier: 'foo',
+      },
+      review: {
+        reviewbody: 'foo bar baz',
+        reviewtitle: 'Foo Bar',
+        reviewer: 'Baz Quux',
+        reviewer_itemname: '@bazquux',
+        reviewdate: '2010-01-02 03:04:05',
+        createdate: '2011-02-03 04:05:06',
+        stars: '5',
+        __href__: 'https://example.com?reviewid=123',
+      },
+      highlight: null,
+      _score: 1,
+    };
+
+    const hit = new ItemHit(json);
+    expect(hit.review).to.exist;
+    expect(hit.review?.stars).to.equal(5);
+    expect(hit.review?.updatedate).to.be.instanceOf(Date);
+    expect(hit.review?.updatedate.getTime()).to.equal(
+      new Date('2010-01-02 03:04:05').getTime()
+    );
+    expect(hit.review?.createdate).to.be.instanceOf(Date);
+    expect(hit.review?.__href__).to.equal('https://example.com?reviewid=123');
+  });
+
+  it('correctly does not have review if one not provided', () => {
+    const json = {
+      fields: {
+        identifier: 'foo',
+      },
+      highlight: null,
+      _score: 1,
+    };
+
+    const hit = new ItemHit(json);
+    expect(hit.review).to.be.undefined;
+  });
 });

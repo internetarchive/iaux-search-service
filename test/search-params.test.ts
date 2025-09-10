@@ -470,4 +470,29 @@ describe('SearchParams', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(new URL(queryParams.get('client_url')!)).not.to.throw;
   });
+
+  it('does not include user_query when no query present', async () => {
+    const params = {};
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    expect(queryParams.get('user_query')).to.be.null;
+  });
+
+  it('does include client_url when no query present', async () => {
+    const params = {};
+    const urlSearchParam = SearchParamURLGenerator.generateURLSearchParams(
+      params
+    );
+    const queryAsString = urlSearchParam.toString();
+    const queryParams = new URL(`https://foo.bar/?${queryAsString}`)
+      .searchParams;
+    // Don't rely on exact web-test-runner URLs, just verify the param was added and is a valid URL
+    expect(queryParams.get('client_url')).to.exist;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(new URL(queryParams.get('client_url')!)).not.to.throw;
+  });
 });

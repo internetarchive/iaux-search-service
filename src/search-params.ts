@@ -155,7 +155,8 @@ export type FilterMap = Record<string, FieldFilter>;
 export type PageType =
   | 'search_results'
   | 'collection_details'
-  | 'account_details';
+  | 'account_details'
+  | 'item_details';
 
 /**
  * SearchParams provides an encapsulation to all of the search parameters
@@ -170,7 +171,7 @@ export interface SearchParams {
   /**
    * The query string to search for.
    */
-  query: string;
+  query?: string;
 
   /**
    * The page type to generate results for (e.g., 'search_results').

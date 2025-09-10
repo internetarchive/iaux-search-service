@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en-GB">
+
 <head>
   <meta charset="utf-8">
   <style>
@@ -9,20 +10,11 @@
       font-size: 10px;
     }
   </style>
+  <script type="module" src="../dist/demo/app-root.js"></script>
 </head>
+
 <body>
-  <div id="demo"></div>
-
-  <script type="module">
-    import { html, render } from 'lit-html';
-    import '../dist/demo/app-root.js';
-
-    render(
-      html`
-        <app-root></app-root>
-      `,
-      document.querySelector('#demo')
-    );
-  </script>
+  <app-root></app-root>
 </body>
+
 </html>

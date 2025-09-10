@@ -10,6 +10,7 @@ import {
 } from '../../src/responses/search-response-details';
 import { SearchHitSchema } from '../../src/responses/search-hit-schema';
 import { FavoritedSearchHit } from '../../src/models/hit-types/favorited-search-hit';
+import { Metadata } from '@internetarchive/iaux-item-metadata';
 
 const itemSchema: SearchHitSchema = {
   hit_type: 'item' as HitType,
@@ -295,6 +296,19 @@ const federatedSearchResponseBody: SearchResponseBody = {
         ],
       },
     },
+  },
+};
+
+const itemExtraInfoResponseBody: SearchResponseBody = {
+  extra_info: {
+    thumbnail_url: 'foo',
+    public_metadata: {
+      title: 'Foo',
+      creator: 'Bar',
+      year: '2020',
+    },
+    item_size: 123,
+    files_count: 10,
   },
 };
 
@@ -649,5 +663,17 @@ describe('SearchResponseDetails', () => {
     );
 
     expect(details.federatedResults?.whisper[0]).to.be.instanceOf(TextHit);
+  });
+
+  it('constructs response with extra_info', () => {
+    const details = new SearchResponseDetails(
+      itemExtraInfoResponseBody,
+      {} as SearchHitSchema
+    );
+
+    expect(details.extraInfo?.thumbnail_url).to.equal('foo');
+    expect(details.extraInfo?.item_size).to.equal(123);
+    expect(details.extraInfo?.files_count).to.equal(10);
+    expect(details.extraInfo?.public_metadata).to.be.instanceof(Metadata);
   });
 });

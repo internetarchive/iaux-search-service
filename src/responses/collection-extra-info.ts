@@ -1,3 +1,5 @@
+import type { UserDetails } from './user-details';
+
 /**
  * Extra info about the target collection that is returned for
  * the `collection_details` page type.
@@ -70,14 +72,4 @@ export interface RelatedCollection {
   identifier: string;
   title?: string;
   item_count?: number;
-}
-
-/**
- * Info about a user (e.g., uploaders/contributors), as returned for
- * the `collection_details` page type.
- */
-export interface UserDetails {
-  screen_name?: string;
-  useritem?: string;
-  is_archivist?: boolean;
 }

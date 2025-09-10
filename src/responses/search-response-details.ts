@@ -18,6 +18,7 @@ import {
   WebArchivesPageElement,
   FederatedPageElementName,
 } from './page-elements';
+import { ExtraInfo } from './extra-info';
 
 /**
  * The structure of the response body returned from the PPS endpoint.
@@ -30,6 +31,7 @@ export interface SearchResponseBody {
   collection_extra_info?: CollectionExtraInfo;
   account_extra_info?: AccountExtraInfo;
   page_elements?: PageElementMap;
+  extra_info?: Record<string, any>;
 }
 
 /**
@@ -98,6 +100,12 @@ export interface SearchResponseDetailsInterface {
   accountExtraInfo?: AccountExtraInfo;
 
   /**
+   * Extra info about the target item, returned when the page type is
+   * `item_details`.
+   */
+  extraInfo?: ExtraInfo | null;
+
+  /**
    * Specific page elements requested from the PPS will be present in this map
    */
   pageElements?: PageElementMap;
@@ -162,6 +170,11 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
    * @inheritdoc
    */
   accountExtraInfo?: AccountExtraInfo;
+
+  /**
+   * @inheritdoc
+   */
+  extraInfo?: ExtraInfo | null = null;
 
   /**
    * @inheritdoc
@@ -244,6 +257,10 @@ export class SearchResponseDetails implements SearchResponseDetailsInterface {
 
     if (body?.account_extra_info) {
       this.accountExtraInfo = body.account_extra_info ?? null;
+    }
+
+    if (body?.extra_info) {
+      this.extraInfo = new ExtraInfo(body.extra_info);
     }
   }
 
