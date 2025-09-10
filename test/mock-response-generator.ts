@@ -255,53 +255,6 @@ export class MockResponseGenerator {
             num_favorites: 124,
             title_message: null,
             primary_collection: 'GratefulDead',
-            reviews_data: [
-              {
-                reviewbody:
-                  'let me be the first to thank charlie for this sicko update and the new songs as well:-)',
-                reviewtitle: 'SICKO',
-                reviewer: 'DarkStar1972',
-                reviewdate: '2008-07-17 02:38:56',
-                createdate: '2008-07-17 02:38:56',
-                stars: '5',
-              },
-              {
-                reviewbody:
-                  'Wow! Best show of 1972, but I do not believe it. According to my own eyes, the only tape that...',
-                reviewtitle: 'Built For Comfort',
-                reviewer: 'Evan S. Hunt',
-                reviewdate: '2008-07-17 05:06:15',
-                createdate: '2008-07-17 05:06:15',
-                stars: '5',
-              },
-              {
-                reviewbody:
-                  'Ok - so - scannig the new new testament (deadbase) - the last time this song is slated as having...',
-                reviewtitle: 'frozen logger?',
-                reviewer: 'secret8476',
-                reviewdate: '2008-07-17 15:40:47',
-                createdate: '2008-07-17 15:40:47',
-                stars: '4',
-              },
-              {
-                reviewbody:
-                  "What an amazing find... if Eric's comments below are accurate, this is truly some long lost gem (i...",
-                reviewtitle: 'Sounds amazing!',
-                reviewer: 'Dr.Unclear',
-                reviewdate: '2008-07-18 20:47:09',
-                createdate: '2008-07-18 20:47:09',
-                stars: '5',
-              },
-              {
-                reviewbody:
-                  'I, too, had an Owsley encounter at this show because he got me in free backstage. I was working in...',
-                reviewtitle: 'Lovely sounding recording!',
-                reviewer: 'spinyn',
-                reviewdate: '2008-07-18 21:05:31',
-                createdate: '2008-07-18 21:05:31',
-                stars: '5',
-              },
-            ],
             thumbnail_url:
               'https://ia800302.us.archive.org/27/items/gd1972-08-25.sbd.miller.92840.sbeok.flac16/__ia_thumb.jpg',
             review_count: 0,

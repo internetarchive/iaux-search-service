@@ -57,11 +57,6 @@ export class ExtraInfo {
     return this.rawResponse.primary_collection;
   }
 
-  @Memoize() get reviews_data(): Review[] {
-    const reviews = this.rawResponse.reviews_data ?? [];
-    return reviews.map(makeReview);
-  }
-
   /** URL for this item's header thumbnail image */
   get thumbnail_url(): string | undefined {
     return this.rawResponse.thumbnail_url;

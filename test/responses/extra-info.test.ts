@@ -30,7 +30,7 @@ describe('ExtraInfo', () => {
 
   it('constructs reviews from json', () => {
     const json = {
-      reviews_data: [
+      reviews_metadata: [
         {
           reviewbody: 'Foo',
           stars: '5',
@@ -39,16 +39,15 @@ describe('ExtraInfo', () => {
       ],
     };
     const extraInfo = new ExtraInfo(json);
-    expect(extraInfo.reviews_data?.length).to.equal(1);
-    expect(extraInfo.reviews_data?.[0].stars).to.equal(5);
-    expect(extraInfo.reviews_data?.[0].title).to.equal('Bar!');
-    expect(extraInfo.reviews_data?.[0].body).to.equal('Foo');
+    expect(extraInfo.reviews_metadata?.length).to.equal(1);
+    expect(extraInfo.reviews_metadata?.[0].stars).to.equal(5);
+    expect(extraInfo.reviews_metadata?.[0].title).to.equal('Bar!');
+    expect(extraInfo.reviews_metadata?.[0].body).to.equal('Foo');
   });
 
   it('returns empty reviews array if none provided', () => {
     const json = {};
     const extraInfo = new ExtraInfo(json);
-    expect(extraInfo.reviews_data).to.deep.equal([]);
     expect(extraInfo.reviews_metadata).to.deep.equal([]);
   });
 
@@ -59,13 +58,6 @@ describe('ExtraInfo', () => {
         title: 'Test Item',
         description: 'This is a test item',
       },
-      reviews_data: [
-        {
-          reviewbody: 'Foo',
-          stars: '5',
-          reviewtitle: 'Bar!',
-        },
-      ],
       files_count: 5,
       month: 2,
       week: 3,
@@ -98,8 +90,6 @@ describe('ExtraInfo', () => {
       'This is a test item'
     );
     expect(extraInfo.item_size).to.equal(123);
-    expect(extraInfo.reviews_data?.length).to.equal(1);
-    expect(extraInfo.reviews_data?.[0].stars).to.equal(5);
     expect(extraInfo.uploader_details?.screen_name).to.equal('uploader123');
     expect(extraInfo.uploader_details?.useritem).to.equal('user123');
     expect(extraInfo.uploader_details?.is_archivist).to.equal(true);
