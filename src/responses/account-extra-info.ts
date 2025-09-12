@@ -20,6 +20,12 @@ export interface UserAccountDetails {
   screenname: string;
   user_item_identifier: string;
   user_since: string;
+  user_email?: string;
+  user_status?: string;
+  is_locked?: boolean;
+  created_date?: string | null;
+  updated_date?: string | null;
+  last_login?: string | null;
 }
 
 /**
