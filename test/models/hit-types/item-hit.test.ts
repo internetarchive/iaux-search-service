@@ -273,8 +273,8 @@ describe('ItemHit', () => {
     const hit = new ItemHit(json);
     expect(hit.review).to.exist;
     expect(hit.review?.stars).to.equal(5);
-    expect(hit.review?.updatedate).to.be.instanceOf(Date);
-    expect(hit.review?.updatedate.getTime()).to.equal(
+    expect(hit.review?.reviewdate).to.be.instanceOf(Date);
+    expect(hit.review?.reviewdate?.getTime()).to.equal(
       new Date('2010-01-02 03:04:05').getTime()
     );
     expect(hit.review?.createdate).to.be.instanceOf(Date);

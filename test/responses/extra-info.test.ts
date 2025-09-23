@@ -41,8 +41,8 @@ describe('ExtraInfo', () => {
     const extraInfo = new ExtraInfo(json);
     expect(extraInfo.reviews_metadata?.length).to.equal(1);
     expect(extraInfo.reviews_metadata?.[0].stars).to.equal(5);
-    expect(extraInfo.reviews_metadata?.[0].title).to.equal('Bar!');
-    expect(extraInfo.reviews_metadata?.[0].body).to.equal('Foo');
+    expect(extraInfo.reviews_metadata?.[0].reviewtitle).to.equal('Bar!');
+    expect(extraInfo.reviews_metadata?.[0].reviewbody).to.equal('Foo');
   });
 
   it('returns empty reviews array if none provided', () => {
@@ -106,8 +106,8 @@ describe('ExtraInfo', () => {
     expect(extraInfo.review_count).to.equal(1);
     expect(extraInfo.part_of).to.deep.equal(['beep', 'boop']);
     expect(extraInfo.reviews_metadata?.length).to.equal(1);
-    expect(extraInfo.reviews_metadata?.[0].body).to.equal('Foo');
+    expect(extraInfo.reviews_metadata?.[0].reviewbody).to.equal('Foo');
     expect(extraInfo.reviews_metadata?.[0].stars).to.equal(5);
-    expect(extraInfo.reviews_metadata?.[0].title).to.equal('Bar!');
+    expect(extraInfo.reviews_metadata?.[0].reviewtitle).to.equal('Bar!');
   });
 });

@@ -1,7 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { Metadata } from '@internetarchive/iaux-item-metadata';
-import { makeReview } from '../models/review-builder';
-import type { Review } from './page-elements';
+import { Metadata, Review } from '@internetarchive/iaux-item-metadata';
 import type { UserDetails } from './user-details';
 
 /**
@@ -85,6 +83,7 @@ export class ExtraInfo {
 
   @Memoize() get reviews_metadata(): Review[] {
     const reviews = this.rawResponse.reviews_metadata ?? [];
-    return reviews.map(makeReview);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return reviews.map((review: Record<string, any>) => new Review(review));
   }
 }
