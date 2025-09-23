@@ -7,9 +7,9 @@ import {
   NumberField,
   StringField,
 } from '@internetarchive/iaux-item-metadata';
+import { SearchReview } from '../../responses/page-elements';
 import { SearchMetadata } from '../search-metadata';
 import { Memoize } from 'typescript-memoize';
-import { SearchReview } from '../../responses/page-elements';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
