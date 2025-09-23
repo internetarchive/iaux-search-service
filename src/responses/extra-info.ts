@@ -1,7 +1,7 @@
 import { Memoize } from 'typescript-memoize';
 import { Metadata } from '@internetarchive/iaux-item-metadata';
-import type { UserDetails } from './user-details';
 import { SearchReview } from './page-elements';
+import type { UserDetails } from './user-details';
 
 /**
  * Extra info about the target item that is returned for
