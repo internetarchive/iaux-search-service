@@ -1,6 +1,7 @@
 import { Memoize } from 'typescript-memoize';
-import { Metadata, Review } from '@internetarchive/iaux-item-metadata';
+import { Metadata } from '@internetarchive/iaux-item-metadata';
 import type { UserDetails } from './user-details';
+import { SearchReview } from './page-elements';
 
 /**
  * Extra info about the target item that is returned for
@@ -81,9 +82,11 @@ export class ExtraInfo {
     return this.rawResponse.part_of;
   }
 
-  @Memoize() get reviews_metadata(): Review[] {
+  @Memoize() get reviews_metadata(): SearchReview[] {
     const reviews = this.rawResponse.reviews_metadata ?? [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return reviews.map((review: Record<string, any>) => new Review(review));
+    return reviews.map(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (review: Record<string, any>) => new SearchReview(review)
+    );
   }
 }
