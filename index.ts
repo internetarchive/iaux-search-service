@@ -22,7 +22,7 @@ export { ExtraInfo } from './src/responses/extra-info';
 export {
   PageElementMap,
   PageElementName,
-  SearchReview,
+  Review,
   ForumPost,
   WebArchiveEntry,
   LendingPageElement,

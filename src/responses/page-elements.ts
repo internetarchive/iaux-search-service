@@ -1,4 +1,4 @@
-import { Review } from '@internetarchive/iaux-item-metadata';
+import { Review as BaseReview } from '@internetarchive/iaux-item-metadata';
 import { Aggregation } from '../models/aggregation';
 
 /**
@@ -72,7 +72,7 @@ export interface ForumPost {
   date: string;
 }
 
-export class SearchReview extends Review {
+export class Review extends BaseReview {
   get __href__(): string | undefined {
     return this.rawValue.__href__;
   }
