@@ -540,10 +540,10 @@ describe('SearchResponseDetails', () => {
     );
     expect(details.results.length).to.equal(1);
     expect(details.results[0].identifier).to.equal('foo');
-    expect(details.results[0].review?.body).to.equal('foo bar baz');
-    expect(details.results[0].review?.title).to.equal('Foo Bar');
-    expect(details.results[0].review?.author).to.equal('Baz Quux');
-    expect(details.results[0].review?.authorItem).to.equal('@bazquux');
+    expect(details.results[0].review?.reviewbody).to.equal('foo bar baz');
+    expect(details.results[0].review?.reviewtitle).to.equal('Foo Bar');
+    expect(details.results[0].review?.reviewer).to.equal('Baz Quux');
+    expect(details.results[0].review?.reviewer_itemname).to.equal('@bazquux');
     expect(details.results[0].review?.stars).to.equal(0);
     expect(details.results[0].review?.__href__).to.equal(
       'https://example.com?reviewid=123'

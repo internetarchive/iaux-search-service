@@ -7,10 +7,9 @@ import {
   NumberField,
   StringField,
 } from '@internetarchive/iaux-item-metadata';
-import { Review } from '../../responses/page-elements';
+import { SearchReview } from '../../responses/page-elements';
 import { SearchMetadata } from '../search-metadata';
 import { Memoize } from 'typescript-memoize';
-import { makeReview } from '../review-builder';
 
 /**
  * A model that describes an item hit from a Metadata Search via the PPS endpoint.
@@ -266,9 +265,9 @@ export class ItemHit {
    * Contains data about the target user's review on this item.
    * Note: this property is not a standard field type and there is no need to call `.value`/`.values` on it.
    */
-  @Memoize() get review(): Review | undefined {
+  @Memoize() get review(): SearchReview | undefined {
     const reviewData = this.rawMetadata.review;
-    return reviewData ? makeReview(reviewData) : undefined;
+    return reviewData ? new SearchReview(reviewData) : undefined;
   }
 
   /**
