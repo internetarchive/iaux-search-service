@@ -77,7 +77,7 @@
     ]
   },
   "dependencies": {
-    "@internetarchive/iaux-item-metadata": "^1.0.7-webdev-7743.0",
+    "@internetarchive/iaux-item-metadata": "^1.1.0",
     "@internetarchive/result-type": "^0.0.1",
     "typescript-memoize": "^1.1.1"
   }
