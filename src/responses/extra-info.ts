@@ -1,6 +1,6 @@
 import { Memoize } from 'typescript-memoize';
 import { Metadata } from '@internetarchive/iaux-item-metadata';
-import { Review } from './page-elements';
+import { SearchReview } from './page-elements';
 import type { UserDetails } from './user-details';
 
 /**
@@ -82,11 +82,11 @@ export class ExtraInfo {
     return this.rawResponse.part_of;
   }
 
-  @Memoize() get reviews_metadata(): Review[] {
+  @Memoize() get reviews_metadata(): SearchReview[] {
     const reviews = this.rawResponse.reviews_metadata ?? [];
     return reviews.map(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (review: Record<string, any>) => new Review(review)
+      (review: Record<string, any>) => new SearchReview(review)
     );
   }
 }

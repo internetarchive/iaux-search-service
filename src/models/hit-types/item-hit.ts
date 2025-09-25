@@ -7,7 +7,7 @@ import {
   NumberField,
   StringField,
 } from '@internetarchive/iaux-item-metadata';
-import { Review } from '../../responses/page-elements';
+import { SearchReview } from '../../responses/page-elements';
 import { SearchMetadata } from '../search-metadata';
 import { Memoize } from 'typescript-memoize';
 
@@ -265,9 +265,9 @@ export class ItemHit {
    * Contains data about the target user's review on this item.
    * Note: this property is not a standard field type and there is no need to call `.value`/`.values` on it.
    */
-  @Memoize() get review(): Review | undefined {
+  @Memoize() get review(): SearchReview | undefined {
     const reviewData = this.rawMetadata.review;
-    return reviewData ? new Review(reviewData) : undefined;
+    return reviewData ? new SearchReview(reviewData) : undefined;
   }
 
   /**
