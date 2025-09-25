@@ -68,6 +68,15 @@ describe('ExtraInfo', () => {
       thumbnail_url: 'http://example.com/thumbnail.jpg',
       review_count: 1,
       part_of: ['beep', 'boop'],
+      speech_vs_music_asr_metadata: [
+        {
+          end: 243,
+          id: 1,
+          is_music: false,
+          start: 0,
+          text: 'Fee fi fo fum',
+        },
+      ],
       reviews_metadata: [
         {
           reviewbody: 'Foo',
@@ -109,5 +118,13 @@ describe('ExtraInfo', () => {
     expect(extraInfo.reviews_metadata?.[0].reviewbody).to.equal('Foo');
     expect(extraInfo.reviews_metadata?.[0].stars).to.equal(5);
     expect(extraInfo.reviews_metadata?.[0].reviewtitle).to.equal('Bar!');
+    expect(extraInfo.speech_vs_music_asr_metadata?.length).to.equal(1);
+    expect(extraInfo.speech_vs_music_asr_metadata?.[0]).to.deep.equal({
+      end: 243,
+      id: 1,
+      is_music: false,
+      start: 0,
+      text: 'Fee fi fo fum',
+    });
   });
 });
