@@ -36,6 +36,7 @@ export { RadioSearchBackend } from './src/search-backend/radio-search-backend';
 
 export { SearchServiceInterface } from './src/search-service-interface';
 export { SearchService } from './src/search-service';
+export { SearchResponseDetailsInterface } from './src/responses/search-response-details';
 export { SearchBackendOptionsInterface } from './src/search-backend/search-backend-options';
 export { SearchType } from './src/search-type';
 export {
