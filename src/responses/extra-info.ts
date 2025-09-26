@@ -1,5 +1,8 @@
 import { Memoize } from 'typescript-memoize';
-import { Metadata } from '@internetarchive/iaux-item-metadata';
+import {
+  Metadata,
+  SpeechMusicASREntry,
+} from '@internetarchive/iaux-item-metadata';
 import { SearchReview } from './page-elements';
 import type { UserDetails } from './user-details';
 
@@ -80,6 +83,11 @@ export class ExtraInfo {
   // array of collection identifiers this item is part of
   get part_of(): string[] | undefined {
     return this.rawResponse.part_of;
+  }
+
+  // radio archive speech vs music definitions
+  get speech_vs_music_asr_metadata(): SpeechMusicASREntry[] | undefined {
+    return this.rawResponse.speech_vs_music_asr_metadata;
   }
 
   @Memoize() get reviews_metadata(): SearchReview[] {
