@@ -73,6 +73,10 @@ export interface ForumPost {
 }
 
 export class SearchReview extends Review {
+  get reviewer_account_status(): string | undefined {
+    return this.rawValue.reviewer_account_status;
+  }
+
   get __href__(): string | undefined {
     return this.rawValue.__href__;
   }
