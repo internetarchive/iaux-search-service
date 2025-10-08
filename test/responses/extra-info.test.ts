@@ -82,6 +82,7 @@ describe('ExtraInfo', () => {
           reviewbody: 'Foo',
           stars: '5',
           reviewtitle: 'Bar!',
+          reviewer_account_status: 'ok',
         },
       ],
       uploader_details: {
@@ -118,6 +119,9 @@ describe('ExtraInfo', () => {
     expect(extraInfo.reviews_metadata?.[0].reviewbody).to.equal('Foo');
     expect(extraInfo.reviews_metadata?.[0].stars).to.equal(5);
     expect(extraInfo.reviews_metadata?.[0].reviewtitle).to.equal('Bar!');
+    expect(extraInfo.reviews_metadata?.[0].reviewer_account_status).to.equal(
+      'ok'
+    );
     expect(extraInfo.speech_vs_music_asr_metadata?.length).to.equal(1);
     expect(extraInfo.speech_vs_music_asr_metadata?.[0]).to.deep.equal({
       end: 243,
