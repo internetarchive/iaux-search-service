@@ -65,8 +65,8 @@ export class ExtraInfo {
   }
 
   /** How many reviews this item's members have */
-  get review_count(): number | undefined {
-    return this.rawResponse.review_count;
+  get num_reviews(): number | undefined {
+    return this.rawResponse.num_reviews;
   }
 
   /** User details for the item uploader */
