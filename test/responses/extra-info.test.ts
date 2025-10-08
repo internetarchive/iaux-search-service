@@ -66,7 +66,7 @@ describe('ExtraInfo', () => {
       title_message: 'foo',
       primary_collection: 'bar',
       thumbnail_url: 'http://example.com/thumbnail.jpg',
-      review_count: 1,
+      num_reviews: 1,
       part_of: ['beep', 'boop'],
       speech_vs_music_asr_metadata: [
         {
@@ -112,7 +112,7 @@ describe('ExtraInfo', () => {
     expect(extraInfo.thumbnail_url).to.equal(
       'http://example.com/thumbnail.jpg'
     );
-    expect(extraInfo.review_count).to.equal(1);
+    expect(extraInfo.num_reviews).to.equal(1);
     expect(extraInfo.part_of).to.deep.equal(['beep', 'boop']);
     expect(extraInfo.reviews_metadata?.length).to.equal(1);
     expect(extraInfo.reviews_metadata?.[0].reviewbody).to.equal('Foo');
