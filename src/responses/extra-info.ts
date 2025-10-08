@@ -5,6 +5,7 @@ import {
 } from '@internetarchive/iaux-item-metadata';
 import { SearchReview } from './page-elements';
 import type { UserDetails } from './user-details';
+import { Byte } from '@internetarchive/field-parsers';
 
 /**
  * Extra info about the target item that is returned for
@@ -20,7 +21,7 @@ export class ExtraInfo {
   }
 
   /** Total size in bytes of this item (incl. its members) */
-  get item_size(): number | undefined {
+  get item_size(): Byte | undefined {
     return this.rawResponse.item_size;
   }
 
@@ -65,8 +66,8 @@ export class ExtraInfo {
   }
 
   /** How many reviews this item's members have */
-  get review_count(): number | undefined {
-    return this.rawResponse.review_count;
+  get num_reviews(): number | undefined {
+    return this.rawResponse.num_reviews;
   }
 
   /** User details for the item uploader */
