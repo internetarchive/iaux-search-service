@@ -5,6 +5,7 @@ import {
 } from '@internetarchive/iaux-item-metadata';
 import { SearchReview } from './page-elements';
 import type { UserDetails } from './user-details';
+import { Byte } from '@internetarchive/field-parsers';
 
 /**
  * Extra info about the target item that is returned for
@@ -20,7 +21,7 @@ export class ExtraInfo {
   }
 
   /** Total size in bytes of this item (incl. its members) */
-  get item_size(): number | undefined {
+  get item_size(): Byte | undefined {
     return this.rawResponse.item_size;
   }
 
