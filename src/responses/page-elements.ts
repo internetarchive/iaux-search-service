@@ -1,5 +1,6 @@
 import { Review } from '@internetarchive/iaux-item-metadata';
 import { Aggregation } from '../models/aggregation';
+import { Memoize } from 'typescript-memoize';
 
 /**
  * The structure of the response body `hits` object returned from the PPS endpoint.
@@ -72,13 +73,47 @@ export interface ForumPost {
   date: string;
 }
 
+export type ReviewerAccountStatus = 'ok' | 'locked' | 'unknown';
+
 export class SearchReview extends Review {
-  get reviewer_account_status(): string | undefined {
-    return this.rawValue.reviewer_account_status;
+  get reviewer_account_status(): ReviewerAccountStatus | undefined {
+    return this.account_status?.status;
+  }
+
+  get reviewer_account_status_reason(): string | undefined {
+    return this.account_status?.reason;
   }
 
   get __href__(): string | undefined {
     return this.rawValue.__href__;
+  }
+
+  @Memoize() private get account_status():
+    | {
+        status: ReviewerAccountStatus;
+        reason?: string;
+      }
+    | undefined {
+    const rawStatus = this.rawValue.reviewer_account_status;
+    if (!rawStatus) return undefined;
+
+    let status: ReviewerAccountStatus = 'unknown';
+    let reason: string | undefined;
+
+    if (rawStatus.startsWith('ok')) {
+      status = 'ok';
+    }
+
+    if (rawStatus.startsWith('locked')) {
+      status = 'locked';
+    }
+
+    const reasonParts = rawStatus.split('__');
+    if (reasonParts.length > 1) {
+      reason = reasonParts.slice(1).join('__');
+    }
+
+    return { status, reason };
   }
 }
 
