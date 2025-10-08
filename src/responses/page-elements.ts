@@ -88,6 +88,14 @@ export class SearchReview extends Review {
     return this.rawValue.__href__;
   }
 
+  /**
+   * Parses the raw reviewer_account_status string into a structured object
+   *
+   * Examples of raw strings:
+   * - "ok"
+   * - "locked__darked"
+   * - "unknown__account_not_found__by_itemname"
+   */
   @Memoize() private get account_status():
     | {
         status: ReviewerAccountStatus;
