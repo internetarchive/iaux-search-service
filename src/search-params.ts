@@ -113,6 +113,18 @@ export enum FilterConstraint {
    * This only makes sense for numeric fields like `year`.
    */
   LESS_OR_EQUAL = 'lte',
+
+  /**
+   * Indicates that the associated value is a freeform query string that should be
+   * applied as a full filter in its own right. Only usable when the filter's field
+   * is `"_freeform_"`.
+   * 
+   * For instance, `{ _freeform_: { 'collection:texts OR mediatype:texts': QUERY_STRING } }`
+   * specifies that the given query string should be used as an additional filter (one which,
+   * incidentally, is not presently expressible using any of the other filter constraints,
+   * since INCLUDE-type filters having different fields are always joined by AND).
+   */
+  QUERY_STRING = 'qs',
 }
 
 /**

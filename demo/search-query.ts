@@ -294,6 +294,7 @@ export class SearchQuery extends LitElement {
       gte: '>=',
       lt: '<',
       lte: '<=',
+      qs: 'query:'
     };
 
     return map(filtersArray, ({ field, value, constraint }) => {
