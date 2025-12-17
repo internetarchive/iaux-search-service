@@ -81,6 +81,13 @@ export class SearchParamURLGenerator {
       params.append('page_elements', pageElementParam);
     }
 
+    if (
+      searchParams.pageType === 'client_document_fetch' &&
+      searchParams.identifiers
+    ) {
+      params.append('doc_ids', JSON.stringify(searchParams.identifiers));
+    }
+
     if (searchParams.rows != null) {
       params.append('hits_per_page', String(searchParams.rows));
     }
@@ -129,14 +136,14 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.includeClientUrl !== false) {
-      const noQuery = searchParams.query == null;
-      // If the query is particularly long, exclude the client_url altogether
-      const queryWithinLimit =
-        searchParams.query && searchParams.query.length <= 1000;
-      const includeClientUrl = noQuery || queryWithinLimit;
+      // If the query or doc_ids are particularly long, exclude the client_url altogether
+      const totalQueryAndIdsLength =
+        (searchParams.query?.length ?? 0) +
+        (searchParams.identifiers?.toString().length ?? 0);
+      const queryAndIdsWithinLimit = totalQueryAndIdsLength <= 1000;
 
-      if (includeClientUrl) {
-        // Truncate the client_url to 400 characters
+      if (queryAndIdsWithinLimit) {
+        // Still truncate the client_url to 400 characters regardless
         const truncatedUrl = window.location.href.slice(0, 400);
         params.append('client_url', truncatedUrl);
       }
