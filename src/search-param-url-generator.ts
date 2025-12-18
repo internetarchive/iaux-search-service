@@ -81,13 +81,6 @@ export class SearchParamURLGenerator {
       params.append('page_elements', pageElementParam);
     }
 
-    if (
-      searchParams.pageType === 'client_document_fetch' &&
-      searchParams.identifiers
-    ) {
-      params.append('doc_ids', JSON.stringify(searchParams.identifiers));
-    }
-
     if (searchParams.rows != null) {
       params.append('hits_per_page', String(searchParams.rows));
     }

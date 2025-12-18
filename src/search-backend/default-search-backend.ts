@@ -32,6 +32,19 @@ export class DefaultSearchBackend extends BaseSearchBackend {
     );
     const queryAsString = urlSearchParam.toString();
     const url = `https://${this.baseUrl}${this.servicePath}/?${queryAsString}`;
-    return this.fetchUrl(url);
+
+    // When performing a document fetch with a large list of identifiers, we must pass them
+    // in a POST body, rather than GET params.
+    const options = params.identifiers
+      ? {
+          requestOptions: {
+            method: 'POST',
+            body: JSON.stringify({ doc_ids: params.identifiers }),
+            credentials: 'include',
+          } as RequestInit,
+        }
+      : undefined;
+      
+    return this.fetchUrl(url, options);
   }
 }
