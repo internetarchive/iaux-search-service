@@ -75,6 +75,25 @@ describe('DefaultSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
+    it('sends doc_ids in a POST body if list of identifiers is provided', async () => {
+      const backend = new DefaultSearchBackend({
+        scope: 'foo',
+        includeCredentials: true,
+      });
+      await backend.performSearch({
+        query: 'foo',
+        identifiers: ['bar', 'baz'],
+      });
+
+      expect(urlConfig?.credentials).to.equal('include');
+      expect(urlConfig?.method).to.equal('POST');
+      expect(urlConfig?.body).to.equal(
+        JSON.stringify({
+          doc_ids: ['bar', 'baz'],
+        })
+      );
+    });
+
     it('gets scope param from URL if not provided as option', async () => {
       const url = new URL(window.location.href);
       url.searchParams.set('scope', 'boop');

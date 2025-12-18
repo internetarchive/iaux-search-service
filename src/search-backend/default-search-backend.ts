@@ -44,7 +44,7 @@ export class DefaultSearchBackend extends BaseSearchBackend {
           } as RequestInit,
         }
       : undefined;
-      
+
     return this.fetchUrl(url, options);
   }
 }
