@@ -36,15 +36,16 @@ export class DefaultSearchBackend extends BaseSearchBackend {
     // When performing a document fetch with a large list of identifiers, we must pass them
     // in a POST body, rather than GET params.
     const { pageType, identifiers } = params;
-    const options = pageType === 'client_document_fetch' && identifiers
-      ? {
-          requestOptions: {
-            method: 'POST',
-            body: JSON.stringify({ doc_ids: params.identifiers }),
-            credentials: 'include',
-          } as RequestInit,
-        }
-      : undefined;
+    const options =
+      pageType === 'client_document_fetch' && identifiers
+        ? {
+            requestOptions: {
+              method: 'POST',
+              body: JSON.stringify({ doc_ids: params.identifiers }),
+              credentials: 'include',
+            } as RequestInit,
+          }
+        : undefined;
 
     return this.fetchUrl(url, options);
   }
