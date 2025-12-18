@@ -129,14 +129,14 @@ export class SearchParamURLGenerator {
     }
 
     if (searchParams.includeClientUrl !== false) {
-      // If the query or doc_ids are particularly long, exclude the client_url altogether
-      const totalQueryAndIdsLength =
-        (searchParams.query?.length ?? 0) +
-        (searchParams.identifiers?.toString().length ?? 0);
-      const queryAndIdsWithinLimit = totalQueryAndIdsLength <= 1000;
+      const noQuery = searchParams.query == null;
+      // If the query is particularly long, exclude the client_url altogether
+      const queryWithinLimit =
+        searchParams.query && searchParams.query.length <= 1000;
+      const includeClientUrl = noQuery || queryWithinLimit;
 
-      if (queryAndIdsWithinLimit) {
-        // Still truncate the client_url to 400 characters regardless
+      if (includeClientUrl) {
+        // Truncate the client_url to 400 characters
         const truncatedUrl = window.location.href.slice(0, 400);
         params.append('client_url', truncatedUrl);
       }
