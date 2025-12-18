@@ -43,7 +43,7 @@ export class DefaultSearchBackend extends BaseSearchBackend {
       ? {
           requestOptions: {
             method: 'POST',
-            body: JSON.stringify({ doc_ids: params.identifiers }),
+            body: JSON.stringify({ doc_ids: identifiers }),
             credentials: 'include',
           } as RequestInit,
         }
