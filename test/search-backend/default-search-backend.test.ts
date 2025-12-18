@@ -75,12 +75,13 @@ describe('DefaultSearchBackend', () => {
       expect(urlConfig?.credentials).to.equal('include');
     });
 
-    it('sends doc_ids in a POST body if list of identifiers is provided', async () => {
+    it('sends doc_ids in a POST body if performing a document fetch with a list of identifiers', async () => {
       const backend = new DefaultSearchBackend({
         scope: 'foo',
         includeCredentials: true,
       });
       await backend.performSearch({
+        pageType: 'client_document_fetch',
         query: 'foo',
         identifiers: ['bar', 'baz'],
       });
