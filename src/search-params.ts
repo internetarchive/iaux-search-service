@@ -156,7 +156,8 @@ export type PageType =
   | 'search_results'
   | 'collection_details'
   | 'account_details'
-  | 'item_details';
+  | 'item_details'
+  | 'client_document_fetch';
 
 /**
  * SearchParams provides an encapsulation to all of the search parameters
@@ -192,6 +193,12 @@ export interface SearchParams {
    * (e.g., 'uploads', 'reviews', ...)
    */
   pageElements?: PageElementName[];
+
+  /**
+   * Array of identifiers to fetch when performing a `client_document_fetch`.
+   * Ignored for all other page types.
+   */
+  identifiers?: string[];
 
   /**
    * One or more parameters specifying how the search results should be
