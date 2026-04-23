@@ -1,6 +1,7 @@
 import { Review } from '@internetarchive/iaux-item-metadata';
 import { Aggregation } from '../models/aggregation';
 import { Memoize } from 'typescript-memoize';
+import { CollectionExtraInfo } from './collection-extra-info';
 
 /**
  * The structure of the response body `hits` object returned from the PPS endpoint.
@@ -34,6 +35,7 @@ export type FederatedPageElementName =
  */
 export type PageElementName =
   | 'uploads'
+  | 'favorites'
   | 'reviews'
   | 'collections'
   | 'lending'
@@ -47,6 +49,7 @@ export type PageElementName =
 interface HitsAggregationsPageElement {
   hits?: SearchResponseHits;
   aggregations?: Record<string, Aggregation>;
+  collection_extra_info?: CollectionExtraInfo;
 }
 
 /**
@@ -126,6 +129,7 @@ export class SearchReview extends Review {
 }
 
 export type UploadsPageElement = HitsAggregationsPageElement;
+export type FavoritesPageElement = HitsAggregationsPageElement;
 export type ReviewsPageElement = HitsAggregationsPageElement;
 export type CollectionsPageElement = HitsAggregationsPageElement;
 export type FederatedPageElement = HitsAggregationsPageElement;
@@ -146,6 +150,7 @@ export type ForumPostsPageElement = ForumPost[];
 
 export type PageElement =
   | UploadsPageElement
+  | FavoritesPageElement
   | ReviewsPageElement
   | CollectionsPageElement
   | LendingPageElement
@@ -160,6 +165,7 @@ export type PageElement =
 export interface PageElementMap
   extends Partial<Record<PageElementName, PageElement>> {
   uploads?: UploadsPageElement;
+  favorites?: FavoritesPageElement;
   reviews?: ReviewsPageElement;
   collections?: CollectionsPageElement;
   lending?: LendingPageElement;
