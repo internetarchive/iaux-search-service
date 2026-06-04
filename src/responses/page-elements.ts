@@ -207,8 +207,8 @@ export function convertWebArchivesToSearchHits(
   for (const entry of pageElement) {
     if (!entry.captures?.length) continue;
 
-    const encodedUrl = encodeURIComponent(entry.url);
-    const href = `https://web.archive.org/web/${entry.captures[0]}/${encodedUrl}`;
+    // url must not be percent-encoded — Wayback Machine matches on the raw URL
+    const href = `https://web.archive.org/web/${entry.captures[0]}/${entry.url}`;
     results.push({
       hit_type: 'web_archive',
       fields: {
