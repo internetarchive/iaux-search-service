@@ -583,7 +583,7 @@ describe('SearchResponseDetails', () => {
     expect(webArchiveResult.title?.value).to.equal('https://example.com/');
     expect(webArchiveResult.capture_dates?.values?.length).to.equal(2);
     expect(webArchiveResult.__href__?.value).to.equal(
-      'https://web.archive.org/web/20100102030405/https%3A%2F%2Fexample.com%2F'
+      'https://web.archive.org/web/20100102030405/https://example.com/'
     );
   });
 
