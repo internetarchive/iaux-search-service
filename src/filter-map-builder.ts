@@ -3,7 +3,7 @@ import { FilterConstraint, FilterMap } from './search-params';
 /** `__proto__` can't be used as a property name on a filter map without reaching into its prototype. */
 const isUnsafeKey = (key: string): boolean => key === '__proto__';
 
-const hasOwn = (obj: object, key: string): boolean =>
+const hasOwn = (obj: Record<string, unknown>, key: string): boolean =>
   Object.prototype.hasOwnProperty.call(obj, key);
 
 /**
