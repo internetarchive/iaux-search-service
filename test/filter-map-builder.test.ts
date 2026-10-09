@@ -146,4 +146,76 @@ describe('filter map builder', () => {
       baz: { boop: ['exc', 'lte'] },
     });
   });
+
+  describe('unsafe keys', () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).polluted;
+    });
+
+    it('ignores "__proto__" as a field', () => {
+      const builder = new FilterMapBuilder();
+      builder.addFilter('__proto__', 'polluted', FilterConstraint.INCLUDE);
+
+      expect(builder.build()).to.deep.equal({});
+      expect(({} as Record<string, unknown>).polluted).to.be.undefined;
+    });
+
+    it('ignores "__proto__" as a value', () => {
+      const builder = new FilterMapBuilder();
+      builder.addFilter('foo', 'bar', FilterConstraint.INCLUDE);
+      builder.addFilter('foo', '__proto__', FilterConstraint.INCLUDE);
+
+      expect(builder.build()).to.deep.equal({ foo: { bar: 'inc' } });
+      expect(Object.getPrototypeOf(builder.build().foo)).to.equal(
+        Object.prototype
+      );
+    });
+
+    it('ignores "__proto__" when removing filters', () => {
+      const builder = getComplexFilterMapBuilder();
+      builder.removeFilters('__proto__', 'bar');
+      builder.removeFilters('foo', '__proto__');
+      builder.removeSingleFilter('__proto__', 'bar', FilterConstraint.INCLUDE);
+      builder.removeSingleFilter('foo', '__proto__', FilterConstraint.INCLUDE);
+
+      expect(builder.build()).to.deep.equal(
+        getComplexFilterMapBuilder().build()
+      );
+    });
+
+    ['constructor', 'prototype', 'toString', 'hasOwnProperty'].forEach(key => {
+      it(`treats "${key}" as an ordinary field and value`, () => {
+        const builder = new FilterMapBuilder();
+        builder.addFilter(key, 'polluted', FilterConstraint.INCLUDE);
+        builder.addFilter('foo', key, FilterConstraint.EXCLUDE);
+
+        expect(builder.build()).to.deep.equal({
+          [key]: { polluted: 'inc' },
+          foo: { [key]: 'exc' },
+        });
+        expect(({} as Record<string, unknown>).polluted).to.be.undefined;
+        expect(
+          (Object as unknown as Record<string, unknown>).polluted
+        ).to.be.undefined;
+        expect(
+          (Object.prototype.toString as unknown as Record<string, unknown>)
+            .polluted
+        ).to.be.undefined;
+      });
+    });
+
+    it('ignores "__proto__" keys in maps given to setFilterMap and mergeFilterMap', () => {
+      const unsafeMap = JSON.parse(
+        '{"__proto__": {"polluted": "inc"}, "foo": {"__proto__": "inc", "bar": "inc"}}'
+      ) as FilterMap;
+
+      const merged = new FilterMapBuilder().mergeFilterMap(unsafeMap).build();
+      const set = new FilterMapBuilder().setFilterMap(unsafeMap).build();
+
+      expect(merged).to.deep.equal({ foo: { bar: 'inc' } });
+      expect(set).to.deep.equal({ foo: { bar: 'inc' } });
+      expect(Object.keys(set)).to.deep.equal(['foo']);
+      expect(({} as Record<string, unknown>).polluted).to.be.undefined;
+    });
+  });
 });
