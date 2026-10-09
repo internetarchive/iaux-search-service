@@ -194,11 +194,10 @@ describe('filter map builder', () => {
           foo: { [key]: 'exc' },
         });
         expect(({} as Record<string, unknown>).polluted).to.be.undefined;
+        expect(((Object as unknown) as Record<string, unknown>).polluted).to.be
+          .undefined;
         expect(
-          (Object as unknown as Record<string, unknown>).polluted
-        ).to.be.undefined;
-        expect(
-          (Object.prototype.toString as unknown as Record<string, unknown>)
+          ((Object.prototype.toString as unknown) as Record<string, unknown>)
             .polluted
         ).to.be.undefined;
       });
