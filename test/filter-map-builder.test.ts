@@ -216,5 +216,18 @@ describe('filter map builder', () => {
       expect(Object.keys(set)).to.deep.equal(['foo']);
       expect(({} as Record<string, unknown>).polluted).to.be.undefined;
     });
+
+    it('leaves the map alone when asked to clean up a field it does not have', () => {
+      const builder = new FilterMapBuilder().addFilter(
+        'foo',
+        'bar',
+        FilterConstraint.INCLUDE
+      );
+
+      // eslint-disable-next-line dot-notation
+      builder['deleteFieldIfEmpty']('missing');
+
+      expect(builder.build()).to.deep.equal({ foo: { bar: 'inc' } });
+    });
   });
 });
