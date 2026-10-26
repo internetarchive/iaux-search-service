@@ -1,5 +1,11 @@
 import { FilterConstraint, FilterMap } from './search-params';
 
+/** `__proto__` can't be used as a property name on a filter map without reaching into its prototype. */
+const isUnsafeKey = (key: string): boolean => key === '__proto__';
+
+const hasOwn = (obj: Record<string, unknown>, key: string): boolean =>
+  Object.prototype.hasOwnProperty.call(obj, key);
+
 /**
  * A utility class for building filter maps
  */
@@ -14,14 +20,17 @@ export class FilterMapBuilder {
    * @param value The value of the field to filter on (e.g., 'Cicero', '1920', ...)
    * @param constraint The constraint to apply to the `field`, with respect to the given `value`.
    * Allowed values are the enum members of `FilterConstraint`.
+   * A `field` or `value` of `__proto__` is ignored.
    */
   addFilter(field: string, value: string, constraint: FilterConstraint): this {
-    if (!this.filterMap[field]) {
+    if (isUnsafeKey(field) || isUnsafeKey(value)) return this;
+
+    if (!hasOwn(this.filterMap, field)) {
       this.filterMap[field] = {};
     }
 
     // If there are already constraints for this value, concat them into an array
-    if (this.filterMap[field][value]) {
+    if (hasOwn(this.filterMap[field], value)) {
       const mergedConstraints = ([] as FilterConstraint[]).concat(
         this.filterMap[field][value],
         constraint
@@ -48,7 +57,13 @@ export class FilterMapBuilder {
     value: string,
     constraint: FilterConstraint
   ): this {
-    if (!this.filterMap[field]?.[value]) return this;
+    if (isUnsafeKey(field) || isUnsafeKey(value)) return this;
+    if (
+      !hasOwn(this.filterMap, field) ||
+      !hasOwn(this.filterMap[field], value)
+    ) {
+      return this;
+    }
 
     const constraints = ([] as FilterConstraint[]).concat(
       this.filterMap[field][value]
@@ -77,7 +92,8 @@ export class FilterMapBuilder {
    * @param value The value to remove the filter for
    */
   removeFilters(field: string, value: string): this {
-    if (!this.filterMap[field]) return this;
+    if (isUnsafeKey(field) || isUnsafeKey(value)) return this;
+    if (!hasOwn(this.filterMap, field)) return this;
 
     delete this.filterMap[field][value];
     this.deleteFieldIfEmpty(field);
@@ -86,8 +102,9 @@ export class FilterMapBuilder {
 
   /** If there are no remaining filters for this field, deletes the whole field object. */
   private deleteFieldIfEmpty(field: string): void {
+    if (!hasOwn(this.filterMap, field)) return;
     const filters = this.filterMap[field];
-    if (filters && Object.keys(filters).length === 0) {
+    if (Object.keys(filters).length === 0) {
       delete this.filterMap[field];
     }
   }
@@ -98,8 +115,8 @@ export class FilterMapBuilder {
    * @param map The FilterMap to set this builder's state to.
    */
   setFilterMap(map: FilterMap): this {
-    this.filterMap = { ...map };
-    return this;
+    this.filterMap = {};
+    return this.mergeFilterMap(map);
   }
 
   /**
