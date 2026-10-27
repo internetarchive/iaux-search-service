@@ -2,6 +2,8 @@
 
 # Internet Archive Search Service
 
+> Moved to [@internetarchive/elements](https://github.com/internetarchive/elements) (`src/services/search-service`). New work goes there.
+
 A service for searching the Internet Archive.
 
 ## Installation
